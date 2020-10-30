@@ -12,6 +12,7 @@
 #include <stdlib.h>
 
 #include "Scene1.h"
+#include "Scene2.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -44,6 +45,10 @@ Application::~Application()
 {
 }
 
+void resize_callback(GLFWwindow* window, int w, int h) {
+	glViewport(0, 0, w, h);
+}
+
 void Application::Init()
 {
 	//Set the error callback
@@ -65,6 +70,7 @@ void Application::Init()
 
 	//Create a window and create its OpenGL context
 	m_window = glfwCreateWindow(800, 600, "Test Window", NULL, NULL);
+	glfwSetWindowSizeCallback(m_window, resize_callback);
 
 	//If the window couldn't be created
 	if (!m_window)
@@ -95,14 +101,16 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	Scene *scene = new Scene1();
-	scene->Init();
+	Scene* scenes[2] = { new Scene1, new Scene2 };
+	int mainScene = 1;
+	scenes[mainScene]->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
 	{
-		scene->Update(m_timer.getElapsedTime());
-		scene->Render();
+		scenes[mainScene]->Update(m_timer.getElapsedTime());
+		scenes[mainScene]->Render();
+
 		//Swap buffers
 		glfwSwapBuffers(m_window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...
@@ -110,8 +118,12 @@ void Application::Run()
         m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
 
 	} //Check if the ESC key had been pressed or if the window had been closed
-	scene->Exit();
-	delete scene;
+	
+	scenes[mainScene]->Exit();
+
+	for (auto& scene : scenes) {
+		delete scene;
+	}
 }
 
 void Application::Exit()
