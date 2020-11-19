@@ -147,18 +147,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\Mesh.cpp" />
+    <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\Scene2.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Scene1.cpp" />
+    <ClCompile Include="Source\Scene3.cpp" />
+    <ClCompile Include="Source\Scene4.cpp" />
     <ClCompile Include="Source\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Camera.h" />
+    <ClInclude Include="Source\Mesh.h" />
+    <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\Scene2.h" />
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\Scene1.h" />
+    <ClInclude Include="Source\Scene3.h" />
+    <ClInclude Include="Source\Scene4.h" />
     <ClInclude Include="Source\shader.hpp" />
+    <ClInclude Include="Source\Vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
