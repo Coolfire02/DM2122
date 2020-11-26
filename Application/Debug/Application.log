@@ -1,2 +1,10 @@
-﻿  Mesh.cpp
-  Application.vcxproj -> C:\Users\tanyo\source\repos\DM2122\Debug\Application.exe
+﻿  Camera2.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(70,41): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(78,41): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(86,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(96,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(102,22): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(102,43): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(106,22): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(106,43): warning C4305: 'argument': truncation from 'double' to 'float'
+  Application.vcxproj -> C:\Users\tanyo\source\repos\.COMG\Debug\Application.exe

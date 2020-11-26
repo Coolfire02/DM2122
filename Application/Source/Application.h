@@ -4,15 +4,17 @@
 
 #include "timer.h"
 
+
+
 class Application
 {
 public:
 	Application();
 	~Application();
+	static bool IsKeyPressed(unsigned short key);
 	void Init();
 	void Run();
 	void Exit();
-	bool IsKeyPressed(unsigned short key);
 
 private:
 

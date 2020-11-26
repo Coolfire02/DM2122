@@ -18,16 +18,31 @@ Then generate the VBO/IBO and store them in Mesh object
 /******************************************************************************/
 Mesh* MeshBuilder::GenerateAxes(const std::string &meshName, float lengthX, float lengthY, float lengthZ)
 {
-	const GLfloat vertex_buffer_data[] = {
-		0
-	};
-	const GLfloat color_buffer_data[] = {
-		0
-	};
-	const GLuint index_buffer_data[] = {
-		0
-	};
-	Mesh *mesh = new Mesh(meshName);
+	std::vector<Vertex> vertex;
+	Vertex v;
+
+	v.pos.set(-100.0f, 0.0f, 0.0f); v.color.set(1.0f, 0.0f, 0.0f);  vertex.push_back(v);
+	v.pos.set(100.0f, 0.0f, 0.0f); v.color.set(1.0f, 0.0f, 0.0f);  vertex.push_back(v);
+	v.pos.set(0.0f, -100.0f, 0.0f); v.color.set(0.0f, 1.0f, 0.0f);  vertex.push_back(v);
+	v.pos.set(0.0f, 100.0f, 0.0f); v.color.set(0.0f, 1.0f, 0.0f);  vertex.push_back(v);
+	v.pos.set(0.0f, 0.0f, 100.0f); v.color.set(0.0f, 0.0f, 1.0f);  vertex.push_back(v);
+	v.pos.set(0.0f, 0.0f, -100.0f); v.color.set(0.0f, 0.0f, 1.0f);  vertex.push_back(v);
+
+	std::vector<GLuint> index_buffer_data;
+	for (int i = 0; i < 6; i++) {
+		index_buffer_data.push_back(i);
+	}
+
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, mesh->colorBuffer);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(color_buffer_data), color_buffer_data, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_LINES;
+	mesh->indexSize = index_buffer_data.size();
 
 	return mesh;
 }
@@ -45,18 +60,105 @@ Then generate the VBO/IBO and store them in Mesh object
 \return Pointer to mesh storing VBO/IBO of quad
 */
 /******************************************************************************/
-Mesh* MeshBuilder::GenerateQuad(const std::string &meshName, float lengthX, float lengthY)
+Mesh* MeshBuilder::GenerateCone(const std::string &meshName, float lengthX, float lengthY)
 {
-	const GLfloat vertex_buffer_data[] = {
-		0
-	};
-	const GLfloat color_buffer_data[] = {
-		0
-	};
-	const GLuint index_buffer_data[] = {
-		0
-	};
-	Mesh *mesh = new Mesh(meshName);
+
+	double pi = atan(1) * 4;
+	std::vector<Vertex> vertex;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+	v.pos.set(0.0f, 0.0f, 0.0f);
+	v.color.set(0.7f, 0.7f, 0.0f);
+	vertex.push_back(v);
+	index_buffer_data.push_back(0);
+
+	for (int j = 1; j < 60; j++) {
+		int count = 1;
+		float zdegree = j;
+
+		for (int i = count; i <= count + 60; i++) {
+			float degree = (i / 60.0 * 360) * (pi / 180.0);
+			v.pos.set(0 + 1.0f * cosf(degree), 0 + 1.0f * sinf(degree), zdegree);
+			v.color.set(0.7f, 0.7f, 0.0f);
+			vertex.push_back(v);
+			index_buffer_data.push_back(i);
+		}
+		count += 60;
+	}
+
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, mesh->colorBuffer);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(color_buffer_data), color_buffer_data, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLE_FAN;
+	mesh->indexSize = index_buffer_data.size();
+
+	return mesh;
+}
+
+Mesh* MeshBuilder::GenerateSphere(const std::string& meshName, Color color, float radius) {
+	
+	double pi = atan(1) * 4;
+	std::vector<Vertex> vertex;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+	v.color = color;
+	int index = 0;
+	for (int phi = 0; phi < 180; phi += 10) {
+		for (int theta = 0; theta <= 360; theta += 10) {
+			
+			float x = radius * cos(phi * pi / 180) * cos(theta * pi / 180);
+			float y = radius * sin(phi * pi / 180);
+			if (phi >= 90)
+				y *= -1;
+			float z = radius * cos(phi * pi / 180) * sin(theta * pi / 180);
+			v.pos.set(x, y, z);
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+
+			x = radius * cos((phi+10) * pi / 180 ) * cos(theta * pi / 180);
+			y = radius * sin((phi+10) * pi / 180);
+			if (phi >= 90)
+				y *= -1;
+			z = radius * cos((phi+10) * pi / 180) * sin(theta * pi / 180);
+
+			v.pos.set(x, y, z);
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+		}
+	}
+	/*for (int theta = 0; theta <= 360; theta += 10) {
+		v.pos.set(0, 0, 0);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+
+		int x = radius * cos(theta * pi / 180);
+		int z = radius * sin(theta * pi / 180);
+		v.pos.set(x, 0, z);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+	}*/
+
+	//for (int theta = 0; theta <= 360; theta += 10) {
+	//	v.pos.set(0, 0, 0);
+	//	vertex.push_back(v);
+
+	//	int x = radius * cos(theta / 180 * pi);
+	//	int z = radius * sin(theta / 180 * pi);
+	//	v.pos.set(x, 1, z);
+	//}
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
+	mesh->indexSize = index_buffer_data.size();
 
 	return mesh;
 }
@@ -81,53 +183,53 @@ Mesh* MeshBuilder::GenerateCube(const std::string &meshName, float lengthX, floa
 	int index = 0;
 	std::vector<Vertex> vertex;
 	Vertex v;
-	v.pos.set(0.5f, 0.5f, 0.5f); v.color.set(1.0f, 1.0f, 1.0f);  vertex.push_back(v);
-	v.pos.set(-0.5f, 0.5f, 0.5f); vertex.push_back(v);
-	v.pos.set(-0.5f, -0.5f, 0.5f); vertex.push_back(v);
+	v.pos.set(0.5f, 0.5f, 0.5f); v.color.set(0.0f, 1.0f, 0.0f);  vertex.push_back(v);
+	v.pos.set(-0.5f, 0.5f, 0.5f); v.color.set(0.0f, 1.0f, 0.0f); vertex.push_back(v);
+	v.pos.set(-0.5f, -0.5f, 0.5f); v.color.set(0.0f, 1.0f, 0.0f); vertex.push_back(v);
 
-	v.pos.set(0.5f, 0.5f, 0.5f); vertex.push_back(v);
-	v.pos.set(-0.5f, -0.5f, 0.5f); vertex.push_back(v);
-	v.pos.set(0.5f, -0.5f, 0.5f); vertex.push_back(v);
+	v.pos.set(0.5f, 0.5f, 0.5f); v.color.set(0.0f, 1.0f, 0.0f); vertex.push_back(v);
+	v.pos.set(-0.5f, -0.5f, 0.5f); v.color.set(0.0f, 1.0f, 0.0f); vertex.push_back(v);
+	v.pos.set(0.5f, -0.5f, 0.5f); v.color.set(0.0f, 1.0f, 0.0f); vertex.push_back(v);
 
-	v.pos.set(-0.5f, 0.5f, 0.5f); vertex.push_back(v); //forward left
-	v.pos.set(-0.5f, 0.5f, -0.5f); vertex.push_back(v);
-	v.pos.set(-0.5f, -0.5f, -0.5f); vertex.push_back(v);
+	v.pos.set(-0.5f, 0.5f, 0.5f); v.color.set(1.0f, 0.0f, 0.0f); vertex.push_back(v); //forward left
+	v.pos.set(-0.5f, 0.5f, -0.5f); v.color.set(1.0f, 0.0f, 0.0f); vertex.push_back(v);
+	v.pos.set(-0.5f, -0.5f, -0.5f); v.color.set(1.0f, 0.0f, 0.0f); vertex.push_back(v);
 
-	v.pos.set(-0.5f, 0.5f, 0.5f); vertex.push_back(v);
-	v.pos.set(-0.5f, -0.5f, -0.5f); vertex.push_back(v);
-	v.pos.set(-0.5f, -0.5f, 0.5f);  vertex.push_back(v);
+	v.pos.set(-0.5f, 0.5f, 0.5f); v.color.set(1.0f, 0.0f, 0.0f); vertex.push_back(v);
+	v.pos.set(-0.5f, -0.5f, -0.5f); v.color.set(1.0f, 0.0f, 0.0f); vertex.push_back(v);
+	v.pos.set(-0.5f, -0.5f, 0.5f); v.color.set(1.0f, 0.0f, 0.0f); vertex.push_back(v);
 
-	v.pos.set(-0.5f, 0.5f, -0.5f);   vertex.push_back(v); //forward back
-	v.pos.set(0.5f, -0.5f, -0.5f);  vertex.push_back(v);
-	v.pos.set(-0.5f, -0.5f, -0.5f);  vertex.push_back(v);
+	v.pos.set(-0.5f, 0.5f, -0.5f); v.color.set(0.0f, 0.0f, 1.0f);  vertex.push_back(v); //forward back
+	v.pos.set(0.5f, -0.5f, -0.5f); v.color.set(0.0f, 0.0f, 1.0f); vertex.push_back(v);
+	v.pos.set(-0.5f, -0.5f, -0.5f); v.color.set(0.0f, 0.0f, 1.0f); vertex.push_back(v);
 
-	v.pos.set(-0.5f, 0.5f, -0.5f);  vertex.push_back(v);
-	v.pos.set(0.5f, 0.5f, -0.5f);  vertex.push_back(v);
-	v.pos.set(0.5f, -0.5f, -0.5f); vertex.push_back(v);
+	v.pos.set(-0.5f, 0.5f, -0.5f); v.color.set(0.0f, 0.0f, 1.0f); vertex.push_back(v);
+	v.pos.set(0.5f, 0.5f, -0.5f); v.color.set(0.0f, 0.0f, 1.0f); vertex.push_back(v);
+	v.pos.set(0.5f, -0.5f, -0.5f); v.color.set(0.0f, 0.0f, 1.0f); vertex.push_back(v);
 
-	v.pos.set(0.5f, 0.5f, -0.5f); vertex.push_back(v); //forward right
-	v.pos.set(0.5f, 0.5f, 0.5f);  vertex.push_back(v);
-	v.pos.set(0.5f, -0.5f, 0.5f);  vertex.push_back(v);
+	v.pos.set(0.5f, 0.5f, -0.5f); v.color.set(0.7f, 0.0f, 0.7f); vertex.push_back(v); //forward right
+	v.pos.set(0.5f, 0.5f, 0.5f);  v.color.set(0.7f, 0.0f, 0.7f); vertex.push_back(v);
+	v.pos.set(0.5f, -0.5f, 0.5f); v.color.set(0.7f, 0.0f, 0.7f); vertex.push_back(v);
 
-	v.pos.set(0.5f, 0.5f, -0.5f);  vertex.push_back(v);
-	v.pos.set(0.5f, -0.5f, 0.5f);  vertex.push_back(v);
-	v.pos.set(0.5f, -0.5f, -0.5f);  vertex.push_back(v);
+	v.pos.set(0.5f, 0.5f, -0.5f); v.color.set(0.7f, 0.0f, 0.7f); vertex.push_back(v);
+	v.pos.set(0.5f, -0.5f, 0.5f); v.color.set(0.7f, 0.0f, 0.7f); vertex.push_back(v);
+	v.pos.set(0.5f, -0.5f, -0.5f); v.color.set(0.7f, 0.0f, 0.7f); vertex.push_back(v);
 
-	v.pos.set(0.5f, 0.5f, 0.5f);   vertex.push_back(v);//up
-	v.pos.set(0.5f, 0.5f, -0.5f);  vertex.push_back(v);
-	v.pos.set(-0.5f, 0.5f, 0.5f);  vertex.push_back(v);
+	v.pos.set(0.5f, 0.5f, 0.5f); v.color.set(0.0f, 0.7f, 0.7f);  vertex.push_back(v);//up
+	v.pos.set(0.5f, 0.5f, -0.5f); v.color.set(0.0f, 0.7f, 0.7f); vertex.push_back(v);
+	v.pos.set(-0.5f, 0.5f, 0.5f); v.color.set(0.0f, 0.7f, 0.7f); vertex.push_back(v);
 
-	v.pos.set(0.5f, 0.5f, -0.5f);  vertex.push_back(v);
-	v.pos.set(-0.5f, 0.5f, -0.5f);  vertex.push_back(v);
-	v.pos.set(-0.5f, 0.5f, 0.5f);  vertex.push_back(v);
+	v.pos.set(0.5f, 0.5f, -0.5f); v.color.set(0.0f, 0.7f, 0.7f); vertex.push_back(v);
+	v.pos.set(-0.5f, 0.5f, -0.5f); v.color.set(0.0f, 0.7f, 0.7f); vertex.push_back(v);
+	v.pos.set(-0.5f, 0.5f, 0.5f); v.color.set(0.0f, 0.7f, 0.7f); vertex.push_back(v);
 
-	v.pos.set(0.5f, -0.5f, 0.5f);   vertex.push_back(v);//down
-	v.pos.set(-0.5f, -0.5f, 0.5f);  vertex.push_back(v);
-	v.pos.set(-0.5f, -0.5f, -0.5f);  vertex.push_back(v);
+	v.pos.set(0.5f, -0.5f, 0.5f); v.color.set(0.7f, 0.7f, 0.0f);  vertex.push_back(v);//down
+	v.pos.set(-0.5f, -0.5f, 0.5f); v.color.set(0.7f, 0.7f, 0.0f); vertex.push_back(v);
+	v.pos.set(-0.5f, -0.5f, -0.5f); v.color.set(0.7f, 0.7f, 0.0f); vertex.push_back(v);
 
-	v.pos.set(0.5f, -0.5f, 0.5f);  vertex.push_back(v);
-	v.pos.set(-0.5f, -0.5f, -0.5f);  vertex.push_back(v);
-	v.pos.set(0.5f, -0.5f, -0.5f);  vertex.push_back(v);
+	v.pos.set(0.5f, -0.5f, 0.5f); v.color.set(0.7f, 0.7f, 0.0f); vertex.push_back(v);
+	v.pos.set(-0.5f, -0.5f, -0.5f); v.color.set(0.7f, 0.7f, 0.0f); vertex.push_back(v);
+	v.pos.set(0.5f, -0.5f, -0.5f); v.color.set(0.7f, 0.7f, 0.0f); vertex.push_back(v);
 
 
 	
@@ -174,20 +276,11 @@ Mesh* MeshBuilder::GenerateCube(const std::string &meshName, float lengthX, floa
 
 	};
 
-	const GLuint index_buffer_data[] = {
-		0,1,2,
-		3,4,5,
-		6,7,8,
-		9,10,11,
-		12,13,14,
-		15,16,17,
-		18,19,20,
-		21,22,23,
-		24,25,26,
-		27,28,29,
-		30,31,32,
-		33,34,35,
-	};
+	std::vector<GLuint> index_buffer_data;
+	for (int i = 0; i < 36; i++) {
+		index_buffer_data.push_back(i);
+	}
+
 
 	Mesh* mesh = new Mesh(meshName);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
@@ -195,9 +288,9 @@ Mesh* MeshBuilder::GenerateCube(const std::string &meshName, float lengthX, floa
 	//glBindBuffer(GL_ARRAY_BUFFER, mesh->colorBuffer);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(color_buffer_data), color_buffer_data, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(index_buffer_data), index_buffer_data, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
 	mesh->mode = Mesh::DRAW_TRIANGLES;
-	mesh->indexSize = 36;
+	mesh->indexSize = index_buffer_data.size();
 
 
 	return mesh;

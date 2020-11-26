@@ -9,11 +9,11 @@
 Scene4::Scene4()
 {
 	rotateAngle = 0;
-	translateX = 0;
+	translateZ = 1;
 	scaleAll = 1;
 
 	rotateAngleFWD = true;
-	translateXFWD = true;
+	translateZFWD = true;
 	scaleALLFWD = true;
 }
 
@@ -38,9 +38,12 @@ void Scene4::Init() {
 	// An array of 3 buffers
 
 	//Camera init(starting pos, where it looks at, up
-	camera.Init(Vector3(4, 3, 3), Vector3(0,0,0), Vector3(0,1,0));
+	camera.Init(Vector3(80, 20, 20), Vector3(0,0,0), Vector3(0,1,0));
 
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", 1, 1, 1);
+	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
+	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 1);
+	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 1.0f, 1.0f), 1);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -49,6 +52,7 @@ void Scene4::Init() {
 
 void Scene4::Update(double dt)
 {
+	camera.Update(dt);
 	if (rotateAngleFWD) {
 		rotateAngle += 1;
 		if (rotateAngle >= 360)
@@ -59,18 +63,33 @@ void Scene4::Update(double dt)
 		if (rotateAngle <= -360)
 			rotateAngleFWD = true;
 	}
-	if (GetKeyState('1') & 0x8000) {
+
+	if (translateZFWD) {
+		translateZ += 0.2;
+		if (translateZ >= 5) {
+			translateZFWD = false;
+		}
+	}
+	else {
+		translateZ -= 0.2;
+		if (translateZ <= 1) {
+			translateZFWD = true;
+		}
+	}
+
+	if (GetAsyncKeyState('1') & 0x8001) {
 		glEnable(GL_CULL_FACE);
 	}
 	else if (GetKeyState('2') & 0x8000) {
 		glDisable(GL_CULL_FACE);
 	}
-	else if (GetKeyState('3') & 0x8000) {
+	else if (GetAsyncKeyState('3') & 0x8001) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
-	else if (GetKeyState('4') & 0x8000) {
+	else if (GetAsyncKeyState('4') & 0x8001) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
+
 	
 }
 
@@ -101,19 +120,65 @@ void Scene4::Render()
 		camera.up.x, camera.up.y, camera.up.z);
 	projection.SetToPerspective(45.0f, 8.0f/6.0f, 0.1f, 1000.0f);
 	
+	
+	translate.SetToIdentity();
+	rotate.SetToIdentity();
+	scale.SetToIdentity();
+
+	scale.SetToScale(1, 1, 1);
+	rotate.SetToRotation(0, 0.0f, 0.0f, 1.0f);
+	translate.SetToTranslation(0, 0, 0.0);
+	model = translate * rotate * scale;
+	MVP = projection * view * model;
+	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+	meshList[GEO_AXES]->Render();
+
+	translate.SetToIdentity();
+	rotate.SetToIdentity();
+	scale.SetToIdentity();
+
+	scale.SetToScale(1, 1, 1);
+	rotate.SetToRotation(0, 0.0f, 0.0f, 1.0f);
+	translate.SetToTranslation(0, 0, 0.0);
+	model = translate * rotate * scale;
+	MVP = projection * view * model;
+	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+	meshList[GEO_SPHERE]->Render();
+	
+	
+	
 	translate.SetToIdentity();
 	rotate.SetToIdentity();
 	scale.SetToIdentity();
 
 	scale.SetToScale(1, 1, 1);
 	rotate.SetToRotation(rotateAngle, 0.0f, 0.0f, 1.0f);
-	translate.SetToTranslation(0, 0, 0.0);
+	translate.SetToTranslation(0, 0, translateZ);
 	model = translate * rotate * scale;
 	MVP = projection * view * model;
-
-	meshList[GEO_CUBE]->Render();
-
 	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+
+	meshList[GEO_CONE]->Render();
+
+	translate.SetToIdentity();
+	rotate.SetToIdentity();
+	scale.SetToIdentity();
+
+	scale.SetToScale(1, 1, -1);
+	rotate.SetToRotation(rotateAngle, 0.0f, 0.0f, 1.0f);
+	translate.SetToTranslation(0, 0, -translateZ);
+	model = translate * rotate * scale;
+	MVP = projection * view * model;
+	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+
+	meshList[GEO_CONE]->Render();
+	
+
+	
 
 	
 }

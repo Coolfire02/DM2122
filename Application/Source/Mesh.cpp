@@ -54,16 +54,19 @@ void Mesh::Render()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	switch (mode) {
 	case DRAW_LINES:
-		glDrawElements(GL_LINES, 36, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_LINES, indexSize, GL_UNSIGNED_INT, 0);
 		break;
 	case DRAW_TRIANGLE_STRIP:
-		glDrawElements(GL_TRIANGLE_STRIP, 36, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLE_STRIP, indexSize, GL_UNSIGNED_INT, 0);
 		break;
 	case DRAW_TRIANGLES:
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, indexSize, GL_UNSIGNED_INT, 0);
+		break;
+	case DRAW_TRIANGLE_FAN:
+		glDrawElements(GL_TRIANGLE_FAN, indexSize, GL_UNSIGNED_INT, 0);
 		break;
 	default:
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, indexSize, GL_UNSIGNED_INT, 0);
 		break;
 	}
 	

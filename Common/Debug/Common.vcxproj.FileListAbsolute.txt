@@ -1,2 +1,4 @@
 C:\Users\tanyo\source\repos\DM2122\Debug\Common.pdb
 C:\Users\tanyo\source\repos\DM2122\Common\Debug\Common.pdb
+C:\Users\tanyo\source\repos\.COMG\Debug\Common.pdb
+C:\Users\tanyo\source\repos\.COMG\Common\Debug\Common.pdb

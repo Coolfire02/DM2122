@@ -17,6 +17,7 @@ public:
 	{
 		DRAW_TRIANGLES, //default mode
 		DRAW_TRIANGLE_STRIP,
+		DRAW_TRIANGLE_FAN,
 		DRAW_LINES,
 		DRAW_MODE_LAST,
 	};
