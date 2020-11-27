@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Vector3.h"
+
 struct Position
 {
 	float x, y, z;
@@ -26,5 +28,6 @@ struct Vertex
 {
 	Position pos;
 	Color color;
+	Vector3 normal;
 
 };

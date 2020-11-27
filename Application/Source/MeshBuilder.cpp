@@ -86,6 +86,7 @@ Mesh* MeshBuilder::GenerateCone(const std::string &meshName, float lengthX, floa
 		count += 60;
 	}
 
+	//TODO NORMAL
 
 	Mesh* mesh = new Mesh(meshName);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
@@ -100,6 +101,18 @@ Mesh* MeshBuilder::GenerateCone(const std::string &meshName, float lengthX, floa
 	return mesh;
 }
 
+float sphereX(int phi, int theta) {
+	return cos(phi * Math::PI / 180) * cos(theta * Math::PI / 180);
+}
+
+float sphereY(int phi) {
+	return sin(phi * Math::PI / 180);
+}
+
+float sphereZ(int phi, int theta) {
+	return cos(phi * Math::PI / 180) * sin(theta * Math::PI / 180);
+}
+
 Mesh* MeshBuilder::GenerateSphere(const std::string& meshName, Color color, float radius) {
 	
 	double pi = atan(1) * 4;
@@ -111,20 +124,22 @@ Mesh* MeshBuilder::GenerateSphere(const std::string& meshName, Color color, floa
 	for (int phi = 0; phi < 180; phi += 10) {
 		for (int theta = 0; theta <= 360; theta += 10) {
 			
-			float x = radius * cos(phi * pi / 180) * cos(theta * pi / 180);
-			float y = radius * sin(phi * pi / 180);
+			v.normal.Set(sphereX(phi, theta), sphereY(phi) * (phi >= 90 ? -1 : 1), sphereZ(phi, theta));
+			v.normal.Normalized();
+			float x = 1 * sphereX(phi, theta);
+			float y = 1 * sphereY(phi);
 			if (phi >= 90)
 				y *= -1;
-			float z = radius * cos(phi * pi / 180) * sin(theta * pi / 180);
+			float z = 1 * sphereZ(phi, theta);
 			v.pos.set(x, y, z);
 			vertex.push_back(v);
 			index_buffer_data.push_back(index++);
 
-			x = radius * cos((phi+10) * pi / 180 ) * cos(theta * pi / 180);
-			y = radius * sin((phi+10) * pi / 180);
+			x = 1 * cos((phi+10) * pi / 180 ) * cos(theta * pi / 180);
+			y = 1 * sin((phi+10) * pi / 180);
 			if (phi >= 90)
 				y *= -1;
-			z = radius * cos((phi+10) * pi / 180) * sin(theta * pi / 180);
+			z = 1 * cos((phi+10) * pi / 180) * sin(theta * pi / 180);
 
 			v.pos.set(x, y, z);
 			vertex.push_back(v);
@@ -231,7 +246,10 @@ Mesh* MeshBuilder::GenerateCube(const std::string &meshName, float lengthX, floa
 	v.pos.set(-0.5f, -0.5f, -0.5f); v.color.set(0.7f, 0.7f, 0.0f); vertex.push_back(v);
 	v.pos.set(0.5f, -0.5f, -0.5f); v.color.set(0.7f, 0.7f, 0.0f); vertex.push_back(v);
 
-
+	//Normal
+	for (auto& element : vertex) {
+		v.normal.Set(v.pos.x, v.pos.y, v.pos.z);
+	}
 	
 	const GLfloat color_buffer_data[] = {
 		1.0f, 1.0f, 1.0f, //front

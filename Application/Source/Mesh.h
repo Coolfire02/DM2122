@@ -3,6 +3,7 @@
 
 #include <string>
 #include "Vertex.h"
+#include "Material.h"
 
 /******************************************************************************/
 /*!
@@ -27,6 +28,8 @@ public:
 
 	const std::string name;
 	DRAW_MODE mode;
+
+	Material material;
 	unsigned vertexBuffer;
 	unsigned colorBuffer;
 	unsigned indexBuffer;

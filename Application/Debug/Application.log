@@ -1,10 +1,7 @@
-﻿  Camera2.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(70,41): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(78,41): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(86,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(96,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(102,22): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(102,43): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(106,22): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(106,43): warning C4305: 'argument': truncation from 'double' to 'float'
-  Application.vcxproj -> C:\Users\tanyo\source\repos\.COMG\Debug\Application.exe
+﻿  MeshBuilder.cpp
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(77,17): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(80,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(138,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(139,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(142,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Application.vcxproj -> C:\Users\tanyo\source\repos\DM2122\Debug\Application.exe

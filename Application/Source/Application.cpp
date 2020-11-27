@@ -16,6 +16,7 @@
 #include "Scene3.h"
 #include "Scene4.h"
 #include "Scene5.h"
+#include "SceneLight1.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -104,7 +105,7 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	Scene* scenes[2] = { new Scene1, new Scene5 };
+	Scene* scenes[2] = { new Scene1, new SceneLight1 };
 	int mainScene = 1;
 	scenes[mainScene]->Init();
 

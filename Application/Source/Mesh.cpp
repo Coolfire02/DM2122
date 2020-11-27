@@ -43,12 +43,18 @@ void Mesh::Render()
 {
 	glEnableVertexAttribArray(0); // 1st attribute buffer: vertices
 	glEnableVertexAttribArray(1); // 2nd attribute buffer: color
+	glEnableVertexAttribArray(2); // 3rd attribute buffer: normal
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+
+	//Vertices
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	//Colors
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)sizeof(Position));
+
+	//Normal 
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(Position) + sizeof(Color)));
 
 	//glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -72,6 +78,7 @@ void Mesh::Render()
 	
 	
 
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0); //Vertices
+	glDisableVertexAttribArray(1); //color
+	glDisableVertexAttribArray(2); //normal
 }
