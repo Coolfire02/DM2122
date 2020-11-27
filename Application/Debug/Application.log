@@ -1,7 +1,33 @@
-﻿  MeshBuilder.cpp
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(77,17): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(80,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(138,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(139,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(142,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  Application.vcxproj -> C:\Users\tanyo\source\repos\DM2122\Debug\Application.exe
+﻿  Application.cpp
+  MeshBuilder.cpp
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(65,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(69,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(72,74): error C2761: 'Mesh *MeshBuilder::GenerateCone(const std::string &,Color)': redeclaration of member is not allowed
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(73,1): error C2447: '{': missing function header (old-style formal list?)
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(140,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(141,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(144,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Scene4.cpp
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene4.cpp(45,61): error C2660: 'MeshBuilder::GenerateCone': function does not take 3 arguments
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.h(17,15): message : see declaration of 'MeshBuilder::GenerateCone'
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene4.cpp(68,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene4.cpp(74,20): warning C4305: '-=': truncation from 'double' to 'float'
+  Scene5.cpp
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene5.cpp(52,61): error C2660: 'MeshBuilder::GenerateCone': function does not take 3 arguments
+C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.h(17,15): message : see declaration of 'MeshBuilder::GenerateCone'
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene5.cpp(71,23): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene5.cpp(72,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene5.cpp(75,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene5.cpp(81,20): warning C4305: '-=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene5.cpp(176,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene5.cpp(187,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene5.cpp(196,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene5.cpp(206,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\Scene5.cpp(216,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  SceneAssignment1.cpp
+  SceneLight1.cpp
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneLight1.cpp(109,23): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneLight1.cpp(110,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneLight1.cpp(113,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneLight1.cpp(119,20): warning C4305: '-=': truncation from 'double' to 'float'
+  Generating Code...

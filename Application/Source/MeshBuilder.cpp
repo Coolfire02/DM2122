@@ -60,33 +60,35 @@ Then generate the VBO/IBO and store them in Mesh object
 \return Pointer to mesh storing VBO/IBO of quad
 */
 /******************************************************************************/
-Mesh* MeshBuilder::GenerateCone(const std::string &meshName, float lengthX, float lengthY)
+
+float coneX(float height, float totalHeight, int radius, int theta) {
+	return height / totalHeight * radius * cos(Math::DegreeToRadian(theta));
+}
+
+float coneZ(float height, float totalHeight, int radius, int theta) {
+	return height / totalHeight * radius * sin(Math::DegreeToRadian(theta));
+}
+
+Mesh* MeshBuilder::GenerateCone(const std::string& meshName, Color color)
 {
 
-	double pi = atan(1) * 4;
 	std::vector<Vertex> vertex;
 	std::vector<GLuint> index_buffer_data;
 	Vertex v;
-	v.pos.set(0.0f, 0.0f, 0.0f);
-	v.color.set(0.7f, 0.7f, 0.0f);
-	vertex.push_back(v);
-	index_buffer_data.push_back(0);
+	v.color = color;
+	//for (theta = 0; theta <= 360; theta += 10) //slice
+	//	add_vertex(RADIUS * x(theta), -HEIGHT / 2, RADIUS * z(theta))
+	//	add_vertex(0, HEIGHT / 2, 0)
+	//	for (theta = 0; theta <= 360; theta += 10) //bottom
+	//		add_vertex(0, -HEIGHT / 2, 0)
+	//		add_vertex(RADIUS * x(theta), -HEIGHT / 2, RADIUS * z(theta))
 
-	for (int j = 1; j < 60; j++) {
-		int count = 1;
-		float zdegree = j;
-
-		for (int i = count; i <= count + 60; i++) {
-			float degree = (i / 60.0 * 360) * (pi / 180.0);
-			v.pos.set(0 + 1.0f * cosf(degree), 0 + 1.0f * sinf(degree), zdegree);
-			v.color.set(0.7f, 0.7f, 0.0f);
-			vertex.push_back(v);
-			index_buffer_data.push_back(i);
-		}
-		count += 60;
+	for (int theta = 0; theta <= 360; theta += 10) {
+		v.pos.set(1 * coneX())
 	}
 
-	//TODO NORMAL
+	
+	
 
 	Mesh* mesh = new Mesh(meshName);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
@@ -99,6 +101,44 @@ Mesh* MeshBuilder::GenerateCone(const std::string &meshName, float lengthX, floa
 	mesh->indexSize = index_buffer_data.size();
 
 	return mesh;
+}
+
+
+static Mesh* GenerateTorus(const std::string& meshName, Color color) {
+	std::vector<Vertex> vertex;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+	v.color = color;
+
+	
+	int numStacks = 10;
+	int numSlices = 200;
+	int outerR = 10;
+	int innerR = 5;
+	float degreePerStack = 360.f / numStacks;
+	float degreePerSlice = 360.f / numSlices;
+	float x1, z1;
+	float x2, y2, z2;
+	for (unsigned int stack = 0; stack < numStacks + 1; stack++) {
+		for (unsigned int slice = 0; slice < numSlices + 1; slice++) {
+			z1 = outerR * cos(Math::DegreeToRadian(stack * degreePerStack));
+			x1 = outerR * sin(Math::DegreeToRadian(stack * degreePerStack));
+			z2 = (outerR + innerR * cos(Math::DegreeToRadian(slice * degreePerSlice)) * cos(Math::DegreeToRadian(stack * degreePerStack)));
+			y2 = innerR * sin(Math::DegreeToRadian(slice * degreePerSlice));
+			x2 = outerR + innerR * cos(Math::DegreeToRadian(slice * degreePerSlice)) * sin(Math::DegreeToRadian(stack * degreePerStack));
+			v.pos.set(x2, y2, z2);
+			v.normal.Set(x2 - x1, y2, z2 - z1);
+			vertex.push_back(v);
+		}
+	}
+
+	for (unsigned int stack = 0; stack < numStacks; stack++) {
+		for (unsigned int slice = 0; slice < numSlices + 1; slice++) {
+			index_buffer_data.push_back((numSlices + 1) * stack + slice + 0);
+			index_buffer_data.push_back((numSlices + 1) * (stack + 1) + slice + 0);
+		}
+
+	}
 }
 
 float sphereX(int phi, int theta) {
