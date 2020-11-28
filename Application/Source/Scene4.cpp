@@ -40,9 +40,9 @@ void Scene4::Init() {
 	//Camera init(starting pos, where it looks at, up
 	camera.Init(Vector3(80, 20, 20), Vector3(0,0,0), Vector3(0,1,0));
 
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", 1, 1, 1);
+	//meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", 1, 1, 1);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
-	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 1);
+	//meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 1);
 	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 1.0f, 1.0f), 1);
 
 	glEnable(GL_DEPTH_TEST);

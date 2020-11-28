@@ -47,9 +47,9 @@ void Scene5::Init() {
 
 	camera.Init(Vector3(20, 15, 3), Vector3(0,0,0), Vector3(0,1,0));
 
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", 1, 1, 1);
+	//meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", 1, 1, 1);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
-	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 1);
+	//meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 1);
 	meshList[GEO_SUN] = MeshBuilder::GenerateSphere("sun", Color(0.956f, 0.5f, 0.215f), 3);
 	meshList[GEO_PLANET1] = MeshBuilder::GenerateSphere("planet1", Color(0.7725f, 0.396f, 0.396f), 1);
 	meshList[GEO_PLANET2] = MeshBuilder::GenerateSphere("planet2", Color(0.8f, 0.82f, 0.8f), 1);
