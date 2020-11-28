@@ -43,7 +43,7 @@ void Scene4::Init() {
 	//meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", 1, 1, 1);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
 	//meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 1);
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 1.0f, 1.0f), 1);
+	//meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1.0f, 1.0f, 1.0f), 1);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);

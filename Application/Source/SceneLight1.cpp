@@ -78,13 +78,13 @@ void SceneLight1::Init() {
 	mat.kDiffuse.Set(0.5f, 0.5f, 0.5f);
 	mat.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	mat.kShininess = 1.0f;
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0.9f, 0.6f, 0.3f));
+	meshList[GEO_CUBE] = MeshBuilder::GenerateTetahedron("cube", Color(0.9f, 0.6f, 0.3f));
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
 	//meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 1);
 	//meshList[GEO_SUN] = MeshBuilder::GenerateSphere("sun", Color(0.956f, 0.5f, 0.215f), 3);
-	meshList[GEO_SONICEYEBALL] = MeshBuilder::GenerateSphere("soniceyeball", Color(0.95f, 0.95f, 0.95f), 1.0);
-	meshList[GEO_SONICGREENEYE] = MeshBuilder::GenerateSphere("sonicgreeneyeball", Color(0.482f, 0.7686f, 0.235f), 1.0);
-	meshList[GEO_SONICBLACKEYE] = MeshBuilder::GenerateSphere("sonicblackeyeball", Color(0.05f, 0.05f, 0.05f), 1.0);
+	meshList[GEO_SONICEYEBALL] = MeshBuilder::GenerateSphere("soniceyeball", Color(0.95f, 0.95f, 0.95f));
+	meshList[GEO_SONICGREENEYE] = MeshBuilder::GenerateSphere("sonicgreeneyeball", Color(0.482f, 0.7686f, 0.235f));
+	meshList[GEO_SONICBLACKEYE] = MeshBuilder::GenerateSphere("sonicblackeyeball", Color(0.05f, 0.05f, 0.05f));
 
 	//meshList[GEO_PLANET2] = MeshBuilder::GenerateSphere("planet2", Color(0.8f, 0.82f, 0.8f), 1);
 	//meshList[GEO_PLANET3] = MeshBuilder::GenerateSphere("planet3", Color(0.4f, 0.9f, 0.77f), 1);
@@ -94,7 +94,7 @@ void SceneLight1::Init() {
 	//meshList[GEO_PLANET7] = MeshBuilder::GenerateSphere("planet7", Color(0.2f, 0.0f, 0.2f), 1);
 	//meshList[GEO_PLANET8] = MeshBuilder::GenerateSphere("planet8", Color(0.05f, 0.05f, 0.05f), 1);
 	
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("lightbulll", Color(1.0f, 1.0f, 1.0f), 1);
+	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("lightbulll", Color(1.0f, 1.0f, 1.0f));
 
 	meshList[GEO_CUBE]->material = mat;
 	meshList[GEO_SONICEYEBALL]->material = mat;
@@ -199,53 +199,53 @@ void SceneLight1::Render()
 		RenderMesh(meshList[GEO_LIGHTBALL], false);
 	modelStack.PopMatrix();
 
-	//modelStack.PushMatrix(); //pushing identity
-	//	modelStack.Translate(0.0f, 0.0f, 0.0f);
-	//	modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-	//	modelStack.Scale(1.0f, 1.0f, 1.0f);
-	//	this->RenderMesh(meshList[GEO_CUBE], true);
-	//modelStack.PopMatrix();
-
-
 	modelStack.PushMatrix(); //pushing identity
 		modelStack.Translate(0.0f, 0.0f, 0.0f);
-		modelStack.Rotate(0, 1.0f, 1.0f, 1.0f);
+		modelStack.Rotate(0, 0.0f, 0.0f, 0.0f);
 		modelStack.Scale(1.0f, 1.0f, 1.0f);
-		this->RenderMesh(meshList[GEO_SONICEYEBALL], true);
-
-		modelStack.PushMatrix(); //pushing identity
-			modelStack.Translate(-0.3f, -0.15f, 0.94f);
-			modelStack.Rotate(-5, 0.0f, 1.0f, 0.0f);
-			modelStack.Scale(0.045f, 0.1f, 0.045f);
-			this->RenderMesh(meshList[GEO_SONICGREENEYE], true);
-
-			modelStack.PushMatrix(); //pushing identity
-				modelStack.Translate(0.10f, 0.0f, 1.0f);
-				modelStack.Rotate(0, 1.0f, 1.0f, 1.0f);
-				modelStack.Scale(0.7f, 0.7f, 0.7f);
-				this->RenderMesh(meshList[GEO_SONICBLACKEYE], true);
-				
-			modelStack.PopMatrix();
-
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix(); //pushing identity
-			modelStack.Translate(0.3f, -0.15f, 0.94f);
-			modelStack.Rotate(20, 1.0f, 1.0f, 1.0f);
-			modelStack.Scale(0.045f, 0.1f, 0.045f);
-			this->RenderMesh(meshList[GEO_SONICGREENEYE], true);
-
-			modelStack.PushMatrix(); //pushing identity
-				modelStack.Translate(-0.10f, 0.0f, 1.0f);
-				modelStack.Rotate(0, 1.0f, 1.0f, 1.0f);
-				modelStack.Scale(0.7f, 0.7f, 0.7f);
-				this->RenderMesh(meshList[GEO_SONICBLACKEYE], true);
-
-			modelStack.PopMatrix();
-
-		modelStack.PopMatrix();
-
+		this->RenderMesh(meshList[GEO_CUBE], true);
 	modelStack.PopMatrix();
+
+
+	//modelStack.PushMatrix(); //pushing identity
+	//	modelStack.Translate(0.0f, 0.0f, 0.0f);
+	//	modelStack.Rotate(0, 1.0f, 1.0f, 1.0f);
+	//	modelStack.Scale(1.0f, 1.0f, 1.0f);
+	//	this->RenderMesh(meshList[GEO_SONICEYEBALL], true);
+
+	//	modelStack.PushMatrix(); //pushing identity
+	//		modelStack.Translate(-0.3f, -0.15f, 0.94f);
+	//		modelStack.Rotate(-5, 0.0f, 1.0f, 0.0f);
+	//		modelStack.Scale(0.045f, 0.1f, 0.045f);
+	//		this->RenderMesh(meshList[GEO_SONICGREENEYE], true);
+
+	//		modelStack.PushMatrix(); //pushing identity
+	//			modelStack.Translate(0.10f, 0.0f, 1.0f);
+	//			modelStack.Rotate(0, 1.0f, 1.0f, 1.0f);
+	//			modelStack.Scale(0.7f, 0.7f, 0.7f);
+	//			this->RenderMesh(meshList[GEO_SONICBLACKEYE], true);
+	//			
+	//		modelStack.PopMatrix();
+
+	//	modelStack.PopMatrix();
+
+	//	modelStack.PushMatrix(); //pushing identity
+	//		modelStack.Translate(0.3f, -0.15f, 0.94f);
+	//		modelStack.Rotate(20, 1.0f, 1.0f, 1.0f);
+	//		modelStack.Scale(0.045f, 0.1f, 0.045f);
+	//		this->RenderMesh(meshList[GEO_SONICGREENEYE], true);
+
+	//		modelStack.PushMatrix(); //pushing identity
+	//			modelStack.Translate(-0.10f, 0.0f, 1.0f);
+	//			modelStack.Rotate(0, 1.0f, 1.0f, 1.0f);
+	//			modelStack.Scale(0.7f, 0.7f, 0.7f);
+	//			this->RenderMesh(meshList[GEO_SONICBLACKEYE], true);
+
+	//		modelStack.PopMatrix();
+
+	//	modelStack.PopMatrix();
+
+	//modelStack.PopMatrix();
 
 	//scale.SetToScale(1, 1, 1);
 	//rotate.SetToRotation(0, 0.0f, 0.0f, 1.0f);

@@ -50,7 +50,7 @@ void Scene5::Init() {
 	//meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", 1, 1, 1);
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
 	//meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 1);
-	meshList[GEO_SUN] = MeshBuilder::GenerateSphere("sun", Color(0.956f, 0.5f, 0.215f), 3);
+	/*meshList[GEO_SUN] = MeshBuilder::GenerateSphere("sun", Color(0.956f, 0.5f, 0.215f), 3);
 	meshList[GEO_PLANET1] = MeshBuilder::GenerateSphere("planet1", Color(0.7725f, 0.396f, 0.396f), 1);
 	meshList[GEO_PLANET2] = MeshBuilder::GenerateSphere("planet2", Color(0.8f, 0.82f, 0.8f), 1);
 	meshList[GEO_PLANET3] = MeshBuilder::GenerateSphere("planet3", Color(0.4f, 0.9f, 0.77f), 1);
@@ -58,7 +58,7 @@ void Scene5::Init() {
 	meshList[GEO_PLANET5] = MeshBuilder::GenerateSphere("planet5", Color(0.88f, 0.88f, 0.65f), 1);
 	meshList[GEO_PLANET6] = MeshBuilder::GenerateSphere("planet6", Color(0.8f, 1.0f, 0.85f), 1);
 	meshList[GEO_PLANET7] = MeshBuilder::GenerateSphere("planet7", Color(0.2f, 0.0f, 0.2f), 1);
-	meshList[GEO_PLANET8] = MeshBuilder::GenerateSphere("planet8", Color(0.05f, 0.05f, 0.05f), 1);
+	meshList[GEO_PLANET8] = MeshBuilder::GenerateSphere("planet8", Color(0.05f, 0.05f, 0.05f), 1);*/
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
