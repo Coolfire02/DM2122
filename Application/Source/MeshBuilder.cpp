@@ -69,7 +69,58 @@ float coneZ(float height, float totalHeight, int radius, int theta) {
 	return height / totalHeight * radius * sin(Math::DegreeToRadian(theta));
 }
 
-Mesh* MeshBuilder::GenerateCone(const std::string& meshName, Color color)
+Mesh* MeshBuilder::GenerateHalfCone(const std::string& meshName, Color color, int rad, int height)
+{
+
+	std::vector<Vertex> vertex;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+	v.color = color;
+	for (int theta = 1; theta <= 179; theta += 2) {
+		if (theta > 179) theta = 179;
+		float z = rad * sin(Math::DegreeToRadian(theta));
+		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), -height / 2.0, z);
+		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), rad, z);
+		v.normal.Normalize();
+		vertex.push_back(v);
+
+		v.pos.set(0, height / 2.0, 0);
+		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), rad, z);
+		v.normal.Normalize();
+		vertex.push_back(v);
+	}
+
+	for (int theta = 1; theta <= 179; theta += 2) {
+		if (theta > 179) theta = 179;
+		v.pos.set(0, -height / 2.0, 0);
+		v.normal.Set(0, -1, 0);
+		vertex.push_back(v);
+		float z = rad * sin(Math::DegreeToRadian(theta));
+		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), -height / 2.0, z);
+		v.normal.Set(0, -1, 0);
+		vertex.push_back(v);
+	}
+	v.normal.Set(0, 0, 1);
+	v.pos.set(0, height / 2.0, 0); vertex.push_back(v);
+	v.pos.set(rad, -height / 2.0, 0); vertex.push_back(v);
+	v.pos.set(-rad, -height / 2.0, 0); vertex.push_back(v);
+
+	for (int i = 0; i < vertex.size(); i++) {
+		index_buffer_data.push_back(i);
+	}
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
+	mesh->indexSize = index_buffer_data.size();
+
+	return mesh;
+}
+
+Mesh* MeshBuilder::GenerateCone(const std::string& meshName, Color color, int rad, int height)
 {
 
 	std::vector<Vertex> vertex;
@@ -77,39 +128,45 @@ Mesh* MeshBuilder::GenerateCone(const std::string& meshName, Color color)
 	Vertex v;
 	v.color = color;
 
-	for (int theta = 0; theta <= 360; theta += 10) {
-		
+	for (int theta = 0; theta <= 360; theta += 2) {
+		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), -height / 2.0, rad * sin(Math::DegreeToRadian(theta)) );
+		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), rad, height * sin(Math::DegreeToRadian(theta)));
+		v.normal.Normalize();
+		vertex.push_back(v);
+
+		v.pos.set(0, height / 2.0, 0);
+		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), rad, height * sin(Math::DegreeToRadian(theta)));
+		v.normal.Normalize();
+		vertex.push_back(v);
 	}
 
-	//for (theta = 0; theta <= 360; theta += 10) //slice
-	//	add_vertex(RADIUS * x(theta), -HEIGHT / 2, RADIUS * z(theta))
-	//	add_vertex(0, HEIGHT / 2, 0)
-	//	for (theta = 0; theta <= 360; theta += 10) //bottom
-	//		add_vertex(0, -HEIGHT / 2, 0)
-	//		add_vertex(RADIUS * x(theta), -HEIGHT / 2, RADIUS * z(theta))
+	for (int theta = 0; theta <= 360; theta += 2) {
+		v.pos.set(0, -height / 2.0, 0);
+		v.normal.Set(0, -1, 0);
+		vertex.push_back(v);
 
-	//for (int theta = 0; theta <= 360; theta += 10) {
-	//	v.pos.set(1 * coneX())
-	//}
+		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), -height / 2.0, rad * sin(Math::DegreeToRadian(theta)));
+		v.normal.Set(0, -1, 0);
+		vertex.push_back(v);
+	}
 
-	
-	
+	for (int i = 0; i < vertex.size(); i++) {
+		index_buffer_data.push_back(i);
+	}
 
 	Mesh* mesh = new Mesh(meshName);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
-	//glBindBuffer(GL_ARRAY_BUFFER, mesh->colorBuffer);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(color_buffer_data), color_buffer_data, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
-	mesh->mode = Mesh::DRAW_TRIANGLE_FAN;
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
 	mesh->indexSize = index_buffer_data.size();
 
 	return mesh;
 }
 
 
-Mesh* MeshBuilder::GenerateTorus(const std::string& meshName, Color color, int innerR, int outerR) {
+Mesh* MeshBuilder::GenerateTorus(const std::string& meshName, Color color, float innerR, float outerR) {
 	std::vector<Vertex> vertex;
 	std::vector<GLuint> index_buffer_data;
 	Vertex v;
@@ -198,6 +255,62 @@ Mesh* MeshBuilder::GenerateSphere(const std::string& meshName, Color color) {
 			index_buffer_data.push_back(index++);
 		}
 	}
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
+	mesh->indexSize = index_buffer_data.size();
+
+	return mesh;
+}
+
+Mesh* MeshBuilder::GenerateHemiSphere(const std::string& meshName, Color color) {
+	std::vector<Vertex> vertex;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+	v.color = color;
+	int index = 0;
+	for (int phi = 0; phi < 90; phi += 1) {
+		for (int theta = 0; theta <= 360; theta += 2) {
+
+			v.normal.Set(sphereX(phi, theta), sphereY(phi) * (phi >= 90 ? -1 : 1), sphereZ(phi, theta));
+			v.normal.Normalized();
+			float x = 1 * sphereX(phi, theta);
+			float y = 1 * sphereY(phi);
+			if (phi >= 90)
+				y *= -1;
+			float z = 1 * sphereZ(phi, theta);
+			v.pos.set(x, y, z);
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+
+			x = 1 * sphereX(phi + 10, theta);
+			y = 1 * sphereY(phi + 10);
+			if (phi >= 90)
+				y *= -1;
+			z = 1 * sphereZ(phi + 10, theta);
+
+			v.pos.set(x, y, z);
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+		}
+	}
+
+	for (int theta = 0; theta <= 360; theta += 10) {
+		v.normal.Set(0, -1, 0);
+		v.pos.set(0, 0, 0);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+
+		v.normal.Set(0, -1, 0);
+		v.pos.set(1 * cos(Math::DegreeToRadian(theta)) , 0, 1 * sin(Math::DegreeToRadian(theta)));
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+	}
+
 
 	Mesh* mesh = new Mesh(meshName);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);

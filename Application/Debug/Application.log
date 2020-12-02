@@ -1,14 +1,7 @@
-﻿  MeshBuilder.cpp
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(65,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(69,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(125,37): warning C4018: '<': signed/unsigned mismatch
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(126,38): warning C4018: '<': signed/unsigned mismatch
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(139,37): warning C4018: '<': signed/unsigned mismatch
-C:\Users\tanyo\source\repos\DM2122\Application\Source\MeshBuilder.cpp(140,38): warning C4018: '<': signed/unsigned mismatch
-  SceneLight1.cpp
-C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneLight1.cpp(114,23): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneLight1.cpp(115,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneLight1.cpp(118,20): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneLight1.cpp(124,20): warning C4305: '-=': truncation from 'double' to 'float'
-  Generating Code...
-  Application.vcxproj -> C:\Users\tanyo\source\repos\DM2122\Debug\Application.exe
+﻿  SceneLight1.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(92,114): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(133,23): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(134,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(137,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(143,20): warning C4305: '-=': truncation from 'double' to 'float'
+  Application.vcxproj -> C:\Users\tanyo\source\repos\.COMG\Debug\Application.exe
