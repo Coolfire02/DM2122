@@ -17,6 +17,7 @@
 #include "Scene4.h"
 #include "Scene5.h"
 #include "SceneLight1.h"
+#include "SceneLight2.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game

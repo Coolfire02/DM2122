@@ -92,18 +92,76 @@ Mesh* MeshBuilder::GenerateHalfCone(const std::string& meshName, Color color, in
 
 	for (int theta = 1; theta <= 179; theta += 2) {
 		if (theta > 179) theta = 179;
-		v.pos.set(0, -height / 2.0, 0);
-		v.normal.Set(0, -1, 0);
-		vertex.push_back(v);
+
 		float z = rad * sin(Math::DegreeToRadian(theta));
 		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), -height / 2.0, z);
 		v.normal.Set(0, -1, 0);
 		vertex.push_back(v);
+
+		v.pos.set(0, -height / 2.0, 0);
+		v.normal.Set(0, -1, 0);
+		vertex.push_back(v);
 	}
-	v.normal.Set(0, 0, 1);
+	v.normal.Set(0, 0, -1);
 	v.pos.set(0, height / 2.0, 0); vertex.push_back(v);
 	v.pos.set(rad, -height / 2.0, 0); vertex.push_back(v);
 	v.pos.set(-rad, -height / 2.0, 0); vertex.push_back(v);
+
+	for (int i = 0; i < vertex.size(); i++) {
+		index_buffer_data.push_back(i);
+	}
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
+	mesh->indexSize = index_buffer_data.size();
+
+	return mesh;
+}
+
+Mesh* MeshBuilder::GenerateConicalFrustum(const std::string& meshName, Color color, float innerR, float outerR, int height)
+{
+
+	std::vector<Vertex> vertex;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+	v.color = color;
+
+	for (int theta = 0; theta <= 360; theta += 2) {
+		v.pos.set(outerR * cos(Math::DegreeToRadian(theta)), -height / 2.0, outerR * sin(Math::DegreeToRadian(theta)));
+		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), outerR, height * sin(Math::DegreeToRadian(theta)));
+		v.normal.Normalize();
+		vertex.push_back(v);
+
+		v.pos.set(innerR * cos(Math::DegreeToRadian(theta)), height / 2.0, innerR * sin(Math::DegreeToRadian(theta)));
+		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), innerR, height * sin(Math::DegreeToRadian(theta)));
+		v.normal.Normalize();
+		vertex.push_back(v);
+	}
+
+	for (int theta = 0; theta <= 360; theta += 2) {
+		v.pos.set(outerR * cos(Math::DegreeToRadian(theta)), -height / 2.0, outerR * sin(Math::DegreeToRadian(theta)));
+		v.normal.Set(0, -1, 0);
+		vertex.push_back(v);
+
+		v.pos.set(0, -height / 2.0, 0);
+		v.normal.Set(0, -1, 0);
+		vertex.push_back(v);
+	}
+
+	for (int theta = 0; theta <= 360; theta += 2) {
+		v.pos.set(innerR * cos(Math::DegreeToRadian(theta)), height / 2.0, innerR * sin(Math::DegreeToRadian(theta)));
+		v.normal.Set(0, 1, 0);
+		//debug: v.color.set(1, 0, 0);
+		vertex.push_back(v);
+		
+		v.pos.set(0, height / 2.0, 0);
+		v.normal.Set(0, 1, 0);
+		vertex.push_back(v);
+	}
 
 	for (int i = 0; i < vertex.size(); i++) {
 		index_buffer_data.push_back(i);
@@ -141,10 +199,11 @@ Mesh* MeshBuilder::GenerateCone(const std::string& meshName, Color color, int ra
 	}
 
 	for (int theta = 0; theta <= 360; theta += 2) {
+
 		v.pos.set(0, -height / 2.0, 0);
 		v.normal.Set(0, -1, 0);
 		vertex.push_back(v);
-
+		
 		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), -height / 2.0, rad * sin(Math::DegreeToRadian(theta)));
 		v.normal.Set(0, -1, 0);
 		vertex.push_back(v);
@@ -165,6 +224,76 @@ Mesh* MeshBuilder::GenerateCone(const std::string& meshName, Color color, int ra
 	return mesh;
 }
 
+
+Mesh* MeshBuilder::GenerateCylinder(const std::string& meshName, Color color, int height)
+{
+	std::vector<Vertex> vertex;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+	v.color = color;
+
+	float rad = 1.0;
+	int numStack = 10 * height;
+	int index = 0;
+	float stackHeight = ((float) height) / numStack;
+
+	for (int theta = 0; theta <= 360; theta += 10) {
+		float x = rad * cos(Math::DegreeToRadian(theta));
+		float z = rad * sin(Math::DegreeToRadian(theta));
+
+		v.pos.set(0, -height / 2.0, 0);
+		v.normal.Set(0, -1, 0);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+
+		v.pos.set(x, -height / 2.0, z);
+		v.normal.Set(0, -1, 0);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+	}
+
+	for (int stack = 0; stack < numStack; ++stack) {
+		for (int theta = 0; theta <= 360; theta += 10) {
+			float x = rad * cos(Math::DegreeToRadian(theta));
+			float z = rad * sin(Math::DegreeToRadian(theta));
+			v.pos.set(x, -height / 2.0 + stack * stackHeight, z);
+			v.normal.Set(x,0,z);
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+
+			v.pos.set(x, -height / 2.0 + (stack + 1) * stackHeight, z);
+			v.normal.Set(x, 0, z);
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+		}
+	}
+
+	for (int theta = 0; theta <= 360; theta += 10) {
+		float x = rad * cos(Math::DegreeToRadian(theta));
+		float z = rad * sin(Math::DegreeToRadian(theta));
+
+		v.pos.set(x, height / 2.0, z);
+		v.normal.Set(0, 1, 0);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+
+		v.pos.set(0, height / 2.0, 0);
+		v.normal.Set(0, 1, 0);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+	}
+
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
+	mesh->indexSize = index_buffer_data.size();
+
+	return mesh;
+}
 
 Mesh* MeshBuilder::GenerateTorus(const std::string& meshName, Color color, float innerR, float outerR) {
 	std::vector<Vertex> vertex;
@@ -212,15 +341,61 @@ Mesh* MeshBuilder::GenerateTorus(const std::string& meshName, Color color, float
 	return mesh;
 }
 
-float sphereX(int phi, int theta) {
+Mesh* MeshBuilder::GenerateHalfTorus(const std::string& meshName, Color color, float innerR, float outerR) {
+	std::vector<Vertex> vertex;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+	v.color = color;
+
+
+	int numStacks = 70;
+	int numSlices = 200;
+	float degreePerStack = 180.f / numStacks;
+	float degreePerSlice = 360.f / numSlices;
+	float x1, z1;
+	float x2, y2, z2;
+	for (unsigned int stack = 0; stack < numStacks + 1; stack++) {
+		for (unsigned int slice = 0; slice < numSlices + 1; slice++) {
+			z1 = outerR * cos(Math::DegreeToRadian(stack * degreePerStack + 180));
+			x1 = outerR * sin(Math::DegreeToRadian(stack * degreePerStack + 180));
+			z2 = (outerR + innerR * cos(Math::DegreeToRadian(slice * degreePerSlice))) * cos(Math::DegreeToRadian(stack * degreePerStack + 180));
+			y2 = innerR * sin(Math::DegreeToRadian(slice * degreePerSlice));
+			x2 = (outerR + innerR * cos(Math::DegreeToRadian(slice * degreePerSlice))) * sin(Math::DegreeToRadian(stack * degreePerStack + 180));
+			v.pos.set(x2, y2, z2);
+			v.normal.Set(x2 - x1, y2, z2 - z1);
+			v.normal.Normalize();
+			vertex.push_back(v);
+		}
+	}
+
+	for (unsigned int stack = 0; stack < numStacks; stack++) {
+		for (unsigned int slice = 0; slice < numSlices + 1; slice++) {
+			index_buffer_data.push_back((numSlices + 1) * stack + slice + 0);
+			index_buffer_data.push_back((numSlices + 1) * (stack + 1) + slice + 0);
+		}
+
+	}
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
+	mesh->indexSize = index_buffer_data.size();
+
+	return mesh;
+}
+
+float sphereX(float phi, float theta) {
 	return cos(phi * Math::PI / 180) * cos(theta * Math::PI / 180);
 }
 
-float sphereY(int phi) {
+float sphereY(float phi) {
 	return sin(phi * Math::PI / 180);
 }
 
-float sphereZ(int phi, int theta) {
+float sphereZ(float phi, float theta) {
 	return cos(phi * Math::PI / 180) * sin(theta * Math::PI / 180);
 }
 
@@ -229,7 +404,31 @@ Mesh* MeshBuilder::GenerateSphere(const std::string& meshName, Color color) {
 	std::vector<GLuint> index_buffer_data;
 	Vertex v;
 	v.color = color;
-	int index = 0;
+	
+	int numStack = 60;
+	int numSlice = 180;
+	int radius = 1;
+	float degreePerStack = 180.f / numStack;
+	float degreePerSlice = 360.f / numSlice;
+
+	for (unsigned stack = 0; stack < numStack + 1; ++stack) {
+		float phi = -90 + stack * degreePerStack;
+		for (unsigned slice = 0; slice < numSlice + 1; ++slice) {
+			float theta = slice * degreePerSlice;
+			v.pos.set(radius * sphereX(phi, theta), radius * sphereY(phi), radius * sphereZ(phi, theta));
+			v.color = color;
+			v.normal.Set(radius * sphereX(phi, theta), radius * sphereY(phi), radius * sphereZ(phi, theta));
+			vertex.push_back(v);
+		}
+	}
+	for (unsigned stack = 0; stack < numStack; ++stack) {
+		for (unsigned slice = 0; slice < numSlice + 1; ++slice) {
+			index_buffer_data.push_back((numSlice + 1) * stack + slice + 0);
+			index_buffer_data.push_back((numSlice + 1) * (stack + 1) + slice + 0);
+		}
+	}
+
+	/*int index = 0;
 	for (int phi = 0; phi < 180; phi += 1) {
 		for (int theta = 0; theta <= 360; theta += 2) {
 			
@@ -254,7 +453,7 @@ Mesh* MeshBuilder::GenerateSphere(const std::string& meshName, Color color) {
 			vertex.push_back(v);
 			index_buffer_data.push_back(index++);
 		}
-	}
+	}*/
 
 	Mesh* mesh = new Mesh(meshName);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
@@ -272,41 +471,171 @@ Mesh* MeshBuilder::GenerateHemiSphere(const std::string& meshName, Color color) 
 	std::vector<GLuint> index_buffer_data;
 	Vertex v;
 	v.color = color;
+
 	int index = 0;
-	for (int phi = 0; phi < 90; phi += 1) {
-		for (int theta = 0; theta <= 360; theta += 2) {
+	int numStack = 60;
+	int numSlice = 90;
+	int radius = 1;
+	float degreePerStack = 90.0f / numStack;
+	float degreePerSlice = 360.0f / numSlice;
 
-			v.normal.Set(sphereX(phi, theta), sphereY(phi) * (phi >= 90 ? -1 : 1), sphereZ(phi, theta));
-			v.normal.Normalized();
-			float x = 1 * sphereX(phi, theta);
-			float y = 1 * sphereY(phi);
-			if (phi >= 90)
-				y *= -1;
-			float z = 1 * sphereZ(phi, theta);
-			v.pos.set(x, y, z);
-			vertex.push_back(v);
-			index_buffer_data.push_back(index++);
-
-			x = 1 * sphereX(phi + 10, theta);
-			y = 1 * sphereY(phi + 10);
-			if (phi >= 90)
-				y *= -1;
-			z = 1 * sphereZ(phi + 10, theta);
-
-			v.pos.set(x, y, z);
-			vertex.push_back(v);
-			index_buffer_data.push_back(index++);
-		}
-	}
-
-	for (int theta = 0; theta <= 360; theta += 10) {
+	for (float theta = 0; theta <= 360; theta += degreePerSlice) {
 		v.normal.Set(0, -1, 0);
 		v.pos.set(0, 0, 0);
 		vertex.push_back(v);
 		index_buffer_data.push_back(index++);
 
 		v.normal.Set(0, -1, 0);
-		v.pos.set(1 * cos(Math::DegreeToRadian(theta)) , 0, 1 * sin(Math::DegreeToRadian(theta)));
+		v.pos.set(radius * cos(Math::DegreeToRadian(theta)), 0, radius * sin(Math::DegreeToRadian(theta)));
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+	}
+
+	for (unsigned stack = 0; stack < numStack+1; ++stack) {
+		float phi = stack * degreePerStack;
+		for (unsigned slice = 0; slice < numSlice+1; ++slice) {
+			float theta = slice * degreePerSlice;
+			v.pos.set(radius * sphereX(phi, theta), radius * sphereY(phi), radius * sphereZ(phi, theta));
+			v.normal.Set(radius * sphereX(phi, theta), radius * sphereY(phi), radius * sphereZ(phi, theta));
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+
+			v.pos.set(radius * sphereX(phi+degreePerStack, theta), radius * sphereY(phi + degreePerStack), radius * sphereZ(phi + degreePerStack, theta));
+			v.normal.Set(radius * sphereX(phi + degreePerStack, theta), radius * sphereY(phi + degreePerStack), radius * sphereZ(phi + degreePerStack, theta));
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+		}
+	}
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
+	mesh->indexSize = index_buffer_data.size();
+
+	return mesh;
+}
+
+Mesh* MeshBuilder::GenerateQuaterSphere(const std::string& meshName, Color color) {
+	std::vector<Vertex> vertex;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+	v.color = color;
+
+	int index = 0;
+	int numStack = 60;
+	int numSlice = 90;
+	int radius = 1;
+	float degreePerStack = 89.f / numStack;
+	float degreePerSlice = 179.f / numSlice;
+
+	for (float theta = 180; theta >= 0; theta -= degreePerSlice) {
+		v.normal.Set(0, 0, -1);
+		v.pos.set(0, 0, 0);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+
+		v.normal.Set(0, 0, -1);
+		v.pos.set(radius * cos(Math::DegreeToRadian(theta)), radius * sin(Math::DegreeToRadian(theta)), 0);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+	}
+
+	for (float theta = 0; theta <= 180; theta += degreePerSlice) {
+		v.normal.Set(0, -1, 0);
+		v.pos.set(0, 0, 0);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+
+		v.normal.Set(0, -1, 0);
+		v.pos.set(radius * cos(Math::DegreeToRadian(theta)), 0, radius * sin(Math::DegreeToRadian(theta)));
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+	}
+
+	for (unsigned stack = 0; stack < numStack + 1; ++stack) {
+		float phi = stack * degreePerStack;
+		for (unsigned slice = 0; slice < numSlice + 1; ++slice) {
+			float theta = slice * degreePerSlice;
+			v.pos.set(radius * sphereX(phi, theta), radius * sphereY(phi), radius * sphereZ(phi, theta));
+			v.normal.Set(radius * sphereX(phi, theta), radius * sphereY(phi), radius * sphereZ(phi, theta));
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+
+			v.pos.set(radius * sphereX(phi + degreePerStack, theta), radius * sphereY(phi + degreePerStack), radius * sphereZ(phi + degreePerStack, theta));
+			v.normal.Set(radius * sphereX(phi + degreePerStack, theta), radius * sphereY(phi + degreePerStack), radius * sphereZ(phi + degreePerStack, theta));
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+		}
+	}
+	
+
+	Mesh* mesh = new Mesh(meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
+	mesh->indexSize = index_buffer_data.size();
+	return mesh;
+}
+
+Mesh* MeshBuilder::GenerateHemiSphereFrustum(const std::string& meshName, Color color, float degreeCutOff) {
+	std::vector<Vertex> vertex;
+	std::vector<GLuint> index_buffer_data;
+	Vertex v;
+	if (degreeCutOff > 180 || degreeCutOff < 2) degreeCutOff = 180;
+	degreeCutOff /= 2;
+	v.color = color;
+	int index = 0;
+	int numStack = 60;
+	int numSlice = 90;
+	int radius = 1;
+	float degreePerStack = degreeCutOff / numStack;
+	float degreePerSlice = 360.f / numSlice;
+
+	for (float theta = 0; theta <= 360; theta += degreePerSlice) {
+		v.normal.Set(0, -1, 0);
+		v.pos.set(0, 0, 0);
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+
+		v.normal.Set(0, -1, 0);
+		v.pos.set(radius * cos(Math::DegreeToRadian(theta)), 0, radius * sin(Math::DegreeToRadian(theta)));
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+	}
+
+	for (unsigned stack = 0; stack < numStack+1; ++stack) {
+		float phi = stack * degreePerStack;
+		for (unsigned slice = 0; slice < numSlice+1; ++slice) {
+			float theta = slice * degreePerSlice;
+			v.pos.set(radius * sphereX(phi, theta), radius * sphereY(phi), radius * sphereZ(phi, theta));
+			v.normal.Set(radius * sphereX(phi, theta), radius * sphereY(phi), radius * sphereZ(phi, theta));
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+
+			v.pos.set(radius * sphereX(phi + degreePerStack, theta), radius * sphereY(phi + degreePerStack), radius * sphereZ(phi + degreePerStack, theta));
+			v.normal.Set(radius * sphereX(phi + degreePerStack, theta), radius * sphereY(phi + degreePerStack), radius * sphereZ(phi + degreePerStack, theta));
+			vertex.push_back(v);
+			index_buffer_data.push_back(index++);
+		}
+	}
+
+	float innerR = sphereX(90, 360) - sphereX(degreeCutOff+degreePerStack, 360);
+	float topHeight = radius * sphereY(degreeCutOff + degreePerStack);
+
+
+	for (float theta = 0; theta <= 360; theta += degreePerSlice) {
+		v.normal.Set(0, 1, 0);
+		v.pos.set(innerR * cos(Math::DegreeToRadian(theta)), topHeight, innerR * sin(Math::DegreeToRadian(theta)));
+		vertex.push_back(v);
+		index_buffer_data.push_back(index++);
+		
+		v.normal.Set(0, 1, 0);
+		v.pos.set(0, topHeight, 0);
 		vertex.push_back(v);
 		index_buffer_data.push_back(index++);
 	}

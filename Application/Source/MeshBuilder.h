@@ -13,16 +13,20 @@
 class MeshBuilder
 {
 public:
+	//static Mesh* GenerateQuad(const std::string& meshName, float lengthX, float lengthY, float lengthZ);
 	static Mesh* GenerateAxes(const std::string &meshName, float lengthX, float lengthY, float lengthZ);
 	static Mesh* GenerateCone(const std::string &meshName, Color color, int rad, int height);
 	static Mesh* GenerateHalfCone(const std::string& meshName, Color color, int rad, int height);
+	static Mesh* GenerateConicalFrustum(const std::string& meshName, Color color, float innerR, float outerR, int height);
 	static Mesh* GenerateSphere(const std::string& meshName, Color color);
 	static Mesh* GenerateHemiSphere(const std::string& meshName, Color color);
+	static Mesh* GenerateHemiSphereFrustum(const std::string& meshName, Color color, float degreeCutOff);
+	static Mesh* GenerateQuaterSphere(const std::string& meshName, Color color);
 	static Mesh* GenerateCube(const std::string &meshName, Color color);
 	static Mesh* GenerateTetahedron(const std::string& meshName, Color color);
-
-
 	static Mesh* GenerateTorus(const std::string& meshName, Color color, float innerR, float outterR);
+	static Mesh* GenerateHalfTorus(const std::string& meshName, Color color, float innerR, float outterR);
+	static Mesh* GenerateCylinder(const std::string& meshName, Color color, int height);
 };
 
 #endif

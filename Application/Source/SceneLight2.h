@@ -1,5 +1,5 @@
-#ifndef SCENE_LIGHT1_H
-#define SCENE_LIGHT1_H
+#ifndef SCENE_LIGHT2_H
+#define SCENE_LIGHT2_H
 
 #include "Scene.h"
 #include "Camera2.h"	
@@ -7,7 +7,7 @@
 #include "MatrixStack.h"
 #include "Light.h"
 
-class SceneLight1 : public Scene
+class SceneLight2 : public Scene
 {
 
 enum UNIFORM_TYPE
@@ -19,19 +19,34 @@ enum UNIFORM_TYPE
 	U_MATERIAL_DIFFUSE,
 	U_MATERIAL_SPECULAR,
 	U_MATERIAL_SHININESS,
+
 	U_LIGHT0_POSITION,
 	U_LIGHT0_COLOR,
 	U_LIGHT0_POWER,
 	U_LIGHT0_KC,
 	U_LIGHT0_KL,
 	U_LIGHT0_KQ,
-	U_LIGHTENABLED,
 
+	//week 7
 	U_LIGHT0_TYPE,
 	U_LIGHT0_SPOTDIRECTION,
 	U_LIGHT0_COSCUTOFF,
 	U_LIGHT0_COSINNER,
 	U_LIGHT0_EXPONENT,
+
+	U_LIGHT1_POSITION,
+	U_LIGHT1_COLOR,
+	U_LIGHT1_POWER,
+	U_LIGHT1_KC,
+	U_LIGHT1_KL,
+	U_LIGHT1_KQ,
+	U_LIGHT1_TYPE,
+	U_LIGHT1_SPOTDIRECTION,
+	U_LIGHT1_COSCUTOFF,
+	U_LIGHT1_COSINNER,
+	U_LIGHT1_EXPONENT,
+
+	U_LIGHTENABLED,
 	U_NUMLIGHTS,
 
 	U_TOTAL,
@@ -50,17 +65,11 @@ enum GEOMETRY_TYPE
 	GEO_MOUTHTORUS,
 	GEO_MOUTHSPHERE,
 
-	GEO_NOSE_HEMISPHERE,
-
 	GEO_HAIRHEMISPHERE,
 	GEO_HAIRHEMISPHEREFRUSTUM,
 	GEO_HAIRCONE,
 	GEO_HAIRHALFCONE,
 	GEO_HAIRCONICALFRUSTUM,
-
-	GEO_BODY_BACK_HEMISPHERE,
-	GEO_BODY_FRONT_BLUE_HEMISPHERE_FRUSTUM,
-	GEO_BODY_FRONT_ORANGE_HEMISPHERE,
 
 	GEO_ARMCYLINDER,
 	GEO_ARMHEMISPHERE,
@@ -74,24 +83,12 @@ enum GEOMETRY_TYPE
 	GEO_LEGSPHERE,
 
 	GEO_BOOTSQUATERSPHERE,
-	GEO_BOOTSLACEHALFTORUS,
+	GEO_BOOTSLACETORUS,
 	GEO_BOOTSFEETTORUS,
 	GEO_BOOTSLACEHOOK,
 
 	GEO_LIGHTBALL,
 	NUM_GEOMETRY,
-};
-
-enum ANIMATION_OFFSET {
-	BODY_TILT = 0,
-	HEAD_TILT,
-	LEFT_ARM_PITCH,
-	RIGHT_ARM_PITCH,
-	LEFT_LEG_ORIGIN_PITCH,
-	RIGHT_LEG_ORIGIN_PITCH,
-	LEFT_LEG_KNEE_TILT,
-	RIGHT_LEG_KNEE_TILT,
-	ANIMATION_TOTAL
 };
 
 private:
@@ -104,10 +101,8 @@ private:
 	//stores handlers for uniform parametes
 	unsigned m_parameters[U_TOTAL];
 
-	float animation_offset[ANIMATION_TOTAL];
-
 	Mesh* meshList[NUM_GEOMETRY];
-	Light light[1];
+	Light light[2];
 	MS modelStack, viewStack, projectionStack;
 
 	bool rotateAngleFWD;
@@ -121,8 +116,8 @@ private:
 	void RenderMesh(Mesh* mesh, bool lightEnabled);
 
 public:
-	SceneLight1();
-	~SceneLight1();
+	SceneLight2();
+	~SceneLight2();
 
 	virtual void Init();
 	virtual void Update(double dt);
