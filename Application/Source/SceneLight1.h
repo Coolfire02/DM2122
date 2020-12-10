@@ -82,6 +82,18 @@ enum GEOMETRY_TYPE
 	NUM_GEOMETRY,
 };
 
+enum DIRECTION {
+	LEFT = -1,
+	RIGHT = 1,
+};
+
+enum ANIMATION {
+	WALK,
+	RUN,
+	RUNJUMP,
+	NO_ANIMATION,
+};
+
 enum ANIMATION_OFFSET {
 	BODY_TILT = 0,
 	HEAD_TILT,
@@ -104,12 +116,19 @@ private:
 	//stores handlers for uniform parametes
 	unsigned m_parameters[U_TOTAL];
 
-	float animation_offset[ANIMATION_TOTAL];
+	double animation_offset[ANIMATION_TOTAL];
 
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[1];
 	MS modelStack, viewStack, projectionStack;
 
+	//Animation
+	double startAnimation;
+	double endAnimation;
+	int stackedAnimations;
+	ANIMATION currentAnimation;
+	
+	double elapsed;
 	bool rotateAngleFWD;
 	bool translateZFWD;
 	bool scaleALLFWD;
@@ -119,6 +138,9 @@ private:
 	float scaleAll;
 
 	void RenderMesh(Mesh* mesh, bool lightEnabled);
+	void animationUpdater(double dt);
+	void resetAnimation();
+	void processAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, ANIMATION_OFFSET type);
 
 public:
 	SceneLight1();

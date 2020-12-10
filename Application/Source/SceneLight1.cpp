@@ -14,9 +14,16 @@ SceneLight1::SceneLight1()
 	translateZ = 1;
 	scaleAll = 1;
 
+	elapsed = 0.0;
+
 	rotateAngleFWD = true;
 	translateZFWD = true;
 	scaleALLFWD = true;
+
+	//inAnimation = false;
+	endAnimation = 0;
+	currentAnimation = NO_ANIMATION;
+	stackedAnimations = 0;
 }
 
 SceneLight1::~SceneLight1()
@@ -144,6 +151,12 @@ void SceneLight1::Init() {
 	mat.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	mat.kShininess = 1.0f;
 
+	Material hairMat;
+	hairMat.kAmbient.Set(0.3f, 0.3f, 0.3f);
+	hairMat.kDiffuse.Set(0.5f, 0.5f, 0.5f);
+	hairMat.kSpecular.Set(0.3f, 0.3f, 0.3f);
+	hairMat.kShininess = 2.0f;
+
 	Material eyeMat;
 	eyeMat.kAmbient.Set(0.3f, 0.3f, 0.3f);
 	eyeMat.kDiffuse.Set(0.5f, 0.5f, 0.5f);
@@ -152,7 +165,7 @@ void SceneLight1::Init() {
 
 	meshList[GEO_CUBE]->material = mat;
 	meshList[GEO_SONICHEAD]->material = mat;
-	meshList[GEO_SONICEYEBALL]->material = mat;
+	meshList[GEO_SONICEYEBALL]->material = eyeMat;
 	meshList[GEO_SONICGREENEYE]->material = mat;
 	meshList[GEO_SONICBLACKEYE]->material = mat;
 
@@ -162,11 +175,11 @@ void SceneLight1::Init() {
 	meshList[GEO_SONICEARS]->material = mat;
 	meshList[GEO_INNERSONICEARS]->material = mat;
 
-	meshList[GEO_HAIRHEMISPHERE]->material = mat;
-	meshList[GEO_HAIRHEMISPHEREFRUSTUM]->material = mat;
-	meshList[GEO_HAIRCONE]->material = mat;
-	meshList[GEO_HAIRHALFCONE]->material = mat;
-	meshList[GEO_HAIRCONICALFRUSTUM]->material = mat;
+	meshList[GEO_HAIRHEMISPHERE]->material = hairMat;
+	meshList[GEO_HAIRHEMISPHEREFRUSTUM]->material = hairMat;
+	meshList[GEO_HAIRCONE]->material = hairMat;
+	meshList[GEO_HAIRHALFCONE]->material = hairMat;
+	meshList[GEO_HAIRCONICALFRUSTUM]->material = hairMat;
 
 	meshList[GEO_BODY_BACK_HEMISPHERE]->material = mat;
 	meshList[GEO_BODY_FRONT_BLUE_HEMISPHERE_FRUSTUM]->material = mat;
@@ -196,11 +209,134 @@ void SceneLight1::Init() {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+void SceneLight1::animationUpdater(double dt) {
+	double totalAnimationTime = endAnimation - startAnimation;
+	double aniTime = elapsed - startAnimation;
+	//Run 1.5s
+	//Walk 2s
+	//RunJump 3s
+	if (aniTime >= totalAnimationTime) {
+		resetAnimation();
+		stackedAnimations = 0; //debug
+		if (stackedAnimations > 0) {
+			stackedAnimations--;
+			switch (currentAnimation) { //Continuation of animation
+			case WALK:
+				resetAnimation();
+				startAnimation = elapsed - 0.56;
+				endAnimation = startAnimation + 2.3;
+			}
+		}
+		else {
+			currentAnimation = NO_ANIMATION;
+			return;
+		}
+	}
+	switch (currentAnimation) {
+	case WALK:
+		double animationStart;
+		double animationLength;
+		float degreeTilt;
+		ANIMATION_OFFSET type;
+
+		animationStart = 0.0;
+		animationLength = 0.45;
+		degreeTilt = 0.7;
+		type = ANIMATION_OFFSET::LEFT_LEG_ORIGIN_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+		
+		animationStart = 0.08;
+		animationLength = 0.45;
+		degreeTilt = -5;
+		type = ANIMATION_OFFSET::LEFT_LEG_KNEE_TILT;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 0.40;
+		animationLength = 0.80;
+		degreeTilt = 1.2;
+		type = ANIMATION_OFFSET::LEFT_LEG_ORIGIN_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 0.60;
+		animationLength = 1.00;
+		degreeTilt = 5;
+		type = ANIMATION_OFFSET::LEFT_LEG_KNEE_TILT;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.1;
+		animationLength = 2.0;
+		degreeTilt = -1.9;
+		type = ANIMATION_OFFSET::LEFT_LEG_ORIGIN_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.15;
+		animationLength = 1.7;
+		degreeTilt = -3;
+		type = ANIMATION_OFFSET::LEFT_LEG_KNEE_TILT;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.95;
+		animationLength = 2.3;
+		degreeTilt = 2.6;
+		type = ANIMATION_OFFSET::LEFT_LEG_ORIGIN_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.95;
+		animationLength = 2.3;
+		degreeTilt = 4;
+		type = ANIMATION_OFFSET::LEFT_LEG_KNEE_TILT;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+		
+		animationStart = 0.6;
+		animationLength = 1.2;
+		degreeTilt = -1.3;
+		type = ANIMATION_OFFSET::RIGHT_LEG_ORIGIN_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 0.70;
+		animationLength = 1.2;
+		degreeTilt = -2;
+		type = ANIMATION_OFFSET::RIGHT_LEG_KNEE_TILT;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.15;
+		animationLength = 1.8;
+		degreeTilt = 2.8;
+		type = ANIMATION_OFFSET::RIGHT_LEG_ORIGIN_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.15;
+		animationLength = 1.9;
+		degreeTilt = 1.3;
+		type = ANIMATION_OFFSET::RIGHT_LEG_KNEE_TILT;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.75;
+		animationLength = 2.3;
+		degreeTilt = -1.75;
+		type = ANIMATION_OFFSET::RIGHT_LEG_ORIGIN_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+	}
+}
+
+void SceneLight1::processAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, ANIMATION_OFFSET type) {
+	if (aniTime >= animationStart && aniTime <= animationLength)
+		animation_offset[type] = animation_offset[type] + (aniTime - animationStart) / (animationLength-animationStart) * degreeTilt;
+}
+
+void SceneLight1::resetAnimation() {
+	for (int i = 0; i < ANIMATION_TOTAL; i++) {
+		animation_offset[i] = 0.0;
+	}
+}
+
 void SceneLight1::Update(double dt)
 {
+	elapsed += dt;
 	camera.Update(dt);
-		rotateAngle += 10*dt;
-		rotateAngle2 += 50 * dt;
+	rotateAngle += 10*dt;
+	rotateAngle2 += 50 * dt;
 		
 	if (translateZFWD) {
 		translateZ += 0.2;
@@ -226,6 +362,43 @@ void SceneLight1::Update(double dt)
 	}
 	else if (GetAsyncKeyState('4') & 0x8001) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
+	if (currentAnimation != NO_ANIMATION) {
+		animationUpdater(dt);
+
+		if (stackedAnimations < 1) {
+			if (Application::IsKeyPressed('T') && currentAnimation == ANIMATION::WALK) {
+				stackedAnimations++;
+			}
+			else if (Application::IsKeyPressed('B') && Application::IsKeyPressed('G') && currentAnimation == ANIMATION::RUNJUMP) {
+				stackedAnimations++;
+			}
+			else if (Application::IsKeyPressed('B') && currentAnimation == ANIMATION::RUN) {
+				stackedAnimations++;
+			}
+		}
+
+	} else { //No animation
+		//T = walk
+		//G = jump
+		//B = run
+		if (Application::IsKeyPressed('T')) {
+			currentAnimation = ANIMATION::WALK;
+			startAnimation = elapsed;
+			endAnimation = startAnimation + 2.3;
+
+		}
+		else if (Application::IsKeyPressed('B') && Application::IsKeyPressed('G')) {
+			currentAnimation = ANIMATION::RUNJUMP;
+			startAnimation = elapsed;
+			endAnimation = startAnimation + 3.0;
+		}
+		else if (Application::IsKeyPressed('B')) {
+			currentAnimation = ANIMATION::RUN;
+			startAnimation = elapsed;
+			endAnimation = startAnimation + 1.5;
+		}
 	}
 
 	const float LSPEED = 10.f;
@@ -351,8 +524,8 @@ void SceneLight1::Render()
 			//Right Leg
 			modelStack.PushMatrix();
 				
-				modelStack.Translate(0.2f, -0.4f, 0.0f);
-				modelStack.Rotate(9, 0.0f, 0.0f, 1.0f);
+				modelStack.Translate(0.2f * RIGHT, -0.4f, 0.0f);
+				modelStack.Rotate(10 * RIGHT, 0.0f, 0.0f, 1.0f);
 				
 				modelStack.Rotate(-animation_offset[RIGHT_LEG_ORIGIN_PITCH], 1.0f, 0.0f, 0.0f); //to go back
 
@@ -387,7 +560,7 @@ void SceneLight1::Render()
 								modelStack.Translate(0.f, -0.5f, 0.0f);
 								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 								modelStack.Scale(0.8f, 0.12f, 0.8f);
-								modelStack.Rotate(-7, 0.0f, 0.0f, 1.0f);
+								modelStack.Rotate(-10 * RIGHT, 0.0f, 0.0f, 1.0f);
 								this->RenderMesh(meshList[GEO_LEGTORUS], true);
 
 								modelStack.PushMatrix();
@@ -400,7 +573,7 @@ void SceneLight1::Render()
 									//Front shoe
 									modelStack.PushMatrix();
 
-										modelStack.Translate(0.f, -8.0f, 0.0f);
+										modelStack.Translate(0.4f * RIGHT, -8.0f, 0.0f);
 										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										modelStack.Scale(5.0f, 8.f, 10.f);
 										this->RenderMesh(meshList[GEO_BOOTSQUATERSPHERE], true);
@@ -430,7 +603,109 @@ void SceneLight1::Render()
 									//Back shoe
 									modelStack.PushMatrix();
 										modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
-										modelStack.Translate(0.f, -8.0f, -0.3f);
+										modelStack.Translate(-0.4f * RIGHT, -8.0f, -0.3f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(5.0f, 8.f, 4.f);
+										this->RenderMesh(meshList[GEO_BOOTSQUATERSPHERE], true);
+
+									modelStack.PopMatrix();
+
+								modelStack.PopMatrix();
+
+							modelStack.PopMatrix();
+
+						modelStack.PopMatrix();
+
+					modelStack.PopMatrix();
+
+				modelStack.PopMatrix();
+
+			modelStack.PopMatrix();
+
+
+			//Left Leg
+			modelStack.PushMatrix();
+				
+				modelStack.Translate(0.2f * LEFT, -0.4f, 0.0f);
+				modelStack.Rotate(10 * LEFT, 0.0f, 0.0f, 1.0f);
+				
+				modelStack.Rotate(-animation_offset[LEFT_LEG_ORIGIN_PITCH], 1.0f, 0.0f, 0.0f); //to go back
+
+				modelStack.Scale(0.12f, 0.12f, 0.12f);
+				this->RenderMesh(meshList[GEO_LEGHEMISPHERE], true);
+
+				modelStack.PushMatrix();
+
+					modelStack.Translate(0.f, -2.8f, 0.0f);
+					modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+					modelStack.Scale(1.0, 5.6f, 1.0f);
+					this->RenderMesh(meshList[GEO_LEGCYLINDER], true);
+
+					modelStack.PushMatrix();
+
+						modelStack.Scale(1.0, 0.1785f, 1.0f);
+						
+						modelStack.Translate(0.f, -2.9f, 0.0f);
+						modelStack.Rotate(-animation_offset[LEFT_LEG_KNEE_TILT], 1.0f, 0.0f, 0.0f);
+						
+						this->RenderMesh(meshList[GEO_LEGSPHERE], true);
+
+						modelStack.PushMatrix();
+
+							modelStack.Translate(0.f, -3.2f, 0.0f);
+							modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+							modelStack.Scale(0.85, 5.6f, 0.85f);
+							this->RenderMesh(meshList[GEO_LEGCYLINDER], true);
+
+							modelStack.PushMatrix();
+							
+								modelStack.Translate(0.f, -0.5f, 0.0f);
+								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+								modelStack.Scale(0.8f, 0.12f, 0.8f);
+								modelStack.Rotate(-10 * LEFT, 0.0f, 0.0f, 1.0f);
+								this->RenderMesh(meshList[GEO_LEGTORUS], true);
+
+								modelStack.PushMatrix();
+
+									modelStack.Translate(0.f, -1.4f, 0.0f);
+									modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(1.0f, 0.8f, 1.0f);
+									this->RenderMesh(meshList[GEO_LEGTORUS], true);
+
+									//Front shoe
+									modelStack.PushMatrix();
+
+										modelStack.Translate(0.4f * LEFT, -8.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(5.0f, 8.f, 10.f);
+										this->RenderMesh(meshList[GEO_BOOTSQUATERSPHERE], true);
+
+										//Lace
+										modelStack.PushMatrix();
+
+											modelStack.Rotate(90, 0.0f, 1.0f, 0.0f);
+											modelStack.Translate(-0.3f, 0.0f, 0.0f);
+											
+											modelStack.Rotate(-83, 0.0f, 0.0f, 1.0f);
+											
+											modelStack.Scale(0.75f, 4.f, 0.8f); //x is tallness, y value is width, 
+											this->RenderMesh(meshList[GEO_BOOTSLACEHALFTORUS], true);
+
+										modelStack.PopMatrix();
+
+										modelStack.PushMatrix();
+											modelStack.Translate(0.f, -0.12f, 0.25f);
+											modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+											modelStack.Scale(0.8f, 0.8f, 0.6f);
+											this->RenderMesh(meshList[GEO_BOOTSFEETTORUS], true);
+										modelStack.PopMatrix();
+
+									modelStack.PopMatrix();
+
+									//Back shoe
+									modelStack.PushMatrix();
+										modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
+										modelStack.Translate(-0.4f * LEFT, -8.0f, -0.3f);
 										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										modelStack.Scale(5.0f, 8.f, 4.f);
 										this->RenderMesh(meshList[GEO_BOOTSQUATERSPHERE], true);

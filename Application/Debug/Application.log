@@ -1,12 +1,24 @@
 ﻿  SceneLight1.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(101,114): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(116,106): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(121,104): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(126,111): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(127,123): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(202,23): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(203,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(206,20): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(212,20): warning C4305: '-=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(382,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(108,114): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(123,106): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(128,104): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(133,111): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(134,123): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(244,19): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(256,19): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(268,20): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(280,19): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(292,20): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(304,19): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(310,19): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(338,22): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(339,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(342,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(348,20): warning C4305: '-=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(530,23): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(547,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(555,42): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(632,23): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(649,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(657,42): warning C4305: 'argument': truncation from 'double' to 'float'
   Application.vcxproj -> C:\Users\tanyo\source\repos\.COMG\Debug\Application.exe
