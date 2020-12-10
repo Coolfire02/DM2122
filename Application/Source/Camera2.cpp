@@ -99,11 +99,11 @@ void Camera2::Update(double dt)
 	}
 	if (Application::IsKeyPressed('M')) {
 		Vector3 view = (target - position).Normalized();
-		position += view * dt * CAMERA_SPEED*0.2;
+		position += view * dt * CAMERA_SPEED*0.5;
 	}
 	if (Application::IsKeyPressed('N')) {
 		Vector3 view = (target - position).Normalized();
-		position -= view * dt * CAMERA_SPEED*0.2;
+		position -= view * dt * CAMERA_SPEED*0.5;
 	}
 
 }

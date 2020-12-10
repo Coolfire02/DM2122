@@ -60,7 +60,7 @@ void SceneLight1::Init() {
 	glUseProgram(m_programID);
 
 	// Set background color to dark blue
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.8f, 0.8f, 0.8f, 0.8f);
 
 	// Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
@@ -71,7 +71,7 @@ void SceneLight1::Init() {
 	projectionStack.LoadMatrix(projection);
 
 	//Camera init(starting pos, where it looks at, up
-	camera.Init(Vector3(10, 7, 3), Vector3(0,-10,0), Vector3(0,1,0));
+	camera.Init(Vector3(10, 7, 3), Vector3(0,10,0), Vector3(0,1,0));
 
 	//Light init
 	light[0].type = Light::LIGHT_POINT;
@@ -94,7 +94,8 @@ void SceneLight1::Init() {
 
 
 
-	meshList[GEO_CUBE] = MeshBuilder::GenerateHalfCone("cube", Color(0.9f, 0.6f, 0.3f), 3, 10);
+	meshList[GEO_GRASS] = MeshBuilder::GenerateCube("grass", Color(0.44f, 0.698f, 0.2157f));
+	meshList[GEO_DIRT] = MeshBuilder::GenerateCube("dirt", Color(0.5216f, 0.31f, 0.1686f));
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
 	//meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", 1, 1);
 	//meshList[GEO_SUN] = MeshBuilder::GenerateSphere("sun", Color(0.956f, 0.5f, 0.215f), 3);
@@ -120,6 +121,7 @@ void SceneLight1::Init() {
 	
 	meshList[GEO_ARMCYLINDER] = MeshBuilder::GenerateCylinder("sonicarm", Color(0.9647f, 0.7843f, 0.5176f), 1);
 	meshList[GEO_ARMHEMISPHERE] = MeshBuilder::GenerateHemiSphere("sonicarmhemisphere", Color(0.9647f, 0.7843f, 0.5176f));
+	meshList[GEO_ARMSPHERE] = MeshBuilder::GenerateSphere("sonicarmhemisphere", Color(0.9647f, 0.7843f, 0.5176f));
 	meshList[GEO_HANDTORUS] = MeshBuilder::GenerateTorus("sonichandtorus", Color(1.0f, 1.0f, 1.0f), 1.2, 2.2);
 	meshList[GEO_HANDCYLINDER] = MeshBuilder::GenerateCylinder("sonichandcylinder", Color(1.0f, 1.0f, 1.0f), 2);
 	meshList[GEO_HANDHEMISPHERE] = MeshBuilder::GenerateHemiSphere("sonichandhemisphere", Color(1.0f, 1.0f, 1.0f));
@@ -144,12 +146,18 @@ void SceneLight1::Init() {
 	
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("lightbulll", Color(1.0f, 1.0f, 1.0f));
 
-	//Universal material template used for testing
+	//Standard mat
 	Material mat;
 	mat.kAmbient.Set(0.3f, 0.3f, 0.3f);
 	mat.kDiffuse.Set(0.5f, 0.5f, 0.5f);
 	mat.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	mat.kShininess = 1.0f;
+
+	Material floorMat;
+	floorMat.kAmbient.Set(0.26f, 0.26f, 0.26f);
+	floorMat.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	floorMat.kSpecular.Set(0.03f, 0.03f, 0.03f);
+	floorMat.kShininess = 0.01f;
 
 	Material hairMat;
 	hairMat.kAmbient.Set(0.3f, 0.3f, 0.3f);
@@ -163,7 +171,8 @@ void SceneLight1::Init() {
 	eyeMat.kSpecular.Set(0.5f, 0.5f, 0.5f);
 	eyeMat.kShininess = 2.0f;
 
-	meshList[GEO_CUBE]->material = mat;
+	meshList[GEO_GRASS]->material = floorMat;
+	meshList[GEO_DIRT]->material = floorMat;
 	meshList[GEO_SONICHEAD]->material = mat;
 	meshList[GEO_SONICEYEBALL]->material = eyeMat;
 	meshList[GEO_SONICGREENEYE]->material = mat;
@@ -187,6 +196,7 @@ void SceneLight1::Init() {
 
 	meshList[GEO_ARMCYLINDER]->material = mat;
 	meshList[GEO_ARMHEMISPHERE]->material = mat;
+	meshList[GEO_ARMSPHERE]->material = mat;
 	meshList[GEO_HANDTORUS]->material = mat;
 	meshList[GEO_HANDCYLINDER]->material = mat;
 	meshList[GEO_HANDHEMISPHERE]->material = mat;
@@ -244,6 +254,12 @@ void SceneLight1::animationUpdater(double dt) {
 		degreeTilt = 0.7;
 		type = ANIMATION_OFFSET::LEFT_LEG_ORIGIN_PITCH;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 0.0;
+		animationLength = 0.45;
+		degreeTilt = 1;
+		type = ANIMATION_OFFSET::LEFT_ARM_ELBOW_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
 		
 		animationStart = 0.08;
 		animationLength = 0.45;
@@ -257,6 +273,12 @@ void SceneLight1::animationUpdater(double dt) {
 		type = ANIMATION_OFFSET::LEFT_LEG_ORIGIN_PITCH;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
 
+		animationStart = 0.40;
+		animationLength = 0.80;
+		degreeTilt = 3;
+		type = ANIMATION_OFFSET::LEFT_ARM_ELBOW_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
 		animationStart = 0.60;
 		animationLength = 1.00;
 		degreeTilt = 5;
@@ -267,6 +289,12 @@ void SceneLight1::animationUpdater(double dt) {
 		animationLength = 2.0;
 		degreeTilt = -1.9;
 		type = ANIMATION_OFFSET::LEFT_LEG_ORIGIN_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.1;
+		animationLength = 2.0;
+		degreeTilt = -5;
+		type = ANIMATION_OFFSET::LEFT_ARM_ELBOW_PITCH;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
 
 		animationStart = 1.15;
@@ -284,6 +312,12 @@ void SceneLight1::animationUpdater(double dt) {
 		animationStart = 1.95;
 		animationLength = 2.3;
 		degreeTilt = 4;
+		type = ANIMATION_OFFSET::LEFT_ARM_ELBOW_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.95;
+		animationLength = 2.3;
+		degreeTilt = 4;
 		type = ANIMATION_OFFSET::LEFT_LEG_KNEE_TILT;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
 		
@@ -291,6 +325,12 @@ void SceneLight1::animationUpdater(double dt) {
 		animationLength = 1.2;
 		degreeTilt = -1.3;
 		type = ANIMATION_OFFSET::RIGHT_LEG_ORIGIN_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 0.6;
+		animationLength = 1.2;
+		degreeTilt = 3;
+		type = ANIMATION_OFFSET::RIGHT_ARM_ELBOW_PITCH;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
 
 		animationStart = 0.70;
@@ -306,6 +346,12 @@ void SceneLight1::animationUpdater(double dt) {
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
 
 		animationStart = 1.15;
+		animationLength = 1.8;
+		degreeTilt = -5;
+		type = ANIMATION_OFFSET::RIGHT_ARM_ELBOW_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.15;
 		animationLength = 1.9;
 		degreeTilt = 1.3;
 		type = ANIMATION_OFFSET::RIGHT_LEG_KNEE_TILT;
@@ -315,6 +361,12 @@ void SceneLight1::animationUpdater(double dt) {
 		animationLength = 2.3;
 		degreeTilt = -1.75;
 		type = ANIMATION_OFFSET::RIGHT_LEG_ORIGIN_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 1.75;
+		animationLength = 2.3;
+		degreeTilt = 4;
+		type = ANIMATION_OFFSET::RIGHT_ARM_ELBOW_PITCH;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
 
 	}
@@ -460,12 +512,19 @@ void SceneLight1::Render()
 		RenderMesh(meshList[GEO_LIGHTBALL], false);
 	modelStack.PopMatrix();
 
-	//modelStack.PushMatrix(); //pushing identity
-	//	modelStack.Translate(0.0f, 0.0f, 0.0f);
-	//	modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-	//	modelStack.Scale(3.0f, 1.8f, 1.0f);
-	//	this->RenderMesh(meshList[GEO_CUBE], true);
-	//modelStack.PopMatrix();
+	modelStack.PushMatrix();
+		modelStack.Translate(0.0f, 0.0f, 0.0f);
+		modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+		modelStack.Scale(50.0f, 0.4f, 500.0f);
+		this->RenderMesh(meshList[GEO_GRASS], true);
+
+		modelStack.PushMatrix();
+			modelStack.Translate(0.0f, -10.5f, 0.0f);
+			modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+			modelStack.Scale(1.0f, 20.0f, 1.0f);
+			this->RenderMesh(meshList[GEO_DIRT], true);
+		modelStack.PopMatrix();
+	modelStack.PopMatrix();
 
 
 	if (light[0].type == Light::LIGHT_DIRECTIONAL) {
@@ -488,7 +547,7 @@ void SceneLight1::Render()
 	
 	//Main model: head
 	modelStack.PushMatrix();
-		modelStack.Translate(0.0f, 0.0f, 0.0f);
+		modelStack.Translate(0.0f, 15.0f, 0.0f);
 		modelStack.Rotate(-10, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(4.0f, 4.0f, 4.0f);
 		this->RenderMesh(meshList[GEO_SONICHEAD], true);
@@ -729,134 +788,154 @@ void SceneLight1::Render()
 			//Right arm
 
 			modelStack.PushMatrix();
-				//modelStack.Rotate(60, 0.0f, 1.0f, 0.0f); //to go back
-				modelStack.Translate(0.42f, 0.2f, 0.0f);
+				modelStack.Translate(0.42f * RIGHT, 0.2f, 0.0f);
+				
+				modelStack.Rotate(animation_offset[RIGHT_ARM_SHOULDER_YAW], 0.0f, 1.0f, 0.0f);
+				modelStack.Rotate(animation_offset[RIGHT_ARM_SHOULDER_PITCH] - 60 , 0.0f, 0.0f, 1.0f);
+				//modelStack.Rotate(90, 0.0f, 1.0f, 0.0f); //to go back
 
 				modelStack.Rotate(90, 0.0f, 0.0f, 1.0f);
 				modelStack.Scale(0.08f, 0.12f, 0.08f);
 				this->RenderMesh(meshList[GEO_ARMHEMISPHERE], true);
 				
 				modelStack.PushMatrix();
-					modelStack.Translate(0.0f, -4.1f, 0.0f);
+					modelStack.Translate(0.0f, -1.0f*RIGHT, 0.0f);
 					
 					modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-					modelStack.Scale(1.0f, 8.3f, 1.0f);
+					modelStack.Scale(1.0f, 2.f, 1.0f);
 					this->RenderMesh(meshList[GEO_ARMCYLINDER], true);
-					
-					//Arm Torus Outter
+
 					modelStack.PushMatrix();
-						modelStack.Translate(0.0f, -0.40f, 0.0f);
+						modelStack.Translate(0.0f, -0.6f*RIGHT, 0.0f);
 
 						modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-						modelStack.Scale(0.8f, 0.07f, 0.8f);
-						this->RenderMesh(meshList[GEO_HANDTORUS], true);
+						modelStack.Scale(1.0f, 0.3333f, 1.0f);
+						this->RenderMesh(meshList[GEO_ARMSPHERE], true);
 
-						//Arm Torus Inner
 						modelStack.PushMatrix();
-							modelStack.Translate(0.0f, -0.8f, 0.0f);
+							modelStack.Rotate(90 + animation_offset[RIGHT_ARM_ELBOW_PITCH], 0.0f, 1.0f, 0.0f); //arm back and fourth
+							modelStack.Rotate(20 + animation_offset[RIGHT_ARM_ELBOW_ROLL], 1.0f, 0.0f, 0.0f);
+							modelStack.Translate(0.0f, -5.5f*RIGHT, 0.0f);
+							modelStack.Rotate(-90, 0.0f, 1.0f, 0.0f); //Make hand face body
+							
+							modelStack.Scale(1.0f, 10.4f, 1.0f);
+							this->RenderMesh(meshList[GEO_ARMCYLINDER], true);
+					
+							//Arm Torus Outter
+							modelStack.PushMatrix();
+								modelStack.Translate(0.0f, -0.40f * RIGHT, 0.0f);
 
-							modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(1.0f, 0.8f, 1.0f);
-							this->RenderMesh(meshList[GEO_HANDTORUS], true);
+								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+								modelStack.Scale(0.8f, 0.07f, 0.8f);
+								this->RenderMesh(meshList[GEO_HANDTORUS], true);
+
+								//Arm Torus Inner
+								modelStack.PushMatrix();
+									modelStack.Translate(0.0f, -0.8f * RIGHT, 0.0f);
+
+									modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(1.0f, 0.8f, 1.0f);
+									this->RenderMesh(meshList[GEO_HANDTORUS], true);
+								modelStack.PopMatrix();
+
+							modelStack.PopMatrix();
+
+							//Hand
+							modelStack.PushMatrix();
+								modelStack.Translate(-1.3f, -0.61f * RIGHT, 0.0f);
+
+								modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+								modelStack.Scale(0.20f, 3.f, 2.5f); //z fatter x is longer
+								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+
+								//Thumb
+								modelStack.PushMatrix();
+									modelStack.Rotate(-71 * RIGHT, 0.0f, 1.0f, 0.0f); //Angle of finger on the hemisphere
+									modelStack.Translate(1.4f, 0.3f, 0.0f);
+									modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(0.20f, 0.5f, 0.26f); //y is for length
+									this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
+
+									modelStack.PushMatrix();
+										modelStack.Translate(0.0f, 1.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(1.0f, 0.3f, 1.0f);
+										this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+									modelStack.PopMatrix();
+
+								modelStack.PopMatrix();
+
+								//Index
+								modelStack.PushMatrix();
+									modelStack.Rotate(-20 * RIGHT, 0.0f, 1.0f, 0.0f);
+									modelStack.Rotate(1, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
+									modelStack.Translate(1.4f, 0.3f, 0.0f);
+									modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(0.15f, 0.8f, 0.22f); //y is for length
+									this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
+
+									modelStack.PushMatrix();
+										modelStack.Translate(0.0f, 1.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(1.0f, 0.3f, 1.0f);
+										this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+									modelStack.PopMatrix();
+
+								modelStack.PopMatrix();
+
+								//Middle
+								modelStack.PushMatrix();
+									modelStack.Rotate(5 * RIGHT, 0.0f, 1.0f, 0.0f);
+									modelStack.Rotate(3, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
+									modelStack.Translate(1.4f, 0.3f, 0.0f);
+									modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(0.15f, 0.85f, 0.22f); //y is for length
+									this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
+
+									modelStack.PushMatrix();
+										modelStack.Translate(0.0f, 1.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(1.0f, 0.3f, 1.0f);
+										this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+									modelStack.PopMatrix();
+								modelStack.PopMatrix();
+
+								//Ring
+								modelStack.PushMatrix();
+									modelStack.Rotate(30 * RIGHT, 0.0f, 1.0f, 0.0f);
+									modelStack.Rotate(2, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
+									modelStack.Translate(1.4f, 0.3f, 0.0f);
+									modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(0.15f, 0.75f, 0.22f); //y is for length
+									this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
+
+									modelStack.PushMatrix();
+										modelStack.Translate(0.0f, 1.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(1.0f, 0.3f, 1.0f);
+										this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+									modelStack.PopMatrix();
+								modelStack.PopMatrix();
+
+								//Pinky
+								modelStack.PushMatrix();
+									modelStack.Rotate(60 * RIGHT, 0.0f, 1.0f, 0.0f);
+									modelStack.Translate(1.2f, 0.3f, 0.0f);
+									modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(0.15f, 0.35f, 0.22f); //y is for length
+									this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
+
+									modelStack.PushMatrix();
+										modelStack.Translate(0.0f, 1.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(1.0f, 0.3f, 1.0f);
+										this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+									modelStack.PopMatrix();
+								modelStack.PopMatrix();
+
+							modelStack.PopMatrix();
 						modelStack.PopMatrix();
-
 					modelStack.PopMatrix();
-
-					//Hand
-					modelStack.PushMatrix();
-						modelStack.Translate(-1.3f, -0.61f, 0.0f);
-
-						modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-						modelStack.Scale(0.20f, 3.f, 2.5f); //z fatter x is longer
-						this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-
-						//Thumb
-						modelStack.PushMatrix();
-							modelStack.Rotate(-71, 0.0f, 1.0f, 0.0f); //Angle of finger on the hemisphere
-							modelStack.Translate(1.4f, 0.3f, 0.0f);
-							modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(0.20f, 0.5f, 0.26f); //y is for length
-							this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
-
-							modelStack.PushMatrix();
-								modelStack.Translate(0.0f, 1.0f, 0.0f);
-								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-								modelStack.Scale(1.0f, 0.3f, 1.0f);
-								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-							modelStack.PopMatrix();
-
-						modelStack.PopMatrix();
-
-						//Index
-						modelStack.PushMatrix();
-							modelStack.Rotate(-20, 0.0f, 1.0f, 0.0f);
-							modelStack.Rotate(1, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
-							modelStack.Translate(1.4f, 0.3f, 0.0f);
-							modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(0.15f, 0.8f, 0.22f); //y is for length
-							this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
-
-							modelStack.PushMatrix();
-								modelStack.Translate(0.0f, 1.0f, 0.0f);
-								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-								modelStack.Scale(1.0f, 0.3f, 1.0f);
-								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-							modelStack.PopMatrix();
-
-						modelStack.PopMatrix();
-
-						//Middle
-						modelStack.PushMatrix();
-							modelStack.Rotate(5, 0.0f, 1.0f, 0.0f);
-							modelStack.Rotate(3, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
-							modelStack.Translate(1.4f, 0.3f, 0.0f);
-							modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(0.15f, 0.85f, 0.22f); //y is for length
-							this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
-
-							modelStack.PushMatrix();
-								modelStack.Translate(0.0f, 1.0f, 0.0f);
-								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-								modelStack.Scale(1.0f, 0.3f, 1.0f);
-								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-							modelStack.PopMatrix();
-						modelStack.PopMatrix();
-
-						//Ring
-						modelStack.PushMatrix();
-							modelStack.Rotate(30, 0.0f, 1.0f, 0.0f);
-							modelStack.Rotate(2, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
-							modelStack.Translate(1.4f, 0.3f, 0.0f);
-							modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(0.15f, 0.75f, 0.22f); //y is for length
-							this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
-
-							modelStack.PushMatrix();
-								modelStack.Translate(0.0f, 1.0f, 0.0f);
-								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-								modelStack.Scale(1.0f, 0.3f, 1.0f);
-								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-							modelStack.PopMatrix();
-						modelStack.PopMatrix();
-
-						//Pinky
-						modelStack.PushMatrix();
-							modelStack.Rotate(60, 0.0f, 1.0f, 0.0f);
-							modelStack.Translate(1.2f, 0.3f, 0.0f);
-							modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(0.15f, 0.35f, 0.22f); //y is for length
-							this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
-
-							modelStack.PushMatrix();
-								modelStack.Translate(0.0f, 1.0f, 0.0f);
-								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-								modelStack.Scale(1.0f, 0.3f, 1.0f);
-								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-							modelStack.PopMatrix();
-						modelStack.PopMatrix();
-
-					modelStack.PopMatrix();
-
 				modelStack.PopMatrix();
 
 			modelStack.PopMatrix();
@@ -866,137 +945,162 @@ void SceneLight1::Render()
 			//Left arm
 
 			modelStack.PushMatrix();
-				modelStack.Rotate(180, 0.0f, 1.0f, 0.0f); //FLIP RIGHTHAND
-				modelStack.Translate(0.42f, 0.2f, 0.0f);
+				modelStack.Translate(0.42f * LEFT , 0.2f, 0.0f);
+				
+				//modelStack.Rotate(rotateAngle, 1.0f, 0.0f, 0.0f); //to go b
+				modelStack.Rotate(180, 0.0f, 1.0f, 0.0f); //flip from right arm
+				modelStack.Rotate(animation_offset[LEFT_ARM_SHOULDER_YAW], 0.0f, 1.0f, 0.0f);
+				modelStack.Rotate(animation_offset[LEFT_ARM_SHOULDER_PITCH] - 60, 0.0f, 0.0f, 1.0f);
 
 				modelStack.Rotate(90, 0.0f, 0.0f, 1.0f);
 				modelStack.Scale(0.08f, 0.12f, 0.08f);
 				this->RenderMesh(meshList[GEO_ARMHEMISPHERE], true);
-
+				
 				modelStack.PushMatrix();
-					modelStack.Translate(0.0f, -4.1f, 0.0f);
-
+					modelStack.Translate(0.0f, -1.0f, 0.0f);
+					
 					modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-					modelStack.Scale(1.0f, 8.3f, 1.0f);
+					modelStack.Scale(1.0f, 2.f, 1.0f);
 					this->RenderMesh(meshList[GEO_ARMCYLINDER], true);
 
-					//Arm Torus Outter
 					modelStack.PushMatrix();
-						modelStack.Translate(0.0f, -0.40f, 0.0f);
-
+						
+						
+						modelStack.Translate(0.0f, -0.6f, 0.0f);
+						
 						modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-						modelStack.Scale(0.8f, 0.07f, 0.8f);
-						this->RenderMesh(meshList[GEO_HANDTORUS], true);
+						modelStack.Scale(1.0f, 0.3333f, 1.0f);
+						this->RenderMesh(meshList[GEO_ARMSPHERE], true);
 
-						//Arm Torus Inner
 						modelStack.PushMatrix();
-							modelStack.Translate(0.0f, -0.8f, 0.0f);
-
-							modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(1.0f, 0.8f, 1.0f);
-							this->RenderMesh(meshList[GEO_HANDTORUS], true);
-						modelStack.PopMatrix();
-
-					modelStack.PopMatrix();
-
-					//Hand
-					modelStack.PushMatrix();
-						modelStack.Translate(-1.3f, -0.61f, 0.0f);
-
-						modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-						modelStack.Scale(0.20f, 3.f, 2.5f); //z fatter x is longer
-						this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-
-						//Thumb
-						modelStack.PushMatrix();
-							modelStack.Rotate(-71 * -1, 0.0f, 1.0f, 0.0f); //Angle of finger on the hemisphere
-							modelStack.Translate(1.4f, 0.3f, 0.0f);
-							modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(0.20f, 0.5f, 0.26f); //y is for length
-							this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
-
-							modelStack.PushMatrix();
-								modelStack.Translate(0.0f, 1.0f, 0.0f);
-								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-								modelStack.Scale(1.0f, 0.3f, 1.0f);
-								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-							modelStack.PopMatrix();
-
-						modelStack.PopMatrix();
-
-						//Index
-						modelStack.PushMatrix();
-							modelStack.Rotate(-20 * -1, 0.0f, 1.0f, 0.0f);
-							modelStack.Rotate(1, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
-							modelStack.Translate(1.4f, 0.3f, 0.0f);
-							modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(0.15f, 0.8f, 0.22f); //y is for length
-							this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
-
-							modelStack.PushMatrix();
-								modelStack.Translate(0.0f, 1.0f, 0.0f);
-								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-								modelStack.Scale(1.0f, 0.3f, 1.0f);
-								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-							modelStack.PopMatrix();
-
-						modelStack.PopMatrix();
-
-						//Middle
-						modelStack.PushMatrix();
-							modelStack.Rotate(5 * -1, 0.0f, 1.0f, 0.0f);
-							modelStack.Rotate(3, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
-							modelStack.Translate(1.4f, 0.3f, 0.0f);
-							modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(0.15f, 0.85f, 0.22f); //y is for length
-							this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
-
-							modelStack.PushMatrix();
-								modelStack.Translate(0.0f, 1.0f, 0.0f);
-								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-								modelStack.Scale(1.0f, 0.3f, 1.0f);
-								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-							modelStack.PopMatrix();
-						modelStack.PopMatrix();
-
-						//Ring
-						modelStack.PushMatrix();
-							modelStack.Rotate(30 * -1, 0.0f, 1.0f, 0.0f);
-							modelStack.Rotate(2, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
-							modelStack.Translate(1.4f, 0.3f, 0.0f);
-							modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(0.15f, 0.75f, 0.22f); //y is for length
-							this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
-
-							modelStack.PushMatrix();
-								modelStack.Translate(0.0f, 1.0f, 0.0f);
-								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-								modelStack.Scale(1.0f, 0.3f, 1.0f);
-								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
-							modelStack.PopMatrix();
-						modelStack.PopMatrix();
-
-						//Pinky
-						modelStack.PushMatrix();
-							modelStack.Rotate(60 * -1, 0.0f, 1.0f, 0.0f);
-							modelStack.Translate(1.2f, 0.3f, 0.0f);
-							modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
-							modelStack.Scale(0.15f, 0.35f, 0.22f); //y is for length
-							this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
-
-							modelStack.PushMatrix();
-								modelStack.Translate(0.0f, 1.0f, 0.0f);
-								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-								modelStack.Scale(1.0f, 0.3f, 1.0f);
-								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
 							
+							modelStack.Rotate(90 + animation_offset[LEFT_ARM_ELBOW_PITCH], 0.0f, 1.0f, 0.0f); //arm back and fourth
+							modelStack.Rotate(20 + animation_offset[LEFT_ARM_ELBOW_ROLL], 1.0f, 0.0f, 0.0f);
+
+							modelStack.Translate(0.0f, -5.5f, 0.0f);
+							
+							modelStack.Rotate(-90, 0.0f, 1.0f, 0.0f); //Make hand face body
+
+							
+							modelStack.Scale(1.0f, 10.4f, 1.0f);
+							this->RenderMesh(meshList[GEO_ARMCYLINDER], true);
+					
+							//Arm Torus Outter
+							modelStack.PushMatrix();
+								modelStack.Translate(0.0f, -0.40f , 0.0f);
+
+								modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+								modelStack.Scale(0.8f, 0.07f, 0.8f);
+								this->RenderMesh(meshList[GEO_HANDTORUS], true);
+
+								//Arm Torus Inner
+								modelStack.PushMatrix();
+									modelStack.Translate(0.0f, -0.8f , 0.0f);
+
+									modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(1.0f, 0.8f, 1.0f);
+									this->RenderMesh(meshList[GEO_HANDTORUS], true);
+								modelStack.PopMatrix();
+
+							modelStack.PopMatrix();
+
+							//Hand
+							modelStack.PushMatrix();
+								modelStack.Translate(-1.3f, -0.61f , 0.0f);
+
+								modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+								modelStack.Scale(0.20f, 3.f, 2.5f); //z fatter x is longer
+								this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+
+								//Thumb
+								modelStack.PushMatrix();
+									modelStack.Rotate(-71 * LEFT , 0.0f, 1.0f, 0.0f); //Angle of finger on the hemisphere
+									modelStack.Translate(1.4f, 0.3f, 0.0f);
+									modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(0.20f, 0.5f, 0.26f); //y is for length
+									this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
+
+									modelStack.PushMatrix();
+										modelStack.Translate(0.0f, 1.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(1.0f, 0.3f, 1.0f);
+										this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+									modelStack.PopMatrix();
+
+								modelStack.PopMatrix();
+
+								//Index
+								modelStack.PushMatrix();
+									modelStack.Rotate(-20 * LEFT, 0.0f, 1.0f, 0.0f);
+									modelStack.Rotate(1, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
+									modelStack.Translate(1.4f, 0.3f, 0.0f);
+									modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(0.15f, 0.8f, 0.22f); //y is for length
+									this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
+
+									modelStack.PushMatrix();
+										modelStack.Translate(0.0f, 1.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(1.0f, 0.3f, 1.0f);
+										this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+									modelStack.PopMatrix();
+
+								modelStack.PopMatrix();
+
+								//Middle
+								modelStack.PushMatrix();
+									modelStack.Rotate(5 * LEFT, 0.0f, 1.0f, 0.0f);
+									modelStack.Rotate(3, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
+									modelStack.Translate(1.4f, 0.3f, 0.0f);
+									modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(0.15f, 0.85f, 0.22f); //y is for length
+									this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
+
+									modelStack.PushMatrix();
+										modelStack.Translate(0.0f, 1.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(1.0f, 0.3f, 1.0f);
+										this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+									modelStack.PopMatrix();
+								modelStack.PopMatrix();
+
+								//Ring
+								modelStack.PushMatrix();
+									modelStack.Rotate(30 * LEFT, 0.0f, 1.0f, 0.0f);
+									modelStack.Rotate(2, 0.0f, 0.0f, 1.0f); //Tilting upwards angle
+									modelStack.Translate(1.4f, 0.3f, 0.0f);
+									modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(0.15f, 0.75f, 0.22f); //y is for length
+									this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
+
+									modelStack.PushMatrix();
+										modelStack.Translate(0.0f, 1.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(1.0f, 0.3f, 1.0f);
+										this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+									modelStack.PopMatrix();
+								modelStack.PopMatrix();
+
+								//Pinky
+								modelStack.PushMatrix();
+									modelStack.Rotate(60 * LEFT, 0.0f, 1.0f, 0.0f);
+									modelStack.Translate(1.2f, 0.3f, 0.0f);
+									modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
+									modelStack.Scale(0.15f, 0.35f, 0.22f); //y is for length
+									this->RenderMesh(meshList[GEO_HANDCYLINDER], true);
+
+									modelStack.PushMatrix();
+										modelStack.Translate(0.0f, 1.0f, 0.0f);
+										modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+										modelStack.Scale(1.0f, 0.3f, 1.0f);
+										this->RenderMesh(meshList[GEO_HANDHEMISPHERE], true);
+									modelStack.PopMatrix();
+								modelStack.PopMatrix();
+
 							modelStack.PopMatrix();
 						modelStack.PopMatrix();
-
 					modelStack.PopMatrix();
-
 				modelStack.PopMatrix();
-
 			//Push out of arms
 			modelStack.PopMatrix();
 
