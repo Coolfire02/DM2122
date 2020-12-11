@@ -40,6 +40,8 @@ void Camera2::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 	this->up = right.Cross(view).Normalized();
 }
 
+
+
 /******************************************************************************/
 /*!
 \brief
@@ -67,7 +69,7 @@ void Camera2::Update(double dt)
 		right.y = 0;
 		right.Normalized();
 		Mtx44 rotation;
-		rotation.SetToRotation(- CAMERA_SPEED * dt , right.x, right.y, right.z);
+		rotation.SetToRotation(-CAMERA_SPEED * (float)dt, right.x, right.y, right.z);
 		position = rotation * position;
 		up = right.Cross(view).Normalized(); //update the UP with new y as its no longer 0,1,0 when it surrounds obj
 	}
@@ -75,7 +77,7 @@ void Camera2::Update(double dt)
 		Vector3 view = (target - position).Normalized();
 		Vector3 right = view.Cross(up).Normalized();
 		Mtx44 rotation;
-		rotation.SetToRotation(- CAMERA_SPEED * dt, 0, 1, 0);
+		rotation.SetToRotation(-CAMERA_SPEED * (float)dt, 0, 1, 0);
 		position = rotation * position;
 		up = rotation * up;
 	}
@@ -83,7 +85,7 @@ void Camera2::Update(double dt)
 		Vector3 view = (target - position).Normalized();
 		Vector3 right = view.Cross(up).Normalized();
 		Mtx44 rotation;
-		rotation.SetToRotation(CAMERA_SPEED * dt, 0, 1, 0);
+		rotation.SetToRotation(CAMERA_SPEED * (float)dt, 0, 1, 0);
 		position = rotation * position;
 		up = rotation * up;
 	}
@@ -93,17 +95,27 @@ void Camera2::Update(double dt)
 		right.y = 0;
 		right.Normalized();
 		Mtx44 rotation;
-		rotation.SetToRotation(CAMERA_SPEED * dt, right.x, right.y, right.z);
+		rotation.SetToRotation(CAMERA_SPEED * (float)dt, right.x, right.y, right.z);
 		position = rotation * position;
 		up = right.Cross(view).Normalized();
 	}
 	if (Application::IsKeyPressed('M')) {
 		Vector3 view = (target - position).Normalized();
-		position += view * dt * CAMERA_SPEED*0.5;
+		position += view * (float)dt * CAMERA_SPEED * 0.5;
 	}
 	if (Application::IsKeyPressed('N')) {
 		Vector3 view = (target - position).Normalized();
-		position -= view * dt * CAMERA_SPEED*0.5;
+		position -= view * (float)dt * CAMERA_SPEED * 0.5;
 	}
 
+	
+}
+
+void Camera2::Follow(float x, float y, float z) {
+	
+	target.Set(x, y, z);
+	Vector3 dir = target - position;
+	Vector3 right = dir.Cross(Vector3(0.0, 1.0f, 0.0f));
+	Vector3 up = right.Cross(dir);
+	this->Init(position, target, up);
 }

@@ -43,6 +43,8 @@ enum GEOMETRY_TYPE
 	GEO_DIRT,
 	GEO_AXES,
 
+	GEO_COINTORUS,
+
 	GEO_SONICHEAD,
 	GEO_SONICEYEBALL,
 	GEO_SONICGREENEYE,
@@ -93,8 +95,7 @@ enum DIRECTION {
 
 enum ANIMATION {
 	WALK,
-	RUN,
-	RUNJUMP,
+	FLIP,
 	HAIR,
 	NO_ANIMATION,
 };
@@ -108,6 +109,7 @@ enum POSITION_OFFSET {
 
 enum ANIMATION_OFFSET {
 	BODY_TILT = 0,
+	CHARACTER_TILT,
 	HEAD_TILT,
 	HAIR_TILT,
 
@@ -115,11 +117,13 @@ enum ANIMATION_OFFSET {
 	LEFT_ARM_ELBOW_ROLL,
 	LEFT_ARM_SHOULDER_YAW,
 	LEFT_ARM_SHOULDER_PITCH,
+	LEFT_ARM_SHOULDER_ROLL,
 	
 	RIGHT_ARM_ELBOW_PITCH,
 	RIGHT_ARM_ELBOW_ROLL,
 	RIGHT_ARM_SHOULDER_YAW,
 	RIGHT_ARM_SHOULDER_PITCH,
+	RIGHT_ARM_SHOULDER_ROLL,
 	
 	LEFT_LEG_ORIGIN_PITCH,
 	RIGHT_LEG_ORIGIN_PITCH,
@@ -153,20 +157,20 @@ private:
 	int stackedAnimations;
 	ANIMATION currentAnimation;
 	
+	float rotatingAngle;
+
 	double elapsed;
-	bool rotateAngleFWD;
-	bool translateZFWD;
-	bool scaleALLFWD;
-	float rotateAngle;
-	float rotateAngle2;
-	float translateZ;
-	float scaleAll;
 
 	void RenderMesh(Mesh* mesh, bool lightEnabled);
 	void animationUpdater(double dt);
 	void resetAnimation();
+	void resetPosition();
+	void resetScene();
+	void resetCamera();
 	void processAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, ANIMATION_OFFSET type);
 	void processMovement(double aniTime, double animationStart, double animationLength, float degreeTilt, POSITION_OFFSET type);
+	void processDeprecatedAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, ANIMATION_OFFSET type);
+	void processDeprecatedMovement(double aniTime, double animationStart, double animationLength, float degreeTilt, POSITION_OFFSET type);
 
 public:
 	SceneLight1();

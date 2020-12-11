@@ -1,0 +1,50 @@
+Sonic The Hedgehog
+
+Controls
+
+Camera Controls
+W  - Camera Up
+S  - Camera Down
+A  - Camera Left
+D  - Camera Right
+N  - Camera Zoom Out
+M  - Camera Zoom In
+
+Character Controls
+T - Walking animation
+G - Sonic Flipping animation
+
+Scene Controls
+R  - Reset Scene
+
+Lighting Controls
+P  - Lighting Up
+O  - Lighting Down
+J  - Lighting Left (X Axis)
+L  - Lighting Right (X Axis)
+K  - Lighting Front (Z Axis)
+I  - Lighting Back (Z Axis)
+
+
+
+Objects:
+
+Sonic The Hedgehog (9 Unique Geometries)
+- Tetahedron
+- Sphere
+- HemiSphere
+- HemiSphereFrustum
+- QuaterSphere
+- Torus
+- HalfTorus
+- Cone
+- Cylinder
+
+Sonic Coin Ring
+- Torus
+
+
+Animations:
+Hair animation (always on by default)
+Walking animation
+Sonic Flipping animation

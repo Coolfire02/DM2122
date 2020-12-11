@@ -59,19 +59,19 @@ To be called every frame. Camera will get user inputs and update its position an
 void Camera::Update(double dt)
 {
 	if (GetKeyState('W') & 0x8000) {
-		this->position.y += 10.f * dt;
+		this->position.y += 10.f * (float)dt;
 	}else if (GetKeyState('A') & 0x8000) {
-		this->position.x -= 10.f * dt;
+		this->position.x -= 10.f * (float)dt;
 	}else if (GetKeyState('D') & 0x8000) {
-		this->position.x += 10.f * dt;
+		this->position.x += 10.f * (float)dt;
 	}else if (GetKeyState('S') & 0x8000) {
-		this->position.y -= 10.f * dt;
+		this->position.y -= 10.f * (float)dt;
 	}
 	else if (GetKeyState('M') & 0x8000) {
-		this->position.z += 10.f * dt;
+		this->position.z += 10.f * (float)dt;
 	}
 	else if (GetKeyState('N') & 0x8000) {
-		this->position.z -= 10.f * dt;
+		this->position.z -= 10.f * (float)dt;
 	}
 
 }

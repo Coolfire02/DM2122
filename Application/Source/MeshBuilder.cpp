@@ -62,11 +62,11 @@ Then generate the VBO/IBO and store them in Mesh object
 /******************************************************************************/
 
 float coneX(float height, float totalHeight, int radius, int theta) {
-	return height / totalHeight * radius * cos(Math::DegreeToRadian(theta));
+	return height / totalHeight * radius * cos(Math::DegreeToRadian((float)theta));
 }
 
 float coneZ(float height, float totalHeight, int radius, int theta) {
-	return height / totalHeight * radius * sin(Math::DegreeToRadian(theta));
+	return height / totalHeight * radius * sin(Math::DegreeToRadian((float)theta));
 }
 
 Mesh* MeshBuilder::GenerateHalfCone(const std::string& meshName, Color color, int rad, int height)
@@ -76,38 +76,38 @@ Mesh* MeshBuilder::GenerateHalfCone(const std::string& meshName, Color color, in
 	std::vector<GLuint> index_buffer_data;
 	Vertex v;
 	v.color = color;
-	for (int theta = 1; theta <= 179; theta += 2) {
+	for (float theta = 1; theta <= 179; theta += 2) {
 		if (theta > 179) theta = 179;
 		float z = rad * sin(Math::DegreeToRadian(theta));
-		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), -height / 2.0, z);
-		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), rad, z);
+		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), (float)-height / 2.0, z);
+		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), (float)rad, z);
 		v.normal.Normalize();
 		vertex.push_back(v);
 
-		v.pos.set(0, height / 2.0, 0);
-		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), rad, z);
+		v.pos.set(0, (float)height / 2.0, 0);
+		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), (float)rad, z);
 		v.normal.Normalize();
 		vertex.push_back(v);
 	}
 
-	for (int theta = 1; theta <= 179; theta += 2) {
+	for (float theta = 1; theta <= 179; theta += 2) {
 		if (theta > 179) theta = 179;
 
 		float z = rad * sin(Math::DegreeToRadian(theta));
-		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), -height / 2.0, z);
+		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), (float) -height / 2.0, z);
 		v.normal.Set(0, -1, 0);
 		vertex.push_back(v);
 
-		v.pos.set(0, -height / 2.0, 0);
+		v.pos.set(0, (float)-height / 2.0, 0);
 		v.normal.Set(0, -1, 0);
 		vertex.push_back(v);
 	}
 	v.normal.Set(0, 0, -1);
-	v.pos.set(0, height / 2.0, 0); vertex.push_back(v);
-	v.pos.set(rad, -height / 2.0, 0); vertex.push_back(v);
-	v.pos.set(-rad, -height / 2.0, 0); vertex.push_back(v);
+	v.pos.set(0, (float)height / 2.0, 0); vertex.push_back(v);
+	v.pos.set((float)rad, (float)-height / 2.0, 0); vertex.push_back(v);
+	v.pos.set((float)-rad, (float)-height / 2.0, 0); vertex.push_back(v);
 
-	for (int i = 0; i < vertex.size(); i++) {
+	for (unsigned int i = 0; i < vertex.size(); i++) {
 		index_buffer_data.push_back(i);
 	}
 
@@ -130,40 +130,40 @@ Mesh* MeshBuilder::GenerateConicalFrustum(const std::string& meshName, Color col
 	Vertex v;
 	v.color = color;
 
-	for (int theta = 0; theta <= 360; theta += 2) {
-		v.pos.set(outerR * cos(Math::DegreeToRadian(theta)), -height / 2.0, outerR * sin(Math::DegreeToRadian(theta)));
-		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), outerR, height * sin(Math::DegreeToRadian(theta)));
+	for (float theta = 0; theta <= 360; theta += 2) {
+		v.pos.set(outerR * cos(Math::DegreeToRadian(theta)), (float)-height / 2.0, outerR * sin(Math::DegreeToRadian(theta)));
+		v.normal.Set((float)height * cos(Math::DegreeToRadian(theta)), outerR, (float)height * sin(Math::DegreeToRadian(theta)));
 		v.normal.Normalize();
 		vertex.push_back(v);
 
-		v.pos.set(innerR * cos(Math::DegreeToRadian(theta)), height / 2.0, innerR * sin(Math::DegreeToRadian(theta)));
-		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), innerR, height * sin(Math::DegreeToRadian(theta)));
+		v.pos.set(innerR * cos(Math::DegreeToRadian(theta)), (float)height / 2.0, innerR * sin(Math::DegreeToRadian(theta)));
+		v.normal.Set((float)height * cos(Math::DegreeToRadian(theta)), innerR, (float)height * sin(Math::DegreeToRadian(theta)));
 		v.normal.Normalize();
 		vertex.push_back(v);
 	}
 
-	for (int theta = 0; theta <= 360; theta += 2) {
-		v.pos.set(outerR * cos(Math::DegreeToRadian(theta)), -height / 2.0, outerR * sin(Math::DegreeToRadian(theta)));
+	for (float theta = 0; theta <= 360; theta += 2) {
+		v.pos.set(outerR * cos(Math::DegreeToRadian(theta)), (float)-height / 2.0, outerR * sin(Math::DegreeToRadian(theta)));
 		v.normal.Set(0, -1, 0);
 		vertex.push_back(v);
 
-		v.pos.set(0, -height / 2.0, 0);
+		v.pos.set(0, (float)-height / 2.0, 0);
 		v.normal.Set(0, -1, 0);
 		vertex.push_back(v);
 	}
 
-	for (int theta = 0; theta <= 360; theta += 2) {
-		v.pos.set(innerR * cos(Math::DegreeToRadian(theta)), height / 2.0, innerR * sin(Math::DegreeToRadian(theta)));
+	for (float theta = 0; theta <= 360; theta += 2) {
+		v.pos.set(innerR * cos(Math::DegreeToRadian(theta)), (float)height / 2.0, innerR * sin(Math::DegreeToRadian(theta)));
 		v.normal.Set(0, 1, 0);
 		//debug: v.color.set(1, 0, 0);
 		vertex.push_back(v);
 		
-		v.pos.set(0, height / 2.0, 0);
+		v.pos.set(0, (float)height / 2.0, 0);
 		v.normal.Set(0, 1, 0);
 		vertex.push_back(v);
 	}
 
-	for (int i = 0; i < vertex.size(); i++) {
+	for (unsigned int i = 0; i < vertex.size(); i++) {
 		index_buffer_data.push_back(i);
 	}
 
@@ -186,19 +186,19 @@ Mesh* MeshBuilder::GenerateCone(const std::string& meshName, Color color, int ra
 	Vertex v;
 	v.color = color;
 
-	for (int theta = 0; theta <= 360; theta += 2) {
-		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), -height / 2.0, rad * sin(Math::DegreeToRadian(theta)) );
-		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), rad, height * sin(Math::DegreeToRadian(theta)));
+	for (float theta = 0; theta <= 360; theta += 2) {
+		v.pos.set(rad * cos(Math::DegreeToRadian(theta)), -height / 2.0, (float)rad * sin(Math::DegreeToRadian(theta)) );
+		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), (float)rad, height * sin(Math::DegreeToRadian(theta)));
 		v.normal.Normalize();
 		vertex.push_back(v);
 
-		v.pos.set(0, height / 2.0, 0);
-		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), rad, height * sin(Math::DegreeToRadian(theta)));
+		v.pos.set(0, (float)height / 2.0, 0);
+		v.normal.Set(height * cos(Math::DegreeToRadian(theta)), (float)rad, height * sin(Math::DegreeToRadian(theta)));
 		v.normal.Normalize();
 		vertex.push_back(v);
 	}
 
-	for (int theta = 0; theta <= 360; theta += 2) {
+	for (float theta = 0; theta <= 360; theta += 2) {
 
 		v.pos.set(0, -height / 2.0, 0);
 		v.normal.Set(0, -1, 0);
@@ -237,7 +237,7 @@ Mesh* MeshBuilder::GenerateCylinder(const std::string& meshName, Color color, in
 	int index = 0;
 	float stackHeight = ((float) height) / numStack;
 
-	for (int theta = 0; theta <= 360; theta += 10) {
+	for (float theta = 0; theta <= 360; theta += 10) {
 		float x = rad * cos(Math::DegreeToRadian(theta));
 		float z = rad * sin(Math::DegreeToRadian(theta));
 
@@ -253,31 +253,31 @@ Mesh* MeshBuilder::GenerateCylinder(const std::string& meshName, Color color, in
 	}
 
 	for (int stack = 0; stack < numStack; ++stack) {
-		for (int theta = 0; theta <= 360; theta += 10) {
+		for (float theta = 0; theta <= 360; theta += 10) {
 			float x = rad * cos(Math::DegreeToRadian(theta));
 			float z = rad * sin(Math::DegreeToRadian(theta));
-			v.pos.set(x, -height / 2.0 + stack * stackHeight, z);
+			v.pos.set(x, (float)-height / 2.0 + (float)stack * stackHeight, z);
 			v.normal.Set(x,0,z);
 			vertex.push_back(v);
 			index_buffer_data.push_back(index++);
 
-			v.pos.set(x, -height / 2.0 + (stack + 1) * stackHeight, z);
+			v.pos.set(x, (float)-height / 2.0 + ((float)stack + 1) * stackHeight, z);
 			v.normal.Set(x, 0, z);
 			vertex.push_back(v);
 			index_buffer_data.push_back(index++);
 		}
 	}
 
-	for (int theta = 0; theta <= 360; theta += 10) {
+	for (float theta = 0; theta <= 360; theta += 10) {
 		float x = rad * cos(Math::DegreeToRadian(theta));
 		float z = rad * sin(Math::DegreeToRadian(theta));
 
-		v.pos.set(x, height / 2.0, z);
+		v.pos.set(x, (float)height / 2.0, z);
 		v.normal.Set(0, 1, 0);
 		vertex.push_back(v);
 		index_buffer_data.push_back(index++);
 
-		v.pos.set(0, height / 2.0, 0);
+		v.pos.set(0, (float)height / 2.0, 0);
 		v.normal.Set(0, 1, 0);
 		vertex.push_back(v);
 		index_buffer_data.push_back(index++);
@@ -302,8 +302,8 @@ Mesh* MeshBuilder::GenerateTorus(const std::string& meshName, Color color, float
 	v.color = color;
 
 	
-	int numStacks = 70;
-	int numSlices = 200;
+	unsigned int numStacks = 70;
+	unsigned int numSlices = 200;
 	float degreePerStack = 360.f / numStacks;
 	float degreePerSlice = 360.f / numSlices;
 	float x1, z1;
@@ -348,8 +348,8 @@ Mesh* MeshBuilder::GenerateHalfTorus(const std::string& meshName, Color color, f
 	v.color = color;
 
 
-	int numStacks = 70;
-	int numSlices = 200;
+	unsigned int numStacks = 70;
+	unsigned int numSlices = 200;
 	float degreePerStack = 180.f / numStacks;
 	float degreePerSlice = 360.f / numSlices;
 	float x1, z1;
@@ -405,9 +405,9 @@ Mesh* MeshBuilder::GenerateSphere(const std::string& meshName, Color color) {
 	Vertex v;
 	v.color = color;
 	
-	int numStack = 60;
-	int numSlice = 180;
-	int radius = 1;
+	unsigned int numStack = 60;
+	unsigned int numSlice = 180;
+	unsigned int radius = 1;
 	float degreePerStack = 180.f / numStack;
 	float degreePerSlice = 360.f / numSlice;
 
@@ -472,10 +472,10 @@ Mesh* MeshBuilder::GenerateHemiSphere(const std::string& meshName, Color color) 
 	Vertex v;
 	v.color = color;
 
-	int index = 0;
-	int numStack = 60;
-	int numSlice = 90;
-	int radius = 1;
+	unsigned int index = 0;
+	unsigned int numStack = 60;
+	unsigned int numSlice = 90;
+	unsigned int radius = 1;
 	float degreePerStack = 90.0f / numStack;
 	float degreePerSlice = 360.0f / numSlice;
 
@@ -524,10 +524,10 @@ Mesh* MeshBuilder::GenerateQuaterSphere(const std::string& meshName, Color color
 	Vertex v;
 	v.color = color;
 
-	int index = 0;
-	int numStack = 60;
-	int numSlice = 90;
-	int radius = 1;
+	unsigned int index = 0;
+	unsigned int numStack = 60;
+	unsigned int numSlice = 90;
+	unsigned int radius = 1;
 	float degreePerStack = 89.f / numStack;
 	float degreePerSlice = 179.f / numSlice;
 
@@ -589,10 +589,10 @@ Mesh* MeshBuilder::GenerateHemiSphereFrustum(const std::string& meshName, Color 
 	if (degreeCutOff > 180 || degreeCutOff < 2) degreeCutOff = 180;
 	degreeCutOff /= 2;
 	v.color = color;
-	int index = 0;
-	int numStack = 60;
-	int numSlice = 90;
-	int radius = 1;
+	unsigned int index = 0;
+	unsigned int numStack = 60;
+	unsigned int numSlice = 90;
+	unsigned int radius = 1;
 	float degreePerStack = degreeCutOff / numStack;
 	float degreePerSlice = 360.f / numSlice;
 
