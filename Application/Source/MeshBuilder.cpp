@@ -664,12 +664,12 @@ Mesh* MeshBuilder::GenerateTetahedron(const std::string& meshName, Color color) 
 	v.pos.set(-0.5f, -0.25f, 0.25f); v.normal = normal; vertex.push_back(v);
 	v.pos.set(0.5f, -0.25f, 0.25f); v.normal = normal; vertex.push_back(v);
 
-	normal.Set(1.0f, 0.0f, 0.0f);
+	normal.Set(0.5f, 0.5f, 0.0f);
 	v.pos.set(0.0f, 0.75f, 0.25f); v.normal = normal; vertex.push_back(v); //right
 	v.pos.set(0.5f, -0.25f, 0.25f); v.normal = normal; vertex.push_back(v);
 	v.pos.set(0.0f, -0.25f,- 0.75f); v.normal = normal; vertex.push_back(v);
 
-	normal.Set(-1.0f, 0.0f, 0.0f);
+	normal.Set(-0.5f, 0.5f, 0.0f);
 	v.pos.set(0.0f, 0.75f, 0.25f); v.normal = normal; vertex.push_back(v); //left
 	v.pos.set(0.0f, -0.25f, -0.75f); v.normal = normal; vertex.push_back(v);
 	v.pos.set(-0.5f, -0.25f, 0.25f); v.normal = normal; vertex.push_back(v);

@@ -1,0 +1,6 @@
+﻿  Generating code
+  Previous IPDB not found, fall back to full compilation.
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneLight1.cpp(445): warning C4723: potential divide by 0
+  All 512 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Application.vcxproj -> C:\Users\tanyo\source\repos\DM2122\Release\Application.exe

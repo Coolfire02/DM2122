@@ -109,6 +109,8 @@ void SceneLight1::Init() {
 	meshList[GEO_MOUTHTORUS] = MeshBuilder::GenerateTorus("sonictorus", Color(0.98039f, 0.8392f, 0.62745f), 0.2, 0.4);
 	meshList[GEO_MOUTHSPHERE] = MeshBuilder::GenerateHemiSphere("sonicsphere", Color(0.98039f, 0.8392f, 0.62745f));
 
+	meshList[GEO_NOSESPHERE] = MeshBuilder::GenerateSphere("sonicnose", Color(0.01f, 0.01f, 0.01f));
+
 	meshList[GEO_HAIRHEMISPHERE] = MeshBuilder::GenerateHemiSphere("sonichairhemi", Color(0.188f, 0.3804f, 0.89019f));
 	meshList[GEO_HAIRHEMISPHEREFRUSTUM] = MeshBuilder::GenerateHemiSphereFrustum("sonichairhemifrustum", Color(0.188f, 0.3804f, 0.89019f), 120);
 	meshList[GEO_HAIRCONE] = MeshBuilder::GenerateCone("sonichaircone", Color(0.188f, 0.3804f, 0.89019f), 1, 2);
@@ -171,6 +173,12 @@ void SceneLight1::Init() {
 	eyeMat.kSpecular.Set(0.5f, 0.5f, 0.5f);
 	eyeMat.kShininess = 2.0f;
 
+	Material noseMat;
+	noseMat.kAmbient.Set(0.3f, 0.3f, 0.3f);
+	noseMat.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	noseMat.kSpecular.Set(0.5f, 0.5f, 0.5f);
+	noseMat.kShininess = 3.5f;
+
 	meshList[GEO_GRASS]->material = floorMat;
 	meshList[GEO_DIRT]->material = floorMat;
 	meshList[GEO_SONICHEAD]->material = mat;
@@ -180,6 +188,8 @@ void SceneLight1::Init() {
 
 	meshList[GEO_MOUTHTORUS]->material = mat;
 	meshList[GEO_MOUTHSPHERE]->material = mat;
+
+	meshList[GEO_NOSESPHERE]->material = noseMat;
 
 	meshList[GEO_SONICEARS]->material = mat;
 	meshList[GEO_INNERSONICEARS]->material = mat;
@@ -244,10 +254,18 @@ void SceneLight1::animationUpdater(double dt) {
 	}
 	switch (currentAnimation) {
 	case WALK:
+	{
 		double animationStart;
 		double animationLength;
 		float degreeTilt;
 		ANIMATION_OFFSET type;
+		POSITION_OFFSET posType;
+
+		animationStart = 0.4;
+		animationLength = 2.3;
+		degreeTilt = 0.3;
+		posType = POSITION_OFFSET::OBJECTZ;
+		processMovement(aniTime, animationStart, animationLength, degreeTilt, posType);
 
 		animationStart = 0.0;
 		animationLength = 0.45;
@@ -255,12 +273,13 @@ void SceneLight1::animationUpdater(double dt) {
 		type = ANIMATION_OFFSET::LEFT_LEG_ORIGIN_PITCH;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
 
+
 		animationStart = 0.0;
 		animationLength = 0.45;
 		degreeTilt = 1;
 		type = ANIMATION_OFFSET::LEFT_ARM_ELBOW_PITCH;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
-		
+
 		animationStart = 0.08;
 		animationLength = 0.45;
 		degreeTilt = -5;
@@ -274,7 +293,7 @@ void SceneLight1::animationUpdater(double dt) {
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
 
 		animationStart = 0.40;
-		animationLength = 0.80;
+		animationLength = 0.8;
 		degreeTilt = 3;
 		type = ANIMATION_OFFSET::LEFT_ARM_ELBOW_PITCH;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
@@ -320,7 +339,7 @@ void SceneLight1::animationUpdater(double dt) {
 		degreeTilt = 4;
 		type = ANIMATION_OFFSET::LEFT_LEG_KNEE_TILT;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
-		
+
 		animationStart = 0.6;
 		animationLength = 1.2;
 		degreeTilt = -1.3;
@@ -368,13 +387,67 @@ void SceneLight1::animationUpdater(double dt) {
 		degreeTilt = 4;
 		type = ANIMATION_OFFSET::RIGHT_ARM_ELBOW_PITCH;
 		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+		break;
+	}
+		
+	case RUN:
+	{
+		double animationStart;
+		double animationLength;
+		float degreeTilt;
+		ANIMATION_OFFSET type;
+		POSITION_OFFSET posType;
 
+		/*animationStart = 0.0;
+		animationLength = 0.4;
+		degreeTilt = 0.2;
+		posType = POSITION_OFFSET::OBJECTZ;
+		processMovement(aniTime, animationStart, animationLength, degreeTilt, posType);*/
+
+		animationStart = 0.1;
+		animationLength = 0.1;
+		degreeTilt = -2;
+		type = ANIMATION_OFFSET::RIGHT_ARM_ELBOW_ROLL;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 0.2;
+		animationLength = 0.5;
+		degreeTilt = -1;
+		type = ANIMATION_OFFSET::RIGHT_ARM_SHOULDER_PITCH;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+		animationStart = 0.0;
+		animationLength = 0.5;
+		degreeTilt = -3;
+		type = ANIMATION_OFFSET::RIGHT_ARM_SHOULDER_YAW;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+
+
+	}
+	case HAIR:
+	{
+		double animationStart;
+		double animationLength;
+		float degreeTilt;
+		ANIMATION_OFFSET type;
+		
+		animationStart = 0.0;
+		animationLength = 0.5;
+		degreeTilt = -3;
+		type = ANIMATION_OFFSET::RIGHT_ARM_SHOULDER_YAW;
+		processAnimation(aniTime, animationStart, animationLength, degreeTilt, type);
+	}
 	}
 }
 
 void SceneLight1::processAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, ANIMATION_OFFSET type) {
 	if (aniTime >= animationStart && aniTime <= animationLength)
 		animation_offset[type] = animation_offset[type] + (aniTime - animationStart) / (animationLength-animationStart) * degreeTilt;
+}
+
+void SceneLight1::processMovement(double aniTime, double animationStart, double animationLength, float degreeTilt, POSITION_OFFSET type) {
+	if (aniTime >= animationStart && aniTime <= animationLength)
+		position_offset[type] = position_offset[type] + (aniTime - animationStart) / (animationLength - animationStart) * degreeTilt;
 }
 
 void SceneLight1::resetAnimation() {
@@ -449,7 +522,7 @@ void SceneLight1::Update(double dt)
 		else if (Application::IsKeyPressed('B')) {
 			currentAnimation = ANIMATION::RUN;
 			startAnimation = elapsed;
-			endAnimation = startAnimation + 1.5;
+			endAnimation = startAnimation + 2.5;
 		}
 	}
 
@@ -500,12 +573,12 @@ void SceneLight1::Render()
 	modelStack.LoadIdentity();
 
 
-	modelStack.PushMatrix();
+	/*modelStack.PushMatrix();
 		modelStack.Translate(0, 0, 0);
 		modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 		modelStack.Scale(1, 1, 1);
 		this->RenderMesh(meshList[GEO_AXES], false);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 
 	modelStack.PushMatrix();
 		modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
@@ -547,7 +620,7 @@ void SceneLight1::Render()
 	
 	//Main model: head
 	modelStack.PushMatrix();
-		modelStack.Translate(0.0f, 15.0f, 0.0f);
+		modelStack.Translate(0.0f + position_offset[OBJECTX], 15.0f + position_offset[HEIGHT], 0.0f + position_offset[OBJECTZ]);
 		modelStack.Rotate(-10, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(4.0f, 4.0f, 4.0f);
 		this->RenderMesh(meshList[GEO_SONICHEAD], true);
@@ -813,8 +886,10 @@ void SceneLight1::Render()
 						this->RenderMesh(meshList[GEO_ARMSPHERE], true);
 
 						modelStack.PushMatrix();
+							
 							modelStack.Rotate(90 + animation_offset[RIGHT_ARM_ELBOW_PITCH], 0.0f, 1.0f, 0.0f); //arm back and fourth
 							modelStack.Rotate(20 + animation_offset[RIGHT_ARM_ELBOW_ROLL], 1.0f, 0.0f, 0.0f);
+							
 							modelStack.Translate(0.0f, -5.5f*RIGHT, 0.0f);
 							modelStack.Rotate(-90, 0.0f, 1.0f, 0.0f); //Make hand face body
 							
@@ -1208,10 +1283,20 @@ void SceneLight1::Render()
 			this->RenderMesh(meshList[GEO_MOUTHTORUS], true);
 
 			modelStack.PushMatrix();
-				modelStack.Translate(0.0f, 0.0f, 0.53f);
+				modelStack.Translate(0.0f, 0.0f, 0.53f);	
 				//modelStack.Rotate(30, 1.0f, 0.0f, 0.0f);
 				modelStack.Scale(0.2f, 0.3f, 0.08f);
 				this->RenderMesh(meshList[GEO_MOUTHSPHERE], true);
+
+				//modelStack.PushMatrix();
+				//	modelStack.Rotate(-20, 1.0f, 0.0f, 0.0f);
+				//	modelStack.Translate(0.0f, 0.2f, 1.3f);
+				//	modelStack.Rotate(-6, 1.0f, 0.0f, 0.0f);
+				//	//modelStack.Rotate(90, 0.0f, 0.0f, 1.0f);
+				//	modelStack.Scale(0.15f, 0.3f, 0.8f);
+				//	this->RenderMesh(meshList[GEO_NOSESPHERE], true);
+				//modelStack.PopMatrix();
+
 			modelStack.PopMatrix();
 
 		modelStack.PopMatrix();

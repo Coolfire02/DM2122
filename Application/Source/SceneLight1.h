@@ -42,6 +42,7 @@ enum GEOMETRY_TYPE
 	GEO_GRASS = 0,
 	GEO_DIRT,
 	GEO_AXES,
+
 	GEO_SONICHEAD,
 	GEO_SONICEYEBALL,
 	GEO_SONICGREENEYE,
@@ -50,6 +51,7 @@ enum GEOMETRY_TYPE
 	GEO_INNERSONICEARS,
 	GEO_MOUTHTORUS,
 	GEO_MOUTHSPHERE,
+	GEO_NOSESPHERE,
 
 	GEO_NOSE_HEMISPHERE,
 
@@ -93,12 +95,21 @@ enum ANIMATION {
 	WALK,
 	RUN,
 	RUNJUMP,
+	HAIR,
 	NO_ANIMATION,
+};
+
+enum POSITION_OFFSET {
+	HEIGHT,
+	OBJECTX,
+	OBJECTZ,
+	POSITIONTYPE_TOTAL
 };
 
 enum ANIMATION_OFFSET {
 	BODY_TILT = 0,
 	HEAD_TILT,
+	HAIR_TILT,
 
 	LEFT_ARM_ELBOW_PITCH,
 	LEFT_ARM_ELBOW_ROLL,
@@ -130,6 +141,7 @@ private:
 	unsigned m_parameters[U_TOTAL];
 
 	double animation_offset[ANIMATION_TOTAL];
+	double position_offset[POSITIONTYPE_TOTAL];
 
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[1];
@@ -154,6 +166,7 @@ private:
 	void animationUpdater(double dt);
 	void resetAnimation();
 	void processAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, ANIMATION_OFFSET type);
+	void processMovement(double aniTime, double animationStart, double animationLength, float degreeTilt, POSITION_OFFSET type);
 
 public:
 	SceneLight1();
