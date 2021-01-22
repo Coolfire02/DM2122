@@ -18,6 +18,10 @@
 #include "Scene5.h"
 #include "SceneLight1.h"
 #include "SceneLight2.h"
+#include "SceneTexture.h"
+#include "SceneSkybox.h"
+#include "SceneModel.h"
+#include "SceneAssignment1.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -106,8 +110,8 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	Scene* scenes[2] = { new Scene1, new SceneLight1 };
-	int mainScene = 1;
+	Scene* scenes[1] = { new SceneModel };
+	int mainScene = 0;
 	scenes[mainScene]->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame

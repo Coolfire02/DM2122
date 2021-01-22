@@ -1,65 +1,13 @@
-﻿  SceneAssignment1.cpp
-  Camera.cpp
-  Camera2.cpp
-  Mesh.cpp
-  MeshBuilder.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(82,68): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(87,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(97,69): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(101,31): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(106,29): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(107,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(108,40): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(134,71): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(139,70): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(146,71): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(150,31): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(156,70): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(161,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(190,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(195,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(203,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(207,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(212,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(244,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(249,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(259,38): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(264,38): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(275,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(280,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  Scene5.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(71,23): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(72,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(75,20): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(81,20): warning C4305: '-=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(176,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(187,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(196,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(206,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(216,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  Scene2.cpp
-  Application.cpp
-  main.cpp
-  Scene1.cpp
-  Scene3.cpp
-  Scene4.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene4.cpp(68,20): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene4.cpp(74,20): warning C4305: '-=': truncation from 'double' to 'float'
-  SceneLight1.cpp
-  SceneLight2.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(98,32): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(145,114): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(152,114): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(168,104): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(204,23): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(205,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(208,20): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(214,20): warning C4305: '-=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(436,36): warning C4305: 'argument': truncation from 'double' to 'float'
-  shader.cpp
-  Utility.cpp
+﻿  Application.cpp
+  SceneSkyBox.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneSkyBox.cpp(103,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneSkyBox.cpp(176,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneSkyBox.cpp(177,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneSkyBox.cpp(180,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneSkyBox.cpp(186,20): warning C4305: '-=': truncation from 'double' to 'float'
   Generating code
-  Previous IPDB not found, fall back to full compilation.
-  All 517 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  7 of 502 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    3 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Application.vcxproj -> C:\Users\tanyo\source\repos\.COMG\Release\Application.exe

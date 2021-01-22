@@ -62,7 +62,7 @@ To be called every frame. Camera2 will get user inputs and update its position a
 /******************************************************************************/
 void Camera2::Update(double dt)
 {
-	static const float CAMERA_SPEED = 45.f;
+	static const float CAMERA_SPEED = 100.f;
 	if (Application::IsKeyPressed('W')) {
 		Vector3 view = (target - position).Normalized();
 		Vector3 right = view.Cross(up);
@@ -101,11 +101,11 @@ void Camera2::Update(double dt)
 	}
 	if (Application::IsKeyPressed('M')) {
 		Vector3 view = (target - position).Normalized();
-		position += view * (float)dt * CAMERA_SPEED * 0.5;
+		position += view * (float)dt * CAMERA_SPEED * 0.3;
 	}
 	if (Application::IsKeyPressed('N')) {
 		Vector3 view = (target - position).Normalized();
-		position -= view * (float)dt * CAMERA_SPEED * 0.5;
+		position -= view * (float)dt * CAMERA_SPEED * 0.3;
 	}
 
 	

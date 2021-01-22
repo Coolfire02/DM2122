@@ -5,36 +5,134 @@
 #include "Camera2.h"	
 #include "MeshBuilder.h"
 #include "MatrixStack.h"
+#include "Light.h"
 
 class SceneAssignment1 : public Scene
 {
 
-	enum UNIFORM_TYPE
-	{
-		U_MVP = 0,
-		U_TOTAL
-	};
+enum UNIFORM_TYPE
+{
+	U_MVP = 0,
+	U_MODELVIEW,
+	U_MODELVIEW_INVERSE_TRANSPOSE,
+	U_MATERIAL_AMBIENT,
+	U_MATERIAL_DIFFUSE,
+	U_MATERIAL_SPECULAR,
+	U_MATERIAL_SHININESS,
+	U_LIGHT0_POSITION,
+	U_LIGHT0_COLOR,
+	U_LIGHT0_POWER,
+	U_LIGHT0_KC,
+	U_LIGHT0_KL,
+	U_LIGHT0_KQ,
+	U_LIGHTENABLED,
 
-	enum GEOMETRY_TYPE
-	{
-		GEO_CUBE = 0,
-		GEO_AXES,
-		GEO_CONE,
-		GEO_SUN,
-		GEO_PLANET1,
-		GEO_PLANET2,
-		GEO_PLANET3,
-		GEO_PLANET4,
-		GEO_PLANET5,
-		GEO_PLANET6,
-		GEO_PLANET7,
-		GEO_PLANET8,
-		GEO_PLANET9,
-		GEO_PLANET10,
-		GEO_PLANET11,
+	U_LIGHT0_TYPE,
+	U_LIGHT0_SPOTDIRECTION,
+	U_LIGHT0_COSCUTOFF,
+	U_LIGHT0_COSINNER,
+	U_LIGHT0_EXPONENT,
+	U_NUMLIGHTS,
 
-		NUM_GEOMETRY,
-	};
+	U_TOTAL,
+};
+
+enum GEOMETRY_TYPE
+{
+	GEO_GRASS = 0,
+	GEO_DIRT,
+	GEO_AXES,
+
+	GEO_COINTORUS,
+
+	GEO_SONICHEAD,
+	GEO_SONICEYEBALL,
+	GEO_SONICGREENEYE,
+	GEO_SONICBLACKEYE,
+	GEO_SONICEARS,
+	GEO_INNERSONICEARS,
+	GEO_MOUTHTORUS,
+	GEO_MOUTHSPHERE,
+	GEO_NOSESPHERE,
+
+	GEO_NOSE_HEMISPHERE,
+
+	GEO_HAIRHEMISPHERE,
+	GEO_HAIRHEMISPHEREFRUSTUM,
+	GEO_HAIRCONE,
+	GEO_HAIRHALFCONE,
+	GEO_HAIRCONICALFRUSTUM,
+
+	GEO_BODY_BACK_HEMISPHERE,
+	GEO_BODY_FRONT_BLUE_HEMISPHERE_FRUSTUM,
+	GEO_BODY_FRONT_ORANGE_HEMISPHERE,
+
+	GEO_ARMCYLINDER,
+	GEO_ARMHEMISPHERE,
+	GEO_ARMSPHERE,
+	GEO_HANDTORUS,
+	GEO_HANDCYLINDER,
+	GEO_HANDHEMISPHERE,
+
+	GEO_LEGCYLINDER,
+	GEO_LEGTORUS,
+	GEO_LEGHEMISPHERE,
+	GEO_LEGSPHERE,
+
+	GEO_BOOTSQUATERSPHERE,
+	GEO_BOOTSLACEHALFTORUS,
+	GEO_BOOTSFEETTORUS,
+	GEO_BOOTSLACEHOOK,
+
+	GEO_LIGHTBALL,
+	NUM_GEOMETRY,
+};
+
+enum DIRECTION {
+	LEFT = -1,
+	RIGHT = 1,
+};
+
+enum ANIMATION {
+	WALK,
+	FLIP,
+	HAIR,
+	NO_ANIMATION,
+};
+
+enum POSITION_OFFSET {
+	HEIGHT,
+	OBJECTX,
+	OBJECTZ,
+	POSITIONTYPE_TOTAL
+};
+
+enum ANIMATION_OFFSET {
+	BODY_TILT = 0,
+	CHARACTER_TILT,
+	HEAD_TILT,
+	HAIR_TILT,
+
+	LEFT_ARM_ELBOW_PITCH,
+	LEFT_ARM_ELBOW_ROLL,
+	LEFT_ARM_SHOULDER_YAW,
+	LEFT_ARM_SHOULDER_PITCH,
+	LEFT_ARM_SHOULDER_ROLL,
+	
+	RIGHT_ARM_ELBOW_PITCH,
+	RIGHT_ARM_ELBOW_ROLL,
+	RIGHT_ARM_SHOULDER_YAW,
+	RIGHT_ARM_SHOULDER_PITCH,
+	RIGHT_ARM_SHOULDER_ROLL,
+	
+	LEFT_LEG_ORIGIN_PITCH,
+	RIGHT_LEG_ORIGIN_PITCH,
+	
+	LEFT_LEG_KNEE_TILT,
+	RIGHT_LEG_KNEE_TILT,
+	
+	ANIMATION_TOTAL
+};
 
 private:
 
@@ -46,16 +144,33 @@ private:
 	//stores handlers for uniform parametes
 	unsigned m_parameters[U_TOTAL];
 
+	double animation_offset[ANIMATION_TOTAL];
+	double position_offset[POSITIONTYPE_TOTAL];
+
 	Mesh* meshList[NUM_GEOMETRY];
+	Light light[1];
 	MS modelStack, viewStack, projectionStack;
 
-	bool rotateAngleFWD;
-	bool translateZFWD;
-	bool scaleALLFWD;
-	float rotateAngle;
-	float rotateAngle2;
-	float translateZ;
-	float scaleAll;
+	//Animation
+	double startAnimation;
+	double endAnimation;
+	int stackedAnimations;
+	ANIMATION currentAnimation;
+	
+	float rotatingAngle;
+
+	double elapsed;
+
+	void RenderMesh(Mesh* mesh, bool lightEnabled);
+	void animationUpdater(double dt);
+	void resetAnimation();
+	void resetPosition();
+	void resetScene();
+	void resetCamera();
+	void processAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, ANIMATION_OFFSET type);
+	void processMovement(double aniTime, double animationStart, double animationLength, float degreeTilt, POSITION_OFFSET type);
+	void processDeprecatedAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, ANIMATION_OFFSET type);
+	void processDeprecatedMovement(double aniTime, double animationStart, double animationLength, float degreeTilt, POSITION_OFFSET type);
 
 public:
 	SceneAssignment1();

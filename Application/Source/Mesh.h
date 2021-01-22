@@ -34,6 +34,7 @@ public:
 	unsigned colorBuffer;
 	unsigned indexBuffer;
 	unsigned indexSize;
+	unsigned textureID;
 };
 
 #endif

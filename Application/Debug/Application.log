@@ -1,4 +1,7 @@
-﻿  SceneLight1.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(546,19): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight1.cpp(663,28): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+﻿  SceneModel.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(104,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(196,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(197,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(200,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(206,20): warning C4305: '-=': truncation from 'double' to 'float'
   Application.vcxproj -> C:\Users\tanyo\source\repos\.COMG\Debug\Application.exe
