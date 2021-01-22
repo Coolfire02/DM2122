@@ -22,6 +22,7 @@
 #include "SceneSkybox.h"
 #include "SceneModel.h"
 #include "SceneAssignment1.h"
+#include "SceneText.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -110,7 +111,7 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	Scene* scenes[1] = { new SceneModel };
+	Scene* scenes[1] = { new SceneText };
 	int mainScene = 0;
 	scenes[mainScene]->Init();
 

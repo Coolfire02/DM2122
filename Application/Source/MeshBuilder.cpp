@@ -25,6 +25,80 @@ Mesh* MeshBuilder::GenerateOBJ(const std::string& meshName, const std::string& f
 	return mesh;
 }
 
+Mesh* MeshBuilder::GenerateText(const std::string& meshName, unsigned numRow, unsigned numCol)
+{
+	float length = 1.0f;
+	Vertex v;
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+	v.normal.Set(0, 0, 1);
+
+	float width = 1.f / numCol;
+	float height = 1.f / numRow;
+	int indexOffset = 0;
+	unsigned offset = 0;
+	Color color(0, 1, 0);
+	v.normal.Set(0, 0, 1);
+	//v.pos.set(0.5f * length, 0.5f * length, 0.f);	v.color = color; v.texCoord.Set(1, 1);	vertex_buffer_data.push_back(v); //v0
+	//v.pos.set(-0.5f * length, 0.5f * length, 0.f);	v.color = color; v.texCoord.Set(0, 1);	vertex_buffer_data.push_back(v); //v1
+	//v.pos.set(-0.5f * length, -0.5f * length, 0.f);	v.color = color; v.texCoord.Set(0, 0);	vertex_buffer_data.push_back(v); //v2
+	//v.pos.set(0.5f * length, -0.5f * length, 0.f);	v.color = color; v.texCoord.Set(1, 0); vertex_buffer_data.push_back(v); //v3
+
+	////tri1
+	//index_buffer_data.push_back(0);
+	//index_buffer_data.push_back(1);
+	//index_buffer_data.push_back(2);
+	////tri2
+	//index_buffer_data.push_back(0);
+	//index_buffer_data.push_back(2);
+	//index_buffer_data.push_back(3);
+
+	for (unsigned row = 0; row < numRow; ++row) {
+		for (unsigned col = 0; col < numCol; ++col) {
+			/*Task: Add 4 vertices into vertex_buffer_data
+			Task: Add 6 indices into index_buffer_data*/
+			
+			v.pos.set(-0.5f, 0.5f, 0.f); //TOPL
+			v.texCoord.Set(0 + width * col, 1 - height * row);
+			vertex_buffer_data.push_back(v);
+
+			v.pos.set(-0.5f, -0.5f, 0.f); //BOTL
+			v.texCoord.Set(0 + width * (col), 1 - height * (row+1));
+			vertex_buffer_data.push_back(v);
+
+			v.pos.set(0.5f, 0.5f, 0.f); //TOPR
+			v.texCoord.Set(0 + width * (col+1), 1 - height * row);
+			vertex_buffer_data.push_back(v);
+
+			v.pos.set(0.5f, -0.5f,0.f); //BOTR
+			v.texCoord.Set(0 + width * (col+1), 1 - height * (row + 1));
+			vertex_buffer_data.push_back(v);
+
+			index_buffer_data.push_back(0+indexOffset);
+			index_buffer_data.push_back(1 + indexOffset);
+			index_buffer_data.push_back(2 + indexOffset);
+
+			index_buffer_data.push_back(2 + indexOffset);
+			index_buffer_data.push_back(1 + indexOffset);
+			index_buffer_data.push_back(3 + indexOffset);
+
+			indexOffset += 4;
+		}
+	}
+
+	Mesh* mesh = new Mesh(meshName);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+
+	mesh->indexSize = index_buffer_data.size();
+	mesh->mode = Mesh::DRAW_TRIANGLES;
+
+	return mesh;
+}
+
 /******************************************************************************/
 /*!
 \brief

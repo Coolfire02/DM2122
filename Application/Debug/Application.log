@@ -1,7 +1,8 @@
-﻿  SceneModel.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(104,32): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(196,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(197,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(200,20): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(206,20): warning C4305: '-=': truncation from 'double' to 'float'
-  Application.vcxproj -> C:\Users\tanyo\source\repos\.COMG\Debug\Application.exe
+﻿  SceneText.cpp
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneText.cpp(110,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneText.cpp(205,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneText.cpp(206,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneText.cpp(208,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneText.cpp(211,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneText.cpp(217,20): warning C4305: '-=': truncation from 'double' to 'float'
+  Application.vcxproj -> C:\Users\tanyo\source\repos\DM2122\Debug\Application.exe

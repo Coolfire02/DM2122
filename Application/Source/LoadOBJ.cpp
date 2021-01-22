@@ -11,95 +11,107 @@ bool LoadOBJ(
 	std::vector<Vector3> & out_normals
 )
 {
-	//Fill up code from OBJ lecture notes
-
 	std::ifstream fileStream(file_path, std::ios::binary);
-	if (!fileStream.is_open()) {
-		std::cout << "Impossible to open " << file_path << ". Are you in the right directory? \n" << std::endl;
+	if(!fileStream.is_open())
+	{
+		std::cout << "Impossible to open " << file_path << ". Are you in the right directory ?\n";
 		return false;
 	}
-	std::vector<unsigned> vertexIndices, uvIndices, nIndices;
-	std::vector<Position> temp_vertices; //Temporary vertices
-	std::vector<TexCoord> temp_uvs; //Temporary texture coordinates
-	std::vector<Vector3> temp_ns; //Temporary normals
-	while (!fileStream.eof()) {
+
+	std::vector<unsigned> vertexIndices, uvIndices, normalIndices;
+	std::vector<Position> temp_vertices;
+	std::vector<TexCoord> temp_uvs;
+	std::vector<Vector3> temp_normals;
+
+	while(!fileStream.eof())
+	{
 		char buf[256];
 		fileStream.getline(buf, 256);
-		if (strncmp("v ", buf, 2) == 0) { //2 char "v " hence 2 for max count
+		if(strncmp("v ", buf, 2) == 0)
+		{
 			Position vertex;
-			sscanf_s((buf + 2), "%f%f%f", &vertex.x, &vertex.y, &vertex.z); //Ignores whitespace
+			sscanf_s((buf + 2), "%f%f%f", &vertex.x, &vertex.y, &vertex.z);
 			temp_vertices.push_back(vertex);
-
-			
 		}
-		else if (strncmp("vt ", buf, 3) == 0) {
-			TexCoord uv;
-			sscanf_s((buf + 2), "%f%f", &uv.u, &uv.v); 
-			temp_uvs.push_back(uv);
+		else if(strncmp("vt ", buf, 3) == 0)
+		{
+			TexCoord tc;
+			sscanf_s((buf + 2), "%f%f", &tc.u, &tc.v);
+			temp_uvs.push_back(tc);
 		}
-		else if (strncmp("vn ", buf, 3) == 0) {
+		else if(strncmp("vn ", buf, 3) == 0)
+		{
 			Vector3 normal;
 			sscanf_s((buf + 2), "%f%f%f", &normal.x, &normal.y, &normal.z);
-			temp_ns.push_back(normal);
+			temp_normals.push_back(normal);
 		}
-		else if (strncmp("f ", buf, 2) == 0) {
-			unsigned int vertexIndex[4], uvIndex[4], nIndex[4];
+		else if(strncmp("f ", buf, 2) == 0)
+		{
+			unsigned int vertexIndex[4], uvIndex[4], normalIndex[4];
 			int matches = sscanf_s((buf + 2), "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", 
-				&vertexIndex[0], &uvIndex[0], &nIndex[0],
-				&vertexIndex[1], &uvIndex[1], &nIndex[1],
-				& vertexIndex[2], &uvIndex[2], &nIndex[2],
-				& vertexIndex[3], &uvIndex[3], &nIndex[3]);
-			switch (matches) {
-			case 9:
+				&vertexIndex[0], &uvIndex[0], &normalIndex[0], 
+				&vertexIndex[1], &uvIndex[1], &normalIndex[1], 
+				&vertexIndex[2], &uvIndex[2], &normalIndex[2], 
+				&vertexIndex[3], &uvIndex[3], &normalIndex[3]);
+			
+			if(matches == 9) //triangle
+			{
 				vertexIndices.push_back(vertexIndex[0]);
 				vertexIndices.push_back(vertexIndex[1]);
 				vertexIndices.push_back(vertexIndex[2]);
-				uvIndices	 .push_back(uvIndex[0]);
-				uvIndices	 .push_back(uvIndex[1]);
-				uvIndices	 .push_back(uvIndex[2]);
-				nIndices	 .push_back(nIndex[0]);
-				nIndices	 .push_back(nIndex[1]);
-				nIndices	 .push_back(nIndex[2]);
-				break;
-			case 12:
+				uvIndices    .push_back(uvIndex[0]);
+				uvIndices    .push_back(uvIndex[1]);
+				uvIndices    .push_back(uvIndex[2]);
+				normalIndices.push_back(normalIndex[0]);
+				normalIndices.push_back(normalIndex[1]);
+				normalIndices.push_back(normalIndex[2]);
+			}
+			else if(matches == 12) //quad
+			{
 				vertexIndices.push_back(vertexIndex[0]);
 				vertexIndices.push_back(vertexIndex[1]);
 				vertexIndices.push_back(vertexIndex[2]);
-				uvIndices	 .push_back(uvIndex[0]);
-				uvIndices	 .push_back(uvIndex[1]);
-				uvIndices	 .push_back(uvIndex[2]);
-				nIndices	 .push_back(nIndex[0]);
-				nIndices	 .push_back(nIndex[1]);
-				nIndices	 .push_back(nIndex[2]);
-
+				uvIndices    .push_back(uvIndex[0]);
+				uvIndices    .push_back(uvIndex[1]);
+				uvIndices    .push_back(uvIndex[2]);
+				normalIndices.push_back(normalIndex[0]);
+				normalIndices.push_back(normalIndex[1]);
+				normalIndices.push_back(normalIndex[2]);
+				
 				vertexIndices.push_back(vertexIndex[2]);
 				vertexIndices.push_back(vertexIndex[3]);
 				vertexIndices.push_back(vertexIndex[0]);
-				uvIndices	 .push_back(uvIndex[2]);
-				uvIndices	 .push_back(uvIndex[3]);
-				uvIndices	 .push_back(uvIndex[0]);
-				nIndices	 .push_back(nIndex[2]);
-				nIndices	 .push_back(nIndex[3]);
-				nIndices	 .push_back(nIndex[0]);
-
-				break;
-			default:
-				std::cout << "Invalid Face Parsed." << std::endl;
+				uvIndices    .push_back(uvIndex[2]);
+				uvIndices    .push_back(uvIndex[3]);
+				uvIndices    .push_back(uvIndex[0]);
+				normalIndices.push_back(normalIndex[2]);
+				normalIndices.push_back(normalIndex[3]);
+				normalIndices.push_back(normalIndex[0]);
+			}
+			else
+			{
+				std::cout << "Error line: " << buf << std::endl;
+				std::cout << "File can't be read by parser\n";
+				return false;
 			}
 		}
 	}
 	fileStream.close();
-	for (unsigned i = 0; i < vertexIndices.size(); ++i) {
-		//Get the indices of its attributes
+
+	// For each vertex of each triangle
+	for(unsigned i = 0; i < vertexIndices.size(); ++i)
+	{
+		// Get the indices of its attributes
 		unsigned int vertexIndex = vertexIndices[i];
 		unsigned int uvIndex = uvIndices[i];
-		unsigned int nIndex = nIndices[i];
-
-		// Get the attributes thanks to the index -1 cause index starts at 1
+		unsigned int normalIndex = normalIndices[i];
+		
+		// Get the attributes thanks to the index
 		Position vertex = temp_vertices[vertexIndex - 1];
 		TexCoord uv = temp_uvs[uvIndex - 1];
-		Vector3 normal = temp_ns[nIndex - 1];
-
+		Vector3 normal = temp_normals[normalIndex - 1];
+		
+		// Put the attributes in buffers
 		out_vertices.push_back(vertex);
 		out_uvs.push_back(uv);
 		out_normals.push_back(normal);

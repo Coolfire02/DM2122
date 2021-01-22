@@ -13,6 +13,7 @@
 class MeshBuilder
 {
 public:
+	static Mesh* GenerateText(const std::string& meshName, unsigned numRow, unsigned numCol);
 	static Mesh* GenerateOBJ(const std::string& meshName, const std::string& file_path);
 	//static Mesh* GenerateQuad(const std::string& meshName, float lengthX, float lengthY, float lengthZ);
 	static Mesh* GenerateAxes(const std::string &meshName, float lengthX, float lengthY, float lengthZ);
