@@ -7,6 +7,8 @@
 struct Box {
 	Position3D* botLeftPos;
 	Position3D* topRightPos;
+	
+	Box(Position3D* botLeft, Position3D* topRight) : botLeftPos(botLeft), topRightPos(topRight) {}
 
 	bool locIsInBox(Position3D loc) {
 		if (loc.getX >= botLeftPos->getX() && loc.getX <= topRightPos->getX() &&

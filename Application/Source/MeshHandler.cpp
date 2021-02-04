@@ -50,11 +50,18 @@ bool MeshHandler::loadMeshes() {
 	return true;
 }
 
+Mesh* MeshHandler::getMesh(GEOMETRY_TYPE type) {
+	return meshList[type];
+}
+
 bool MeshHandler::unloadMeshes() {
 	if (!isLoaded)
 		return false;
 
 	//Delete meshes
+	for (int i = 0; i < NUM_GEOMETRY; i++) {
+		delete meshList[i];
+	}
 
 	isLoaded = false;
 	return true;

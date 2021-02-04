@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Scene.cpp" />
     <ClCompile Include="Source\Sonic.cpp" />
     <ClCompile Include="Source\MeshHandler.cpp" />
     <ClCompile Include="Source\Entity.cpp" />

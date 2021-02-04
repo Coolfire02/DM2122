@@ -978,6 +978,87 @@ Mesh* MeshBuilder::GenerateCube(const std::string &meshName, Color color)
 	return mesh;
 }
 
+Mesh* MeshBuilder::GenerateHitBox(const std::string& meshName, Position3D botLeftPos, Position3D topRightPos)
+{
+	// Cube
+	int index = 0;
+	std::vector<Vertex> vertex;
+	Vertex v;
+	v.color = Color(1,1,1);
+	Vector3 normal;
+	normal.Set(0, 0, 1);
+	v.pos.set(topRightPos.getX(), topRightPos.getY(), botLeftPos.getZ()); v.normal = normal;  vertex.push_back(v); //front
+	v.pos.set(botLeftPos.getX(), topRightPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), botLeftPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	v.pos.set(topRightPos.getX(), topRightPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), botLeftPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(topRightPos.getX(), botLeftPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	normal.Set(-1, 0, 0);
+	v.pos.set(botLeftPos.getX(), topRightPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v); //forward left
+	v.pos.set(botLeftPos.getX(), topRightPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), botLeftPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	v.pos.set(botLeftPos.getX(), topRightPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), botLeftPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), botLeftPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	normal.Set(0, 0, -1);
+	v.pos.set(botLeftPos.getX(), topRightPos.getY(), topRightPos.getZ()); v.normal = normal;  vertex.push_back(v); //forward back
+	v.pos.set(topRightPos.getX(), botLeftPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), botLeftPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	v.pos.set(botLeftPos.getX(), topRightPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(topRightPos.getX(), topRightPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(topRightPos.getX(), botLeftPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	normal.Set(1, 0, 0);
+	v.pos.set(topRightPos.getX(), topRightPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v); //forward right
+	v.pos.set(topRightPos.getX(), topRightPos.getY(), botLeftPos.getZ());  v.normal = normal; vertex.push_back(v);
+	v.pos.set(topRightPos.getX(), botLeftPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	v.pos.set(topRightPos.getX(), topRightPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(topRightPos.getX(), botLeftPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(topRightPos.getX(), botLeftPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	normal.Set(0, 1, 0);
+	v.pos.set(topRightPos.getX(), topRightPos.getY(), botLeftPos.getZ()); v.normal = normal;  vertex.push_back(v);//up
+	v.pos.set(topRightPos.getX(), topRightPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), topRightPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	v.pos.set(topRightPos.getX(), topRightPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), topRightPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), topRightPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	normal.Set(0, -1, 0);
+	v.pos.set(topRightPos.getX(), botLeftPos.getY(), botLeftPos.getZ()); v.normal = normal;  vertex.push_back(v);//down
+	v.pos.set(botLeftPos.getX(), botLeftPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), botLeftPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	v.pos.set(topRightPos.getX(), botLeftPos.getY(), botLeftPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(botLeftPos.getX(), botLeftPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+	v.pos.set(topRightPos.getX(), botLeftPos.getY(), topRightPos.getZ()); v.normal = normal; vertex.push_back(v);
+
+	std::vector<GLuint> index_buffer_data;
+	for (int i = 0; i < 36; i++) {
+		index_buffer_data.push_back(i);
+	}
+
+	Mesh* mesh = new Mesh("HitBox-"+meshName);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex.size() * sizeof(Vertex), &vertex[0], GL_STATIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, mesh->colorBuffer);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(color_buffer_data), color_buffer_data, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = Mesh::DRAW_TRIANGLES;
+	mesh->indexSize = index_buffer_data.size();
+
+	calcMinMaxPos(mesh);
+	return mesh;
+}
+
 void MeshBuilder::calcMinMaxPos(Mesh* mesh) {
 	std::vector<Vertex> vertices = (std::vector<Vertex>) mesh->vertexBuffer;
 	

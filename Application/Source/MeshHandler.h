@@ -58,6 +58,7 @@ class MeshHandler
 	static Mesh* meshList[NUM_GEOMETRY];
 	static bool isLoaded;
 
+public:
 	static bool loadMeshes();
 	static bool unloadMeshes();
 

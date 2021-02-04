@@ -1,20 +1,11 @@
 #include "Entity.h"
 #include <iostream>
 
-Entity::Entity() {
-
+Entity::Entity(Scene* associatedScene) : scene(associatedScene) {
 }
 
 Entity::~Entity() {
 
-}
-
-bool Entity::loadGeometries() {
-	if (!loadedGeometries) {
-		
-		return true;
-	}
-	return false;
 }
 
 bool Entity::isDead() {

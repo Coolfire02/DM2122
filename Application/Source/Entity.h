@@ -3,6 +3,7 @@
 #include "MeshHandler.h"
 #include "HitBox.h"
 #include "EntityDataHandler.h"
+#include "Scene.h"
 //#include <map>
 
 enum ENTITYTYPE {
@@ -15,8 +16,11 @@ enum ENTITYTYPE {
 	FINISHLINE,
 };
 
-class Entity
+class Entity 
 {
+protected:
+	Scene *scene;
+	bool dead;
 	ENTITYTYPE type;
 	EntityData data;
 	HitBox hitBox; //Gets updated based on Position, defaultMin and defaultMax scaled on scale.
@@ -24,16 +28,12 @@ class Entity
 	
 	//std::multimap<GEOMETRY_TYPE, EntityMeshData*>(); ? why do u need this wtf comment out
 
-	bool dead;
-
 public:
 
-	static bool loadedGeometries;
-	static bool loadGeometries();
-
-	Entity();
+	Entity(Scene* associatedScene);
 	~Entity();
 	bool isDead();
-	virtual void Render() = 0;
+	virtual void Update(double dt) = 0;
+	virtual void Render(Scene*) = 0;
 };
 
