@@ -27,6 +27,7 @@ public:
 	Mtx44(float a00 = 0, float a10 = 0, float a20 = 0, float a30 = 0, float a01 = 0, float a11 = 0, float a21 = 0, float a31 = 0, float a02 = 0, float a12 = 0, float a22 = 0, float a32 = 0, float a03 = 0, float a13 = 0, float a23 = 0, float a33 = 0);
 	Mtx44(const float m[16]);
 	Mtx44(const Mtx44 &rhs);
+	float ValueAtPos(int row, int column);
 	void SetToIdentity(void);
 	void Transpose(void);
 	void SetToZero(void);

@@ -100,6 +100,10 @@ void Mtx44::Transpose(void) {
 			swap(a[i * 4 + j], a[j * 4 + i]);
 }
 
+float Mtx44::ValueAtPos(int row, int column) {
+	return a[row * 4 + column];
+}
+
 /******************************************************************************/
 /*!
 \brief

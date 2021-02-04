@@ -781,6 +781,7 @@ void SceneAssignment1::Render()
 		modelStack.Translate(0.0f + (float)position_offset[OBJECTX], 15.0f + (float)position_offset[HEIGHT], 0.0f + (float)position_offset[OBJECTZ]);
 		modelStack.Rotate(-10 + (float)animation_offset[CHARACTER_TILT] + (float)animation_offset[HEAD_TILT], 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(4.0f, 4.0f, 4.0f);
+		//modelStack.Top();
 		this->RenderMesh(meshList[GEO_SONICHEAD], true);
 
 		//Body

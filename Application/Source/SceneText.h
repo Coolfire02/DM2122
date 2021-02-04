@@ -2,7 +2,7 @@
 #define SCENE_TEXT1_H
 
 #include "Scene.h"
-#include "Camera2.h"	
+#include "FirstPersonCamera.h"	
 #include "MeshBuilder.h"
 #include "MatrixStack.h"
 #include "Light.h"
@@ -89,7 +89,7 @@ class SceneText : public Scene
 
 private:
 
-	Camera2 camera;
+	FirstPersonCamera camera;
 
 	unsigned m_vertexArrayID;
 	unsigned m_programID;

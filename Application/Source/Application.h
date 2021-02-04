@@ -16,8 +16,15 @@ public:
 	void Run();
 	void Exit();
 
-private:
+	static bool IsMousePressed(unsigned short key);
+	static void GetCursorPos(double* xpos, double* ypos);
+	static int GetWindowWidth();
+	static int GetWindowHeight();
+	static unsigned m_width;
+	static unsigned m_height;
 
+private:
+	int mainScene;
 	//Declare a window object
 	StopWatch m_timer;
 };

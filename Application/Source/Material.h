@@ -14,6 +14,13 @@ struct Component
 	{
 		this->r = r; this->g = g; this->b = b;
 	}
+	Component& operator=(const Component& rhs)
+	{
+		r = rhs.r;
+		g = rhs.g;
+		b = rhs.b;
+		return *this;
+	}
 };
 
 /*
@@ -24,10 +31,24 @@ struct Material
 	Component kAmbient;
 	Component kDiffuse;
 	Component kSpecular;
+	unsigned size; //indexSize
 	float kShininess;
 	Material() {
-		kShininess = 0.0f;
+		kAmbient = Component();
+		kDiffuse = Component();
+		kSpecular = Component();
+		size = 0;
+		kShininess = 1.0f;
 	};
+	Material& operator=(const Material& rhs)
+	{
+		kAmbient = rhs.kAmbient;
+		kDiffuse = rhs.kDiffuse;
+		kSpecular = rhs.kSpecular;
+		kShininess = rhs.kShininess;
+		size = rhs.size;
+		return *this;
+	}
 };
 
 

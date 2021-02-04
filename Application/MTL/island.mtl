@@ -1,0 +1,22 @@
+#
+## Alias OBJ Material File
+# Exported from SketchUp, (c) 2000-2012 Trimble Navigation Limited
+
+newmtl _3
+Ka 0.000000 0.000000 0.000000
+Kd 0.301961 0.254902 0.184314
+Ks 0.330000 0.330000 0.330000
+map_Kd floating island/_3.bmp
+
+newmtl Vegetation_Grass1
+Ka 0.000000 0.000000 0.000000
+Kd 0.521569 0.635294 0.156863
+Ks 0.330000 0.330000 0.330000
+map_Kd floating island/Vegetation_Grass1.jpg
+
+newmtl _4
+Ka 0.000000 0.000000 0.000000
+Kd 0.227451 0.192157 0.137255
+Ks 0.330000 0.330000 0.330000
+map_Kd floating island/_4.bmp
+

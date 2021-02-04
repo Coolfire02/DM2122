@@ -10,8 +10,6 @@ class FirstPersonCamera
 public:
 	Vector3 position;
 	Vector3 target;
-	Vector3 right;
-	Vector3 view;
 	Vector3 up;
 
 	FirstPersonCamera();

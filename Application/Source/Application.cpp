@@ -22,9 +22,13 @@
 #include "SceneSkybox.h"
 #include "SceneModel.h"
 #include "SceneAssignment1.h"
+#include "SceneAssignment2.h"
 #include "SceneText.h"
+#include "SceneUI.h"
 
 GLFWwindow* m_window;
+unsigned Application::m_width;
+unsigned Application::m_height;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
 
@@ -55,12 +59,32 @@ Application::~Application()
 {
 }
 
-void resize_callback(GLFWwindow* window, int w, int h) {
+void resize_callback(GLFWwindow* window, int w, int h)
+{
+	Application::m_width = w;
+	Application::m_height = h;
 	glViewport(0, 0, w, h);
+}
+bool Application::IsMousePressed(unsigned short key) //0 - Left, 1 - Right, 2 - Middle
+{
+	return glfwGetMouseButton(m_window, key) != 0;
+}
+void Application::GetCursorPos(double* xpos, double* ypos)
+{
+	glfwGetCursorPos(m_window, xpos, ypos);
+}
+int Application::GetWindowWidth()
+{
+	return m_width;
+}
+int Application::GetWindowHeight()
+{
+	return m_height;
 }
 
 void Application::Init()
 {
+	mainScene = 1; 
 	//Set the error callback
 	glfwSetErrorCallback(error_callback);
 
@@ -69,6 +93,9 @@ void Application::Init()
 	{
 		exit(EXIT_FAILURE);
 	}
+
+	m_width = 800;
+	m_height = 600;
 
 	//Set the GLFW window creation hints - these are optional
 	glfwWindowHint(GLFW_SAMPLES, 4); //Request 4x antialiasing
@@ -79,7 +106,7 @@ void Application::Init()
 
 
 	//Create a window and create its OpenGL context
-	m_window = glfwCreateWindow(800, 600, "Test Window", NULL, NULL);
+	m_window = glfwCreateWindow(m_width, m_height, "Test Window", NULL, NULL);
 	glfwSetWindowSizeCallback(m_window, resize_callback);
 
 	//If the window couldn't be created
@@ -110,14 +137,18 @@ void Application::Init()
 
 void Application::Run()
 {
-	//Main Loop
-	Scene* scenes[1] = { new SceneText };
-	int mainScene = 0;
-	scenes[mainScene]->Init();
+	Scene* scenes[2] = { new SceneUI, new SceneAssignment2 };
+	for (int i = 0; i < (sizeof(scenes) / sizeof(scenes[0])); i++) {
+		scenes[i]->Init();
+	}
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
 	{
+		if(IsKeyPressed(VK_F1))
+			mainScene = 0;
+		else if (IsKeyPressed(VK_F2))
+			mainScene = 1;
 		scenes[mainScene]->Update(m_timer.getElapsedTime());
 		scenes[mainScene]->Render();
 
@@ -129,15 +160,15 @@ void Application::Run()
 
 	} //Check if the ESC key had been pressed or if the window had been closed
 	
-	scenes[mainScene]->Exit();
-
-	for (auto& scene : scenes) {
-		delete scene;
+	for (int i = 0; i < (sizeof(scenes) / sizeof(scenes[0])); i++) {
+		scenes[i]->Exit();
+		delete scenes[i];
 	}
 }
 
 void Application::Exit()
 {
+
 	//Close OpenGL window and terminate GLFW
 	glfwDestroyWindow(m_window);
 	//Finalize and clean up GLFW

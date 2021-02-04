@@ -30,6 +30,11 @@ public:
 	static Mesh* GenerateTorus(const std::string& meshName, Color color, float innerR, float outterR);
 	static Mesh* GenerateHalfTorus(const std::string& meshName, Color color, float innerR, float outterR);
 	static Mesh* GenerateCylinder(const std::string& meshName, Color color, int height);
+	static Mesh* GenerateOBJMTL(const std::string& meshName, const std::string& file_path, const std::string& mtl_path);
+	
+private:
+	static void calcMinMaxPos(Mesh*);
+
 };
 
 #endif

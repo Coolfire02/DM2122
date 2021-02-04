@@ -156,21 +156,27 @@ void SceneText::Init() {
 	//Load OBJ
 	meshList[GEO_MODEL1] = MeshBuilder::GenerateOBJ("model1", "OBJ//chair.obj");
 	meshList[GEO_MODEL1]->textureID = LoadTGA("Image//chair.tga");
+	meshList[GEO_MODEL1]->material = mat;
 
 	meshList[GEO_MODEL2] = MeshBuilder::GenerateOBJ("model2", "OBJ//dart.obj");
 	meshList[GEO_MODEL2]->textureID = LoadTGA("Image//dart.tga");
+	meshList[GEO_MODEL2]->material = mat;
 
 	meshList[GEO_MODEL3] = MeshBuilder::GenerateOBJ("model3", "OBJ//dartboard.obj");
 	meshList[GEO_MODEL3]->textureID = LoadTGA("Image//dartboard.tga");
+	meshList[GEO_MODEL3]->material = mat;
 
 	meshList[GEO_MODEL4] = MeshBuilder::GenerateOBJ("model4", "OBJ//doorman.obj");
 	meshList[GEO_MODEL4]->textureID = LoadTGA("Image//doorman.tga");
+	meshList[GEO_MODEL4]->material = mat;
 
 	meshList[GEO_MODEL5] = MeshBuilder::GenerateOBJ("model5", "OBJ//shoe.obj");
 	meshList[GEO_MODEL5]->textureID = LoadTGA("Image//shoe.tga");
+	meshList[GEO_MODEL5]->material = mat;
 
 	meshList[GEO_MODEL6] = MeshBuilder::GenerateOBJ("model6", "OBJ//winebottle.obj");
 	meshList[GEO_MODEL6]->textureID = LoadTGA("Image//winebottle.tga");
+	meshList[GEO_MODEL6]->material = mat;
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");

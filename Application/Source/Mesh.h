@@ -2,7 +2,9 @@
 #define MESH_H
 
 #include <string>
+#include <vector>
 #include "Vertex.h"
+#include "Position3D.h"
 #include "Material.h"
 
 /******************************************************************************/
@@ -27,6 +29,14 @@ public:
 	void Render();
 	void Render(unsigned offset, unsigned count);
 
+	//10a Practical
+	static void SetMaterialLoc(unsigned kA, unsigned kD, unsigned kS, unsigned nS);
+	std::vector<Material> materials;
+	static unsigned locationKa;
+	static unsigned locationKd;
+	static unsigned locationKs;
+	static unsigned locationNs;
+
 	const std::string name;
 	DRAW_MODE mode;
 
@@ -36,6 +46,8 @@ public:
 	unsigned indexBuffer;
 	unsigned indexSize;
 	unsigned textureID;
+
+	Position3D *botLeftPos, *topRightPos;
 };
 
 #endif
