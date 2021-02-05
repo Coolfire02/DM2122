@@ -58,16 +58,18 @@ class Sonic: public Entity
 	int stackedAnimations;
 	SONIC_ANIMATION currentAnimation;
 
-public:
+	
 
-	bool startAnAnimation(SONIC_ANIMATION);
-	void animationUpdater(double dt);
+	void animationUpdater(double dt); //To be called in update
 	void resetAnimation();
 	void processAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, SONIC_ANIMATION_OFFSET type);
 	void processMovement(double aniTime, double animationStart, double animationLength, float degreeTilt, SONIC_POSITION_OFFSET type);
 	void processDeprecatedAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, SONIC_ANIMATION_OFFSET type);
 	void processDeprecatedMovement(double aniTime, double animationStart, double animationLength, float degreeTilt, SONIC_POSITION_OFFSET type);
 
+
+public:
+	bool startAnAnimation(SONIC_ANIMATION);
 
 	Sonic(Scene*);
 	~Sonic();

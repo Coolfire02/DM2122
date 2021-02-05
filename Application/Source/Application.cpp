@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "MeshHandler.h"
 #include "Scene1.h"
 #include "Scene2.h"
 #include "Scene3.h"
@@ -84,6 +85,7 @@ int Application::GetWindowHeight()
 
 void Application::Init()
 {
+	//MeshHandler::loadMeshes();
 	mainScene = 1; 
 	//Set the error callback
 	glfwSetErrorCallback(error_callback);
@@ -169,7 +171,7 @@ void Application::Run()
 
 void Application::Exit()
 {
-
+	MeshHandler::unloadMeshes();
 	//Close OpenGL window and terminate GLFW
 	glfwDestroyWindow(m_window);
 	//Finalize and clean up GLFW

@@ -1,12 +1,32 @@
 #include "HitBox.h"
 
-HitBox::HitBox(Box* box) : size(1.0f), originalBox(box) {
+HitBox::HitBox(Box* box) : size(1.0f), originalBox(box), thisTickBox(nullptr) {
 	/*this->originalHitBoxes.push_back(box);
 	hasMultipleBoxes = false;*/
 }
 
-HitBox::HitBox(Box* box) : size(1.0f), originalBox(nullptr) {
+HitBox::HitBox() : size(1.0f), originalBox(nullptr), thisTickBox(nullptr) {
 
+}
+
+void HitBox::setOriginalHitBox(Box* box) {
+	originalBox = box;
+}
+
+bool HitBox::collidedWith(HitBox other) {
+	if (this->thisTickBox != nullptr && other.getThisTickBox() != nullptr) {
+		if (this->thisTickBox->locIsInBox(other.getThisTickBox()))
+			return true;
+	}
+	return false;
+}
+
+Box* HitBox::getOriginalBox() {
+	return this->originalBox;
+}
+
+Box* HitBox::getThisTickBox() {
+	return this->thisTickBox;
 }
 
 //HitBox::HitBox(std::vector<Box*> boxes) : size(1.0f) {
@@ -21,18 +41,21 @@ HitBox::HitBox(Box* box) : size(1.0f), originalBox(nullptr) {
 void HitBox::update(Mtx44 matrix) {
 	Mtx44 bot = Mtx44(originalBox->botLeftPos->getX(), originalBox->botLeftPos->getY(), originalBox->botLeftPos->getZ(), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	Mtx44 top = Mtx44(originalBox->topRightPos->getX(), originalBox->topRightPos->getY(), originalBox->topRightPos->getZ(), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-	
+
+	if (thisTickBox == nullptr) thisTickBox = new Box(this->originalBox->botLeftPos, this->originalBox->topRightPos);
+
 	bot = matrix * bot;
-	originalBox->botLeftPos->setX(bot.ValueAtPos(0, 0));
-	originalBox->botLeftPos->setY(bot.ValueAtPos(1, 0));
-	originalBox->botLeftPos->setZ(bot.ValueAtPos(2, 0));
+	thisTickBox->botLeftPos->setX(bot.ValueAtPos(0, 0));
+	thisTickBox->botLeftPos->setY(bot.ValueAtPos(1, 0));
+	thisTickBox->botLeftPos->setZ(bot.ValueAtPos(2, 0));
 
 	top = matrix * top;
-	originalBox->topRightPos->setX(bot.ValueAtPos(0, 0));
-	originalBox->topRightPos->setY(bot.ValueAtPos(1, 0));
-	originalBox->topRightPos->setZ(bot.ValueAtPos(2, 0));
+	thisTickBox->topRightPos->setX(bot.ValueAtPos(0, 0));
+	thisTickBox->topRightPos->setY(bot.ValueAtPos(1, 0));
+	thisTickBox->topRightPos->setZ(bot.ValueAtPos(2, 0));
 }
 
 HitBox::~HitBox() {
 	delete originalBox;
+	delete thisTickBox;
 }

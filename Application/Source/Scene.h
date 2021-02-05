@@ -65,7 +65,7 @@ protected:
 	double elapsed;
 
 public:
-	Scene() {}
+	Scene() { elapsed = 0.0; }
 	~Scene() {}
 
 	void elapser(double dt);

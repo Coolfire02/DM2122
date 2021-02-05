@@ -7,7 +7,7 @@
 //#include <map>
 
 enum ENTITYTYPE {
-	PLAYER,
+	SONIC,
 	COIN,
 	FENCE,
 	EGGMAN,
@@ -29,11 +29,14 @@ protected:
 	//std::multimap<GEOMETRY_TYPE, EntityMeshData*>(); ? why do u need this wtf comment out
 
 public:
-
-	Entity(Scene* associatedScene);
+	Entity(Scene* associatedScene, ENTITYTYPE type);
 	~Entity();
+
 	bool isDead();
+	EntityData getLocation();
+	HitBox getHitBox();
+
 	virtual void Update(double dt) = 0;
-	virtual void Render(Scene*) = 0;
+	virtual void Render() = 0;
 };
 

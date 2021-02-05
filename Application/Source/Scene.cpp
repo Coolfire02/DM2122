@@ -8,10 +8,6 @@
 #include "shader.hpp"
 #include "Utility.h"
 
-Scene::Scene() {
-	elapsed = 0.0;
-}
-
 void Scene::elapser(double dt) {
 	elapsed += dt;
 }

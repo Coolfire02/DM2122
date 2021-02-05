@@ -14,6 +14,8 @@ Mesh::Mesh(const std::string &meshName)
 	: name(meshName)
 	, mode(DRAW_TRIANGLES)
 	, textureID(0)
+	, botLeftPos(nullptr)
+	, topRightPos(nullptr)
 {
 
 	glGenBuffers(1, &vertexBuffer);

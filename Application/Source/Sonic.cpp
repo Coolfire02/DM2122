@@ -1,8 +1,12 @@
 #include "Sonic.h"
 
-Sonic::Sonic(Scene* associatedScene) : Entity(associatedScene) {
+Sonic::Sonic(Scene* associatedScene) : Entity(associatedScene, ENTITYTYPE::SONIC) {
 	Box* box = new Box(new Position3D(-2, 0, 2), new Position3D(2, 4, 2));
 	hitBox.setOriginalHitBox(box);
+}
+
+void Sonic::Update(double dt) {
+
 }
 
 void Sonic::animationUpdater(double dt) {

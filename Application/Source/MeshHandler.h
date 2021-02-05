@@ -54,7 +54,6 @@ enum GEOMETRY_TYPE {
 
 class MeshHandler
 {
-
 	static Mesh* meshList[NUM_GEOMETRY];
 	static bool isLoaded;
 

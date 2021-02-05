@@ -1,7 +1,9 @@
 #include "MeshHandler.h"
 
 bool MeshHandler::isLoaded = false;
+Mesh* MeshHandler::meshList[NUM_GEOMETRY];
 
+//Currently found in Application cpp
 bool MeshHandler::loadMeshes() {
 	if (isLoaded)
 		return false;
@@ -54,6 +56,7 @@ Mesh* MeshHandler::getMesh(GEOMETRY_TYPE type) {
 	return meshList[type];
 }
 
+//Found in application CPP
 bool MeshHandler::unloadMeshes() {
 	if (!isLoaded)
 		return false;

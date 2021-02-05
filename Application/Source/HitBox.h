@@ -11,11 +11,32 @@ struct Box {
 	Box(Position3D* botLeft, Position3D* topRight) : botLeftPos(botLeft), topRightPos(topRight) {}
 
 	bool locIsInBox(Position3D loc) {
-		if (loc.getX >= botLeftPos->getX() && loc.getX <= topRightPos->getX() &&
-			loc.getY >= botLeftPos->getY() && loc.getY <= topRightPos->getY() &&
-			loc.getZ <= botLeftPos->getZ() && loc.getZ >= topRightPos->getZ()) //Right hand rule
+		if (loc.getX() >= botLeftPos->getX() && loc.getX() <= topRightPos->getX() &&
+			loc.getY() >= botLeftPos->getY() && loc.getY() <= topRightPos->getY() &&
+			loc.getZ() <= botLeftPos->getZ() && loc.getZ() >= topRightPos->getZ()) //Right hand rule
 			return true;
 		return false;
+	}
+
+	bool locIsInBox(Box* box) {
+		std::vector<Position3D*> pos;
+		Position3D* botLeftFront = box->botLeftPos; pos.push_back(botLeftFront);
+		Position3D* topRightBack = box->topRightPos; pos.push_back(topRightPos);
+
+		Position3D botRightFront = Position3D(topRightBack->getX(), botLeftFront->getY(), botLeftFront->getZ()); pos.push_back(&botRightFront);
+		Position3D topLeftBack = Position3D(botLeftFront->getX(), topRightBack->getY(), topRightBack->getZ()); pos.push_back(&topLeftBack);
+
+		Position3D botLeftBack = Position3D(botLeftFront->getX(), botLeftFront->getY(), topLeftBack.getZ()); pos.push_back(&botLeftBack);
+		Position3D botRightBack = Position3D(botRightFront.getX(), botRightFront.getY(), topRightBack->getZ()); pos.push_back(&botRightBack);
+
+		Position3D topRightFront = Position3D(topRightBack->getX(), topRightBack->getY(), botLeftFront->getZ()); pos.push_back(&topRightFront);
+		Position3D topLeftFront = Position3D(topLeftBack.getX(), topLeftBack.getY(), botLeftFront->getZ()); pos.push_back(&topLeftFront);
+
+		for (auto& entry : pos) {
+			if (!locIsInBox(*entry))
+				return false;
+		}
+		return true;
 	}
 	~Box() {
 		delete botLeftPos;
@@ -36,6 +57,8 @@ class HitBox
 	Box* originalBox;
 	float size;
 
+	Box* thisTickBox;
+
 	//bool hasMultipleBoxes;
 	//std::vector<Box*> originalHitBoxes; Too Complex, not for Assignment 2
 	
@@ -45,6 +68,9 @@ public:
 	//HitBox(std::vector<Box*> boxes);
 	~HitBox();
 
+	Box* getOriginalBox();
+	Box* getThisTickBox();
+
 	//void setHitBox(std::vector<Box*> boxes);
 
 	//This should be the Box that is defined before any scaling (Size after gen'd from MeshBuilder).
@@ -53,5 +79,7 @@ public:
 	void update(Mtx44 matrix); //Updates the entire hitbox's location based of the current obj Location
 	//Further optimizations can be done with update, making Hitbox not get recalculated every frame if Location & size both are
 	//not updated. But lack of time atm so that'll have to come in the future.
+
+	bool collidedWith(HitBox other);
 };
 

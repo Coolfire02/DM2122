@@ -5,7 +5,8 @@
 
 struct CollidedWith {
 	const Entity* attacker, * victim;
-	CollidedWith(Entity* attacker, Entity* victim) : attacker(attacker), victim(victim) {};
+	const bool justCollided;
+	CollidedWith(Entity* attacker, Entity* victim, bool justCollided) : attacker(attacker), victim(victim), justCollided(justCollided) {};
 };
 
 class EntityManager
@@ -14,6 +15,9 @@ class EntityManager
 	std::vector<Entity*> worldEntities;
 	std::vector<Entity*> movingEntities; //Moving entities, generally just Players for now (Sonic)
 
+	std::vector<CollidedWith*> prevTick;
+	std::vector<CollidedWith*> thisTick;
+
 public:
 	EntityManager(Scene* scene);
 	~EntityManager();
@@ -21,10 +25,10 @@ public:
 	void spawnMovingEntity(Entity*);
 	void spawnWorldEntity(Entity*);
 
-	void preCollisionUpdate(); // serves no purpose atm, but may in the future.
-	std::vector<CollidedWith> collisionUpdate(double dt); //Updates whether objects are dead here
+	std::vector<CollidedWith*> preCollisionUpdate(); // serves no purpose atm, but may in the future.
+	void collisionUpdate(double dt); //Updates whether objects are dead here
 	void postCollisionUpdate(); //Clears up dead entities (Remove from list, clear pointers)
 
-	std::vector<Entity*>& getEntites();
+	std::vector<Entity*> getEntities();
 };
 
