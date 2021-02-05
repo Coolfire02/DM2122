@@ -63,7 +63,7 @@ private:
 
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
-	MS modelStack, viewStack, projectionStack;
+	//MS modelStack, viewStack, projectionStack;
 	bool lightEnable;
 	bool rotateAngleFWD;
 	bool translateZFWD;

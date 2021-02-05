@@ -1,8 +1,10 @@
-﻿  SceneAssignment2.cpp
+﻿  Application.cpp
+  SceneAssignment2.cpp
 C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneAssignment2.cpp(110,32): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneAssignment2.cpp(219,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
 C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneAssignment2.cpp(220,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
 C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneAssignment2.cpp(222,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneAssignment2.cpp(225,20): warning C4305: '+=': truncation from 'double' to 'float'
 C:\Users\tanyo\source\repos\DM2122\Application\Source\SceneAssignment2.cpp(231,20): warning C4305: '-=': truncation from 'double' to 'float'
+  Generating Code...
   Application.vcxproj -> C:\Users\tanyo\source\repos\DM2122\Debug\Application.exe
