@@ -1,19 +1,22 @@
 #pragma once
 class Position3D
 {
-	int x, y, z;
+	float x, y, z;
 
 public:
-	Position3D(int, int, int);
+	Position3D(float, float, float);
+	Position3D(Position3D*);
 	Position3D();
 	~Position3D();
 
-	void setX(int);
-	void setY(int);
-	void setZ(int);
+	void setX(float);
+	void setY(float);
+	void setZ(float);
 
-	int getX();
-	int getY();
-	int getZ();
+	float getX();
+	float getY();
+	float getZ();
+
+	static Position3D* getMidPoint(Position3D*, Position3D*);
 };
 

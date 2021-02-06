@@ -6,6 +6,9 @@ enum GEOMETRY_TYPE {
 
 	//For non-OBJs
 
+	//Coin
+	GEO_COIN,
+
 	//Sonic
 	GEO_SONIC_HEAD,
 	GEO_SONIC_EYEBALL,
@@ -47,6 +50,7 @@ enum GEOMETRY_TYPE {
 	GEO_SONIC_BOOTSLACEHOOK,
 
 	//For OBJs
+	GEO_OBJ_FENCE,
 
 	//END
 	NUM_GEOMETRY

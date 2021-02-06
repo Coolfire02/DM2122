@@ -7,42 +7,44 @@
 #include "MatrixStack.h"
 #include "Light.h"
 #include "EntityManager.h"
+
+//Entities
+#include "Sonic.h"
+#include "Coin.h"
+
 #include "MeshHandler.h"
 
 class SceneAssignment2 : public Scene
 {
-
-
-	enum GEOMETRY_TYPE
+	enum SCENE_GEOMETRY_TYPE
 	{
+		//General
 		GEO_AXES = 0,
 
-		//Week 14
-		GEO_TEXT,
+		//Sonic Characters
+		GEO_SONIC_EGGMAN,
+		GEO_SONIC_TAILS,
 
-		GEO_FLOOR,
+		//Platform
+		GEO_PLATFORM_FLOOR,
 		GEO_OBJ_WINNERPODIUM,
 		GEO_OBJ_FENCE,
+		GEO_OBJ_GRASS,
+		GEO_OBJ_DIRT,
 
-		GEO_OBJ_ISLAND,
+		//UI
+		GEO_ICON,
+		GEO_TEXT,
+		GEO_COINS_METER,
+		GEO_TIME_METER,
 
-		GEO_MODEL1,
-		GEO_MODEL2,
-		GEO_MODEL3,
-		GEO_MODEL4,
-		GEO_MODEL5,
-		GEO_MODEL6,
-
+		//Skybox
 		GEO_SKY_LEFT,
 		GEO_SKY_RIGHT,
 		GEO_SKY_TOP,
 		GEO_SKY_BOTTOM,
 		GEO_SKY_FRONT,
 		GEO_SKY_BACK,
-
-		GEO_ICON,
-
-		GEO_SONIC_AMY,
 
 		GEO_LIGHTBALL,
 		NUM_GEOMETRY,
@@ -55,16 +57,10 @@ private:
 	Entity* player;
 
 
-	unsigned m_vertexArrayID;
-	unsigned m_programID;
-
-	//stores handlers for uniform parametes
-	unsigned m_parameters[U_TOTAL];
-
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];
-	//MS modelStack, viewStack, projectionStack;
-	bool lightEnable;
+
+	bool hitboxEnable;
 	bool rotateAngleFWD;
 	bool translateZFWD;
 	bool scaleALLFWD;

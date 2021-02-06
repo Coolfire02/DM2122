@@ -151,8 +151,9 @@ void Application::Run()
 			mainScene = 0;
 		else if (IsKeyPressed(VK_F2))
 			mainScene = 1;
-		scenes[mainScene]->Update(m_timer.getElapsedTime());
-		scenes[mainScene]->elapser(m_timer.getElapsedTime());
+		double dt = m_timer.getElapsedTime();
+		scenes[mainScene]->elapser(dt);
+		scenes[mainScene]->Update(dt);
 		scenes[mainScene]->Render();
 
 		//Swap buffers

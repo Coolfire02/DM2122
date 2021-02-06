@@ -17,6 +17,7 @@ SceneAssignment2::SceneAssignment2() : eManager(this)
 	scaleAll = 1;
 	fps = 0;
 	lightEnable = false;
+	hitboxEnable = false;
 
 	rotateAngleFWD = true;
 	translateZFWD = true;
@@ -160,9 +161,6 @@ void SceneAssignment2::Init() {
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("lightbulll", Color(1.0f, 1.0f, 1.0f));
 
-	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(1, 1, 1));
-	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//SonicFloor.tga");
-
 	meshList[GEO_OBJ_WINNERPODIUM] = MeshBuilder::GenerateOBJ("podium", "OBJ//winner_podium.obj");
 	meshList[GEO_OBJ_WINNERPODIUM]->textureID = LoadTGA("Image//winner_podium.tga");
 	meshList[GEO_OBJ_WINNERPODIUM]->material = mat;
@@ -170,15 +168,27 @@ void SceneAssignment2::Init() {
 	///*meshList[GEO_OBJ_ISLAND] = MeshBuilder::GenerateOBJ("island", "OBJ//island.obj");
 	//meshList[GEO_OBJ_ISLAND]->textureID = LoadTGA("Image//island.tga");*/
 
-	meshList[GEO_OBJ_FENCE] = MeshBuilder::GenerateOBJMTL("fence", "OBJ//fence2.obj", "MTL//fence.mtl");
-	meshList[GEO_OBJ_FENCE]->textureID = LoadTGA("Image//fence.tga");
-
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 
-	meshList[GEO_SONIC_AMY] = MeshBuilder::GenerateOBJMTL("amy", "OBJ//untitled.obj", "MTL//untitled.mtl");
-	//meshList[GEO_SONIC_AMY]->material = mat;
+	meshList[GEO_PLATFORM_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(1, 1, 1));
+	meshList[GEO_PLATFORM_FLOOR]->textureID = LoadTGA("Image//SonicFloor.tga");
 
+
+
+	//Platform
+	meshList[GEO_OBJ_FENCE] = MeshBuilder::GenerateOBJMTL("fence", "OBJ//fence2.obj", "MTL//fence.mtl");
+	meshList[GEO_OBJ_FENCE]->textureID = LoadTGA("Image//fence.tga");
+
+
+
+	//Sonic characters
+	meshList[GEO_SONIC_EGGMAN] = MeshBuilder::GenerateOBJMTL("Eggman", "OBJ//Eggman.obj", "MTL//Eggman.mtl");
+	meshList[GEO_SONIC_TAILS] = MeshBuilder::GenerateOBJMTL("Tails", "OBJ//Tails.obj", "MTL//Tails.mtl");
+	
+	//meshList[GEO_ICON]->textureID = LoadTGA("Image//feather.tga");
+
+	//Skybox Meshes
 	meshList[GEO_SKY_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1));
 	meshList[GEO_SKY_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1));
 	meshList[GEO_SKY_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1));
@@ -193,11 +203,14 @@ void SceneAssignment2::Init() {
 	meshList[GEO_SKY_BOTTOM]->textureID = LoadTGA("Image//bluecloud_dn.tga");
 	meshList[GEO_SKY_FRONT]->textureID = LoadTGA("Image//bluecloud_ft.tga");
 	meshList[GEO_SKY_BACK]->textureID = LoadTGA("Image//bluecloud_bk.tga");
-	meshList[GEO_ICON]->textureID = LoadTGA("Image//feather.tga");
 
+	player = new Sonic(this, "MainPlayer");
+	eManager.spawnMovingEntity(player);
 
-	//player = new Sonic(this);
-	//eManager.spawnMovingEntity(player);
+	Mesh* coinMesh = MeshHandler::getMesh(GEOMETRY_TYPE::GEO_COIN);
+	Entity* newCoin = new Coin(this, new Box(coinMesh->botLeftPos, coinMesh->topRightPos), "Coin");
+	newCoin->getEntityData()->transX = 8.0;
+	eManager.spawnWorldEntity(newCoin);
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -210,11 +223,19 @@ void SceneAssignment2::Update(double dt)
 {
 	camera.Update(dt);
 
-	//eManager.preCollisionUpdate(); 
-	//eManager.collisionUpdate(dt);not done
-	//eManager.postCollisionUpdate();
+	std::vector<CollidedWith*> collided = eManager.preCollisionUpdate(); 
+	for (auto& entry : collided) {
+		if (entry->attacker->getType() == ENTITYTYPE::SONIC && entry->victim->getType() == ENTITYTYPE::COIN) {
+			entry->victim->setDead(true);
+			/*entry->cancelled = true;
+			std::cout << "Cancelled collision" << std::endl;*/
+		}
+	}
+	eManager.collisionUpdate(dt);
+	eManager.postCollisionUpdate();
 
-	
+	//player->getEntityData()->scaleX += 0.1 * dt;
+	//player->getEntityData()->rotYMag += 1 * dt;
 
 	rotateAngle += 10 * dt;
 	rotateAngle2 += 50 * dt;
@@ -262,6 +283,9 @@ void SceneAssignment2::Update(double dt)
 		light[0].type = Light::LIGHT_SPOT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
+	if (Application::IsKeyPressed('9')) {
+		hitboxEnable = !hitboxEnable;
+	}
 	if (Application::IsKeyPressed('0')) {
 		lightEnable = !lightEnable;
 	}
@@ -281,6 +305,15 @@ void SceneAssignment2::Update(double dt)
 		light[0].position.y += (float)(LSPEED * dt);
 	Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+
+	if (Application::IsKeyPressed('T'))
+		player->getEntityData()->transZ -= (float)(LSPEED * dt);
+	if (Application::IsKeyPressed('F'))
+		player->getEntityData()->transX -= (float)(LSPEED * dt);
+	if (Application::IsKeyPressed('G'))
+		player->getEntityData()->transZ += (float)(LSPEED * dt);
+	if (Application::IsKeyPressed('H'))
+		player->getEntityData()->transX += (float)(LSPEED * dt);
 
 	lightPosition_cameraspace = viewStack.Top() * light[1].position;
 	glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
@@ -372,7 +405,7 @@ void SceneAssignment2::Render()
 	modelStack.Translate(0.0f, 0.0f, 0.0f);
 	modelStack.Rotate(-90, 1.0f, 0.0f, 0.0f);
 	modelStack.Scale(20.0f, 4.f, 1.0f);
-	this->RenderMesh(meshList[GEO_FLOOR], lightEnable);
+	this->RenderMesh(meshList[GEO_PLATFORM_FLOOR], lightEnable);
 	modelStack.PopMatrix();
 
 
@@ -384,72 +417,23 @@ void SceneAssignment2::Render()
 	this->RenderMesh(meshList[GEO_OBJ_FENCE], lightEnable);
 	modelStack.PopMatrix();
 
-	/*for (auto& entity : eManager.getEntities()) {
+	modelStack.PushMatrix();
+	modelStack.Translate(9.0f, 0.7f, 0.0f);
+	modelStack.Rotate(00, 0.0f, 1.0f, 0.0f);
+	modelStack.Scale(0.05f, 0.05f, 0.05f);
+	this->RenderMesh(meshList[GEO_SONIC_TAILS], lightEnable);
+	modelStack.PopMatrix();
+
+	for (auto& entity : eManager.getEntities()) {
 		entity->Render();
-	}*/
-
-	/*modelStack.PushMatrix();
-	modelStack.Translate(0.0f, 0.0f, 0.0f);
-	modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
-	modelStack.Scale(0.1f, 0.1f, 0.1f);
-	this->RenderMesh(meshList[GEO_OBJ_ISLAND], lightEnable);
-	modelStack.PopMatrix();*/
-
-	/*modelStack.PushMatrix();
-	modelStack.Translate(-10.0f, 0.0f, 0.0f);
-	modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
-	modelStack.Scale(0.001f, 0.001f, 0.001f);
-	this->RenderMesh(meshList[GEO_OBJ_WINNERPODIUM], lightEnable);
-	modelStack.PopMatrix();*/
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-5.0f, 0.0f, 0.0f);
-	//modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
-	//modelStack.Scale(1.0f, 1.0f, 1.0f);
-	//this->RenderMesh(meshList[GEO_MODEL2], lightEnable);
-	//modelStack.PopMatrix();
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-5.0f, 0.0f, -5.0f);
-	//modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
-	//modelStack.Scale(1.0f, 1.0f, 1.0f);
-	//this->RenderMesh(meshList[GEO_MODEL3], lightEnable);
-	//modelStack.PopMatrix();
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(10.0f, 0.0f, 10.0f);
-	//modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
-	//modelStack.Scale(1.0f, 1.0f, 1.0f);
-	//this->RenderMesh(meshList[GEO_MODEL4], lightEnable);
-	//modelStack.PopMatrix();
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0.0f, 0.0f, 25.0f);
-	//modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
-	//modelStack.Scale(1.0f, 1.0f, 1.0f);
-	//this->RenderMesh(meshList[GEO_MODEL5], lightEnable);
-	//modelStack.PopMatrix();
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(15.0f, 0.0f, 25.0f);
-	//modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
-	//modelStack.Scale(1.0f, 1.0f, 1.0f);
-	//this->RenderMesh(meshList[GEO_MODEL6], lightEnable);
-	//modelStack.PopMatrix();
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0.0f, 0.0f, 0.0f);
-	//modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
-	//modelStack.Scale(10.0f, 10.0f, 10.0f);
-	//this->RenderMesh(meshList[GEO_ICON], lightEnable);
-	//modelStack.PopMatrix();
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0.0f, 0.0f, 0.0f);
-	//modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
-	//modelStack.Scale(10.0f, 10.0f, 10.0f);
-	//this->RenderText(meshList[GEO_TEXT], "Hello World", Color(0, 1, 0));
-	//modelStack.PopMatrix();
+		if (hitboxEnable) { //Downside: Can't view hitbox accurately of Objects that are rotated
+			modelStack.PushMatrix();
+			Mesh* mesh = MeshBuilder::GenerateHitBox("hitbox", entity->getHitBox()->getThisTickBox()->botLeftPos, entity->getHitBox()->getThisTickBox()->topRightPos);
+			this->RenderMesh(mesh, lightEnable);
+			modelStack.PopMatrix();
+			delete mesh;
+		}
+	}
 
 	std::ostringstream ss;
 	ss << "FPS: " << fps;

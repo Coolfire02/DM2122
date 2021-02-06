@@ -101,7 +101,7 @@ void Mtx44::Transpose(void) {
 }
 
 float Mtx44::ValueAtPos(int row, int column) {
-	return a[row * 4 + column];
+	return a[row + column * 4];
 }
 
 /******************************************************************************/

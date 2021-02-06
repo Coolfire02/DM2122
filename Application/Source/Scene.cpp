@@ -12,6 +12,18 @@ void Scene::elapser(double dt) {
 	elapsed += dt;
 }
 
+bool Scene::isLightEnabled() {
+	return lightEnable;
+}
+
+void Scene::setLightEnabled(bool enable) {
+	lightEnable = enable;
+}
+
+void Scene::toggleLights() {
+	lightEnable = !lightEnable;
+}
+
 void Scene::RenderMesh(Mesh* mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;

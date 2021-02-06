@@ -13,30 +13,49 @@ enum ENTITYTYPE {
 	EGGMAN,
 	CLOUD,
 	SPOTLIGHT,
+	STARTLINE,
 	FINISHLINE,
+	CUSTOM
 };
 
 class Entity 
 {
 protected:
 	Scene *scene;
+	std::string name;
 	bool dead;
 	ENTITYTYPE type;
-	EntityData data;
-	HitBox hitBox; //Gets updated based on Position, defaultMin and defaultMax scaled on scale.
+	EntityData* oldData;
+	bool visible;
+	bool useNewData;
+	EntityData *data;
+	HitBox *hitBox; //Gets updated based on Position, defaultMin and defaultMax scaled on scale.
 	//Side note, if u want to calculate hitboxes with multiple "Boxes" u can do it in construct of Entity sub-types when u specify the geometries you plan to use.
 	
 	//std::multimap<GEOMETRY_TYPE, EntityMeshData*>(); ? why do u need this wtf comment out
+	void loadOriginTRSIntoStacknHitBox();
 
 public:
-	Entity(Scene* associatedScene, ENTITYTYPE type);
+	Entity(Scene* associatedScene, ENTITYTYPE type, std::string name);
 	~Entity();
 
+	std::string getName();
 	bool isDead();
-	EntityData getLocation();
-	HitBox getHitBox();
+	void setDead(bool);
+	EntityData* getEntityData();
+	ENTITYTYPE getType();
+	HitBox* getHitBox();
+	const Scene* getAssociatedScene();
 
-	virtual void Update(double dt) = 0;
+	bool isVisible();
+	void setVisibility(bool);
+
+	void cancelNextMovement();
+
+	void PreUpdate(); //Called at the start of EManager's Update
+	virtual void Update(double dt) = 0; //Called after Entity's PreUpdate in EManager's Update
+	void PostUpdate(); //Called just before EManager's Update is finished
+
 	virtual void Render() = 0;
 };
 

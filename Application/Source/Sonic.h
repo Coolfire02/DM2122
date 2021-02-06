@@ -58,6 +58,7 @@ class Sonic: public Entity
 	int stackedAnimations;
 	SONIC_ANIMATION currentAnimation;
 
+	float speed;
 	
 
 	void animationUpdater(double dt); //To be called in update
@@ -70,8 +71,8 @@ class Sonic: public Entity
 
 public:
 	bool startAnAnimation(SONIC_ANIMATION);
-
-	Sonic(Scene*);
+	void setSpeed(float speed);
+	Sonic(Scene*, std::string);
 	~Sonic();
 	void Update(double);
 	void Render();

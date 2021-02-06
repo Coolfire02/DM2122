@@ -9,6 +9,11 @@ bool MeshHandler::loadMeshes() {
 		return false;
 
 	//Mesh loading
+
+	//Coin
+	meshList[GEO_COIN] = MeshBuilder::GenerateTorus("cointorus", Color(0.95f, 0.8431f, 0.f), 0.7f, 2.8f);
+
+	//Sonic
 	meshList[GEO_SONIC_HEAD] = MeshBuilder::GenerateSphere("sonichead", Color(0.188f, 0.3804f, 0.89019f));
 	meshList[GEO_SONIC_EYEBALL] = MeshBuilder::GenerateSphere("soniceyeball", Color(0.95f, 0.95f, 0.95f));
 	meshList[GEO_SONIC_GREENEYE] = MeshBuilder::GenerateSphere("sonicgreeneyeball", Color(0.482f, 0.7686f, 0.235f));
@@ -18,7 +23,6 @@ bool MeshHandler::loadMeshes() {
 
 	meshList[GEO_SONIC_MOUTHTORUS] = MeshBuilder::GenerateTorus("sonictorus", Color(0.98039f, 0.8392f, 0.62745f), 0.2f, 0.4f);
 	meshList[GEO_SONIC_MOUTHSPHERE] = MeshBuilder::GenerateHemiSphere("sonicsphere", Color(0.98039f, 0.8392f, 0.62745f));
-
 	meshList[GEO_SONIC_NOSESPHERE] = MeshBuilder::GenerateSphere("sonicnose", Color(0.01f, 0.01f, 0.01f));
 
 	meshList[GEO_SONIC_HAIRHEMISPHERE] = MeshBuilder::GenerateHemiSphere("sonichairhemi", Color(0.188f, 0.3804f, 0.89019f));

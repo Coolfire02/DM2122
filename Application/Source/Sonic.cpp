@@ -1,12 +1,48 @@
 #include "Sonic.h"
 
-Sonic::Sonic(Scene* associatedScene) : Entity(associatedScene, ENTITYTYPE::SONIC) {
-	Box* box = new Box(new Position3D(-2, 0, 2), new Position3D(2, 4, 2));
-	hitBox.setOriginalHitBox(box);
+Sonic::Sonic(Scene* associatedScene, std::string name) : Entity(associatedScene, ENTITYTYPE::SONIC, name) {
+	Box* box = new Box(new Position3D(-1.5, -4.2, 1), new Position3D(1.5, 1.5, -1.5));
+	this->hitBox = new HitBox(box);
+	startAnimation = 0;
+	speed = 1.0f;
+	endAnimation = 0;
+	currentAnimation = NO_ANIMATION;
+	stackedAnimations = 0;
 }
 
-void Sonic::Update(double dt) {
+Sonic::~Sonic() {}
 
+void Sonic::Update(double dt) {
+	animationUpdater(dt);
+}
+
+bool Sonic::startAnAnimation(SONIC_ANIMATION animation) {
+	if (currentAnimation == NO_ANIMATION) {
+		//T = walk
+		//G = flip
+
+		switch (animation) {
+		case WALK:
+			{
+				currentAnimation = SONIC_ANIMATION::WALK;
+				startAnimation = this->scene->getElapsedTime();
+				endAnimation = startAnimation + 2.3;
+				resetAnimation();
+				break;
+			}
+		case FLIP:
+			{
+				currentAnimation = SONIC_ANIMATION::FLIP;
+				startAnimation = this->scene->getElapsedTime();
+				endAnimation = startAnimation + 4.25;
+				resetAnimation();
+			break;
+			}
+		}
+
+		return true;
+	}
+	return false;
 }
 
 void Sonic::animationUpdater(double dt) {
@@ -380,8 +416,25 @@ void Sonic::processAnimation(double aniTime, double animationStart, double anima
 }
 
 void Sonic::processMovement(double aniTime, double animationStart, double animationLength, float degreeTilt, SONIC_POSITION_OFFSET type) {
-	if (aniTime >= animationStart && aniTime <= animationLength)
-		position_offset[type] = position_offset[type] + degreeTilt / (animationLength - animationStart);
+	if (aniTime >= animationStart && aniTime <= animationLength) {
+		double toAdd = degreeTilt / (animationLength - animationStart);
+		toAdd *= speed;
+		switch (type) {
+		case HEIGHT:
+			this->getEntityData()->transY += toAdd;
+			break;
+		case OBJECTX:
+			this->getEntityData()->transX += toAdd;
+			break;
+		case OBJECTZ:
+			this->getEntityData()->transZ += toAdd;
+			break;
+		}
+	}
+}
+
+void Sonic::setSpeed(float speed) {
+	this->speed = speed;
 }
 
 void Sonic::processDeprecatedAnimation(double aniTime, double animationStart, double animationLength, float degreeTilt, SONIC_ANIMATION_OFFSET type) {
@@ -390,8 +443,21 @@ void Sonic::processDeprecatedAnimation(double aniTime, double animationStart, do
 }
 
 void Sonic::processDeprecatedMovement(double aniTime, double animationStart, double animationLength, float degreeTilt, SONIC_POSITION_OFFSET type) {
-	if (aniTime >= animationStart && aniTime <= animationLength)
-		position_offset[type] = position_offset[type] + (aniTime - animationStart) / (animationLength - animationStart) * degreeTilt;
+	if (aniTime >= animationStart && aniTime <= animationLength) {
+		double toAdd = (aniTime - animationStart) / (animationLength - animationStart) * degreeTilt;
+		toAdd *= speed;
+		switch (type) {
+		case HEIGHT:
+			this->getEntityData()->transY += toAdd;
+			break;
+		case OBJECTX:
+			this->getEntityData()->transX += toAdd;
+			break;
+		case OBJECTZ:
+			this->getEntityData()->transZ += toAdd;
+			break;
+		}
+	}
 }
 
 void Sonic::resetAnimation() {
@@ -400,17 +466,24 @@ void Sonic::resetAnimation() {
 	}
 }
 
-void Sonic::Render() {
+void Sonic::Render() { //Should move to this->loadOriginTRSIntoStacknHitBox(); instead of setting up manually here
 	//Main model: head
 	this->scene->modelStack.PushMatrix();
 		//this->scene->modelStack.Rotate(10 + animation_offset[HEAD_TILT], 1.0f, 0.0f, 0.0f);
-		this->scene->modelStack.Translate(0.0f + (float)position_offset[OBJECTX], 15.0f + (float)position_offset[HEIGHT], 0.0f + (float)position_offset[OBJECTZ]);
+		//@Deprecated	
+		EntityData* data = (this->useNewData ? this->data : this->oldData);
+
+		this->scene->modelStack.Translate(data->transX, data->transY, data->transZ);
 		this->scene->modelStack.Rotate(-10 + (float)animation_offset[CHARACTER_TILT] + (float)animation_offset[HEAD_TILT], 1.0f, 0.0f, 0.0f);
-		this->scene->modelStack.Scale(4.0f, 4.0f, 4.0f);
-		this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HEAD), true);
+		this->scene->modelStack.Rotate(data->rotXMag, 1.f, 0.f, 0.f);
+		this->scene->modelStack.Rotate(data->rotYMag, 0.f, 1.f, 0.f);
+		this->scene->modelStack.Rotate(data->rotZMag, 0.f, 0.f, 1.f);
+		this->scene->modelStack.Scale(data->scaleX, data->scaleY, data->scaleZ);
+		
+		if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HEAD), true);
 
 		//Do this for all Entities, after their first modelStack input
-		this->hitBox.update(this->scene->modelStack.Top());
+		this->hitBox->update(this->scene->modelStack.Top());
 
 		//Body
 		this->scene->modelStack.PushMatrix();
@@ -420,7 +493,7 @@ void Sonic::Render() {
 				this->scene->modelStack.Rotate(-90, 1.0f, 0.0f, 0.0f);
 				this->scene->modelStack.Translate(0.0f, 0.0f, 0.0f);
 				this->scene->modelStack.Scale(0.4f, 0.5f, 0.6f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BODY_BACK_HEMISPHERE), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BODY_BACK_HEMISPHERE), true);
 			this->scene->modelStack.PopMatrix();
 
 			//Front of body
@@ -428,13 +501,13 @@ void Sonic::Render() {
 				this->scene->modelStack.Rotate(90, 1.0f, 0.0f, 0.0f);
 				this->scene->modelStack.Translate(0.0f, 0.0f, 0.0f);
 				this->scene->modelStack.Scale(0.4f, 0.5f, 0.6f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BODY_FRONT_BLUE_HEMISPHERE_FRUSTUM), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BODY_FRONT_BLUE_HEMISPHERE_FRUSTUM), true);
 
 				this->scene->modelStack.PushMatrix();
 					this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 					this->scene->modelStack.Translate(0.0f, 0.5f, 0.0f);
 					this->scene->modelStack.Scale(0.8f, 0.5f, 0.8f);
-					this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BODY_FRONT_ORANGE_HEMISPHERE), true);
+					if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BODY_FRONT_ORANGE_HEMISPHERE), true);
 				this->scene->modelStack.PopMatrix();
 			this->scene->modelStack.PopMatrix();
 			
@@ -445,46 +518,46 @@ void Sonic::Render() {
 				this->scene->modelStack.Rotate(10 * RIGHT, 0.0f, 0.0f, 1.0f);
 				this->scene->modelStack.Rotate((float)-animation_offset[RIGHT_LEG_ORIGIN_PITCH], 1.0f, 0.0f, 0.0f); //to go back
 				this->scene->modelStack.Scale(0.12f, 0.12f, 0.12f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGHEMISPHERE), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGHEMISPHERE), true);
 
 				this->scene->modelStack.PushMatrix();
 					this->scene->modelStack.Translate(0.f, -2.8f, 0.0f);
 					this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 					this->scene->modelStack.Scale(1.0, 5.6f, 1.0f);
-					this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGCYLINDER), true);
+					if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGCYLINDER), true);
 
 					this->scene->modelStack.PushMatrix();
 						this->scene->modelStack.Scale(1.0, 0.1785f, 1.0f);
 						this->scene->modelStack.Translate(0.f, -2.9f, 0.0f);
 						this->scene->modelStack.Rotate((float)-animation_offset[RIGHT_LEG_KNEE_TILT], 1.0f, 0.0f, 0.0f);
-						this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGSPHERE), true);
+						if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGSPHERE), true);
 
 						this->scene->modelStack.PushMatrix();
 
 							this->scene->modelStack.Translate(0.f, -3.2f, 0.0f);
 							this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 							this->scene->modelStack.Scale(0.85f, 5.6f, 0.85f);
-							this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGCYLINDER), true);
+							if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGCYLINDER), true);
 
 							this->scene->modelStack.PushMatrix();
 								this->scene->modelStack.Translate(0.f, -0.5f, 0.0f);
 								this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 								this->scene->modelStack.Scale(0.8f, 0.12f, 0.8f);
 								this->scene->modelStack.Rotate(-10 * RIGHT, 0.0f, 0.0f, 1.0f);
-								this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGTORUS), true);
+								if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGTORUS), true);
 
 								this->scene->modelStack.PushMatrix();
 									this->scene->modelStack.Translate(0.f, -1.4f, 0.0f);
 									this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(1.0f, 0.8f, 1.0f);
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGTORUS), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGTORUS), true);
 
 									//Front shoe
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.4f * RIGHT, -8.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(5.0f, 8.f, 10.f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
 
 										//Lace
 										this->scene->modelStack.PushMatrix();
@@ -492,7 +565,7 @@ void Sonic::Render() {
 											this->scene->modelStack.Translate(-0.3f, 0.0f, 0.0f);
 											this->scene->modelStack.Rotate(-83, 0.0f, 0.0f, 1.0f);
 											this->scene->modelStack.Scale(0.75f, 4.f, 0.8f); //x is tallness, y value is width, 
-											this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSLACEHALFTORUS), true);
+											if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSLACEHALFTORUS), true);
 
 										this->scene->modelStack.PopMatrix();
 
@@ -500,7 +573,7 @@ void Sonic::Render() {
 											this->scene->modelStack.Translate(0.f, -0.12f, 0.25f);
 											this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 											this->scene->modelStack.Scale(0.8f, 0.8f, 0.6f);
-											this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSFEETTORUS), true);
+											if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSFEETTORUS), true);
 										this->scene->modelStack.PopMatrix();
 
 									this->scene->modelStack.PopMatrix();
@@ -511,7 +584,7 @@ void Sonic::Render() {
 										this->scene->modelStack.Translate(-0.4f * RIGHT, -8.0f, -0.3f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(5.0f, 8.f, 4.f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
 
 									this->scene->modelStack.PopMatrix();
 								this->scene->modelStack.PopMatrix();
@@ -528,45 +601,45 @@ void Sonic::Render() {
 				this->scene->modelStack.Rotate(10 * LEFT, 0.0f, 0.0f, 1.0f);
 				this->scene->modelStack.Rotate((float)-animation_offset[LEFT_LEG_ORIGIN_PITCH], 1.0f, 0.0f, 0.0f); //to go back
 				this->scene->modelStack.Scale(0.12f, 0.12f, 0.12f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGHEMISPHERE), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGHEMISPHERE), true);
 
 				this->scene->modelStack.PushMatrix();
 					this->scene->modelStack.Translate(0.f, -2.8f, 0.0f);
 					this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 					this->scene->modelStack.Scale(1.0, 5.6f, 1.0f);
-					this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGCYLINDER), true);
+					if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGCYLINDER), true);
 
 					this->scene->modelStack.PushMatrix();
 						this->scene->modelStack.Scale(1.0, 0.1785f, 1.0f);
 						this->scene->modelStack.Translate(0.f, -2.9f, 0.0f);
 						this->scene->modelStack.Rotate((float)-animation_offset[LEFT_LEG_KNEE_TILT], 1.0f, 0.0f, 0.0f);
-						this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGSPHERE), true);
+						if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGSPHERE), true);
 
 						this->scene->modelStack.PushMatrix();
 							this->scene->modelStack.Translate(0.f, -3.2f, 0.0f);
 							this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 							this->scene->modelStack.Scale(0.85f, 5.6f, 0.85f);
-							this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGCYLINDER), true);
+							if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGCYLINDER), true);
 
 							this->scene->modelStack.PushMatrix();
 								this->scene->modelStack.Translate(0.f, -0.5f, 0.0f);
 								this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 								this->scene->modelStack.Scale(0.8f, 0.12f, 0.8f);
 								this->scene->modelStack.Rotate(-10 * LEFT, 0.0f, 0.0f, 1.0f);
-								this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGTORUS), true);
+								if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGTORUS), true);
 
 								this->scene->modelStack.PushMatrix();
 									this->scene->modelStack.Translate(0.f, -1.4f, 0.0f);
 									this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(1.0f, 0.8f, 1.0f);
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGTORUS), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_LEGTORUS), true);
 
 									//Front shoe
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.4f * LEFT, -8.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(5.0f, 8.f, 10.f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
 
 										//Lace
 										this->scene->modelStack.PushMatrix();
@@ -574,7 +647,7 @@ void Sonic::Render() {
 											this->scene->modelStack.Translate(-0.3f, 0.0f, 0.0f);
 											this->scene->modelStack.Rotate(-83, 0.0f, 0.0f, 1.0f);
 											this->scene->modelStack.Scale(0.75f, 4.f, 0.8f); //x is tallness, y value is width, 
-											this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSLACEHALFTORUS), true);
+											if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSLACEHALFTORUS), true);
 
 										this->scene->modelStack.PopMatrix();
 
@@ -582,7 +655,7 @@ void Sonic::Render() {
 											this->scene->modelStack.Translate(0.f, -0.12f, 0.25f);
 											this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 											this->scene->modelStack.Scale(0.8f, 0.8f, 0.6f);
-											this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSFEETTORUS), true);
+											if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSFEETTORUS), true);
 										this->scene->modelStack.PopMatrix();
 									this->scene->modelStack.PopMatrix();
 
@@ -592,7 +665,7 @@ void Sonic::Render() {
 										this->scene->modelStack.Translate(-0.4f * LEFT, -8.0f, -0.3f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(5.0f, 8.f, 4.f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
 
 									this->scene->modelStack.PopMatrix();
 								this->scene->modelStack.PopMatrix();
@@ -613,19 +686,19 @@ void Sonic::Render() {
 				this->scene->modelStack.Rotate((float)-animation_offset[RIGHT_ARM_SHOULDER_ROLL], 0.0f, 1.0f, 0.0f);
 				this->scene->modelStack.Rotate(90, 0.0f, 0.0f, 1.0f);
 				this->scene->modelStack.Scale(0.08f, 0.12f, 0.08f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMHEMISPHERE), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMHEMISPHERE), true);
 				
 				this->scene->modelStack.PushMatrix();
 					this->scene->modelStack.Translate(0.0f, -1.0f*RIGHT, 0.0f);
 					this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 					this->scene->modelStack.Scale(1.0f, 2.f, 1.0f);
-					this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMCYLINDER), true);
+					if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMCYLINDER), true);
 
 					this->scene->modelStack.PushMatrix();
 						this->scene->modelStack.Translate(0.0f, -0.6f*RIGHT, 0.0f);
 						this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 						this->scene->modelStack.Scale(1.0f, 0.3333f, 1.0f);
-						this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMSPHERE), true);
+						if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMSPHERE), true);
 
 						this->scene->modelStack.PushMatrix();
 							this->scene->modelStack.Rotate(90 + (float)animation_offset[RIGHT_ARM_ELBOW_PITCH], 0.0f, 1.0f, 0.0f); //arm back and fourth
@@ -633,21 +706,21 @@ void Sonic::Render() {
 							this->scene->modelStack.Translate(0.0f, -5.5f*RIGHT, 0.0f);
 							this->scene->modelStack.Rotate(-90, 0.0f, 1.0f, 0.0f); //Make hand face body
 							this->scene->modelStack.Scale(1.0f, 10.4f, 1.0f);
-							this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMCYLINDER), true);
+							if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMCYLINDER), true);
 					
 							//Arm Torus Outter
 							this->scene->modelStack.PushMatrix();
 								this->scene->modelStack.Translate(0.0f, -0.40f * RIGHT, 0.0f);
 								this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 								this->scene->modelStack.Scale(0.8f, 0.07f, 0.8f);
-								this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDTORUS), true);
+								if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDTORUS), true);
 
 								//Arm Torus Inner
 								this->scene->modelStack.PushMatrix();
 									this->scene->modelStack.Translate(0.0f, -0.8f * RIGHT, 0.0f);
 									this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(1.0f, 0.8f, 1.0f);
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDTORUS), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDTORUS), true);
 								this->scene->modelStack.PopMatrix();
 							this->scene->modelStack.PopMatrix();
 
@@ -656,7 +729,7 @@ void Sonic::Render() {
 								this->scene->modelStack.Translate(-1.3f, -0.61f * RIGHT, 0.0f);
 								this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 								this->scene->modelStack.Scale(0.20f, 3.f, 2.5f); //z fatter x is longer
-								this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+								if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 
 								//Thumb
 								this->scene->modelStack.PushMatrix();
@@ -664,13 +737,13 @@ void Sonic::Render() {
 									this->scene->modelStack.Translate(1.4f, 0.3f, 0.0f);
 									this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(0.20f, 0.5f, 0.26f); //y is for length
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
 
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.0f, 1.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 									this->scene->modelStack.PopMatrix();
 
 								this->scene->modelStack.PopMatrix();
@@ -682,13 +755,13 @@ void Sonic::Render() {
 									this->scene->modelStack.Translate(1.4f, 0.3f, 0.0f);
 									this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(0.15f, 0.8f, 0.22f); //y is for length
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
 
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.0f, 1.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 									this->scene->modelStack.PopMatrix();
 
 								this->scene->modelStack.PopMatrix();
@@ -700,13 +773,13 @@ void Sonic::Render() {
 									this->scene->modelStack.Translate(1.4f, 0.3f, 0.0f);
 									this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(0.15f, 0.85f, 0.22f); //y is for length
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
 
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.0f, 1.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 									this->scene->modelStack.PopMatrix();
 								this->scene->modelStack.PopMatrix();
 
@@ -717,13 +790,13 @@ void Sonic::Render() {
 									this->scene->modelStack.Translate(1.4f, 0.3f, 0.0f);
 									this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(0.15f, 0.75f, 0.22f); //y is for length
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
 
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.0f, 1.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 									this->scene->modelStack.PopMatrix();
 								this->scene->modelStack.PopMatrix();
 
@@ -733,13 +806,13 @@ void Sonic::Render() {
 									this->scene->modelStack.Translate(1.2f, 0.3f, 0.0f);
 									this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(0.15f, 0.35f, 0.22f); //y is for length
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
 
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.0f, 1.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 									this->scene->modelStack.PopMatrix();
 								this->scene->modelStack.PopMatrix();
 
@@ -765,14 +838,14 @@ void Sonic::Render() {
 
 				this->scene->modelStack.Rotate(90, 0.0f, 0.0f, 1.0f);
 				this->scene->modelStack.Scale(0.08f, 0.12f, 0.08f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMHEMISPHERE), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMHEMISPHERE), true);
 				
 				this->scene->modelStack.PushMatrix();
 					this->scene->modelStack.Translate(0.0f, -1.0f, 0.0f);
 					
 					this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 					this->scene->modelStack.Scale(1.0f, 2.f, 1.0f);
-					this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMCYLINDER), true);
+					if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMCYLINDER), true);
 
 					this->scene->modelStack.PushMatrix();
 						
@@ -781,7 +854,7 @@ void Sonic::Render() {
 						
 						this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 						this->scene->modelStack.Scale(1.0f, 0.3333f, 1.0f);
-						this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMSPHERE), true);
+						if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMSPHERE), true);
 
 						this->scene->modelStack.PushMatrix();
 							
@@ -794,7 +867,7 @@ void Sonic::Render() {
 
 							
 							this->scene->modelStack.Scale(1.0f, 10.4f, 1.0f);
-							this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMCYLINDER), true);
+							if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_ARMCYLINDER), true);
 					
 							//Arm Torus Outter
 							this->scene->modelStack.PushMatrix();
@@ -802,7 +875,7 @@ void Sonic::Render() {
 
 								this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 								this->scene->modelStack.Scale(0.8f, 0.07f, 0.8f);
-								this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDTORUS), true);
+								if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDTORUS), true);
 
 								//Arm Torus Inner
 								this->scene->modelStack.PushMatrix();
@@ -810,7 +883,7 @@ void Sonic::Render() {
 
 									this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(1.0f, 0.8f, 1.0f);
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDTORUS), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDTORUS), true);
 								this->scene->modelStack.PopMatrix();
 
 							this->scene->modelStack.PopMatrix();
@@ -821,7 +894,7 @@ void Sonic::Render() {
 
 								this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 								this->scene->modelStack.Scale(0.20f, 3.f, 2.5f); //z fatter x is longer
-								this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+								if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 
 								//Thumb
 								this->scene->modelStack.PushMatrix();
@@ -829,13 +902,13 @@ void Sonic::Render() {
 									this->scene->modelStack.Translate(1.4f, 0.3f, 0.0f);
 									this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(0.20f, 0.5f, 0.26f); //y is for length
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
 
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.0f, 1.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 									this->scene->modelStack.PopMatrix();
 
 								this->scene->modelStack.PopMatrix();
@@ -847,13 +920,13 @@ void Sonic::Render() {
 									this->scene->modelStack.Translate(1.4f, 0.3f, 0.0f);
 									this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(0.15f, 0.8f, 0.22f); //y is for length
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
 
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.0f, 1.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 									this->scene->modelStack.PopMatrix();
 
 								this->scene->modelStack.PopMatrix();
@@ -865,13 +938,13 @@ void Sonic::Render() {
 									this->scene->modelStack.Translate(1.4f, 0.3f, 0.0f);
 									this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(0.15f, 0.85f, 0.22f); //y is for length
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
 
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.0f, 1.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 									this->scene->modelStack.PopMatrix();
 								this->scene->modelStack.PopMatrix();
 
@@ -882,13 +955,13 @@ void Sonic::Render() {
 									this->scene->modelStack.Translate(1.4f, 0.3f, 0.0f);
 									this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(0.15f, 0.75f, 0.22f); //y is for length
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
 
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.0f, 1.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 									this->scene->modelStack.PopMatrix();
 								this->scene->modelStack.PopMatrix();
 
@@ -898,13 +971,13 @@ void Sonic::Render() {
 									this->scene->modelStack.Translate(1.2f, 0.3f, 0.0f);
 									this->scene->modelStack.Rotate(-90, 0.0f, 0.0f, 1.0f);
 									this->scene->modelStack.Scale(0.15f, 0.35f, 0.22f); //y is for length
-									this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
+									if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDCYLINDER), true);
 
 									this->scene->modelStack.PushMatrix();
 										this->scene->modelStack.Translate(0.0f, 1.0f, 0.0f);
 										this->scene->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
 										this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-										this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
+										if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HANDHEMISPHERE), true);
 									this->scene->modelStack.PopMatrix();
 								this->scene->modelStack.PopMatrix();
 
@@ -928,20 +1001,20 @@ void Sonic::Render() {
 			this->scene->modelStack.Translate(-0.3f, -0.15f, 0.94f);
 			this->scene->modelStack.Rotate(-10, 0.0f, 1.0f, 0.0f);
 			this->scene->modelStack.Scale(0.135f, 0.3f, 0.135f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_EYEBALL), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_EYEBALL), true);
 
 			this->scene->modelStack.PushMatrix();
 				this->scene->modelStack.Rotate(-5, 0.0f, 0.0f, 1.0f);
 				this->scene->modelStack.Translate(0.35f, -0.4f, 0.7f);
 				this->scene->modelStack.Rotate(17, 1.0f, 0.0f, 0.0f);
 				this->scene->modelStack.Scale(0.3f, 0.3f, 0.3f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_GREENEYE), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_GREENEYE), true);
 
 				this->scene->modelStack.PushMatrix();
 					this->scene->modelStack.Translate(0.10f, 0.0f, 0.7f);
 					this->scene->modelStack.Rotate(0, 1.0f, 1.0f, 1.0f);
 					this->scene->modelStack.Scale(0.7f, 0.58f, 0.7f);
-					this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BLACKEYE), true);
+					if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BLACKEYE), true);
 				
 					this->scene->modelStack.PopMatrix();
 			this->scene->modelStack.PopMatrix();
@@ -953,7 +1026,7 @@ void Sonic::Render() {
 			this->scene->modelStack.Translate(0.3f, -0.15f, 0.94f);
 			this->scene->modelStack.Rotate(10, 0.0f, 1.0f, 0.0f);
 			this->scene->modelStack.Scale(0.135f, 0.3f, 0.135f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_EYEBALL), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_EYEBALL), true);
 
 			this->scene->modelStack.PushMatrix();
 				this->scene->modelStack.Rotate(-5, 0.0f, 1.0f, 0.0f);
@@ -961,13 +1034,13 @@ void Sonic::Render() {
 				this->scene->modelStack.Rotate(-17, 0.0f, 1.0f, 0.0f);
 				this->scene->modelStack.Rotate(17, 1.0f, 0.0f, 0.0f);
 				this->scene->modelStack.Scale(0.3f, 0.3f, 0.3f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_GREENEYE), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_GREENEYE), true);
 
 				this->scene->modelStack.PushMatrix();
 					this->scene->modelStack.Translate(0.10f, 0.0f, 0.7f);
 					this->scene->modelStack.Rotate(0, 1.0f, 1.0f, 1.0f);
 					this->scene->modelStack.Scale(0.7f, 0.58f, 0.7f);
-					this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BLACKEYE), true);
+					if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BLACKEYE), true);
 
 				this->scene->modelStack.PopMatrix();
 			this->scene->modelStack.PopMatrix();
@@ -980,12 +1053,12 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(-27, 0.0f, 0.0f, 1.0f);
 			this->scene->modelStack.Rotate(-5, 0.0f, 1.0f, 0.0f);
 			this->scene->modelStack.Scale(0.55f, 0.55f, 0.75f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_EARS), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_EARS), true);
 
 			this->scene->modelStack.PushMatrix();
 				this->scene->modelStack.Translate(0.0f, 0.0f, 0.06f);
 				this->scene->modelStack.Scale(0.8f, 0.8f, 0.8f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_INNERSONICEARS), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_INNERSONICEARS), true);
 
 			this->scene->modelStack.PopMatrix();
 
@@ -999,12 +1072,12 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(27, 0.0f, 0.0f, 1.0f);
 			this->scene->modelStack.Rotate(5, 0.0f, 1.0f, 0.0f);
 			this->scene->modelStack.Scale(0.55f, 0.55f, 0.75f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_EARS), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_EARS), true);
 
 			this->scene->modelStack.PushMatrix();
 				this->scene->modelStack.Translate(0.0f, 0.0f, 0.06f);
 				this->scene->modelStack.Scale(0.8f, 0.8f, 0.8f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_INNERSONICEARS), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_INNERSONICEARS), true);
 
 			this->scene->modelStack.PopMatrix();
 
@@ -1016,13 +1089,13 @@ void Sonic::Render() {
 			this->scene->modelStack.Translate(0.0f, -0.4f, 0.1f);
 			this->scene->modelStack.Rotate(20, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(1.4f, 0.55f, 1.4f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_MOUTHTORUS), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_MOUTHTORUS), true);
 
 			this->scene->modelStack.PushMatrix();
 				this->scene->modelStack.Translate(0.0f, 0.0f, 0.53f);	
 				//this->scene->modelStack.Rotate(30, 1.0f, 0.0f, 0.0f);
 				this->scene->modelStack.Scale(0.2f, 0.3f, 0.08f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_MOUTHSPHERE), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_MOUTHSPHERE), true);
 
 				//this->scene->modelStack.PushMatrix();
 				//	this->scene->modelStack.Rotate(-20, 1.0f, 0.0f, 0.0f);
@@ -1030,7 +1103,7 @@ void Sonic::Render() {
 				//	this->scene->modelStack.Rotate(-6, 1.0f, 0.0f, 0.0f);
 				//	//this->scene->modelStack.Rotate(90, 0.0f, 0.0f, 1.0f);
 				//	this->scene->modelStack.Scale(0.15f, 0.3f, 0.8f);
-				//	this->scene->RenderMesh(MeshHandler::getMesh(GEO_NOSESPHERE), true);
+				//	if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_NOSESPHERE), true);
 				//this->scene->modelStack.PopMatrix();
 
 			this->scene->modelStack.PopMatrix();
@@ -1048,13 +1121,13 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(20 + (float)animation_offset[HAIR_TILT], 1.0f, 0.0f, 0.0f); //look upwards
 			this->scene->modelStack.Scale(0.3825f, 0.5525f, 1.19f);
 			//this->scene->modelStack.Scale(0.45f, 1.4f, 0.65f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 			this->scene->modelStack.PushMatrix();
 				this->scene->modelStack.Translate(0.f, 0.0f, 0.0f);
 				this->scene->modelStack.Rotate(180, 0.0f, 0.0f, 1.0f);
 				this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-				this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+				if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 				
 					
@@ -1072,14 +1145,14 @@ void Sonic::Render() {
 					this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
 					this->scene->modelStack.Rotate(90 + 15, 1.0f, 0.0f, 0.0f);
 					this->scene->modelStack.Scale(1.0f, 1.0f, 1.0f);
-					this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
+					if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
 
 					this->scene->modelStack.PushMatrix();
 						this->scene->modelStack.Translate(0.0f, 1.1f, 0.2f); //1.1move front 0.2 movedown
 
 						this->scene->modelStack.Rotate(5, 1.0f, 0.0f, 0.0f);
 						this->scene->modelStack.Scale(0.8f, 0.5f, 0.5f);
-						this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+						if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 						this->scene->modelStack.PopMatrix();
@@ -1094,7 +1167,7 @@ void Sonic::Render() {
 						this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f); //flip
 						this->scene->modelStack.Rotate(-2, 1.0f, 0.0f, 0.0f);
 						this->scene->modelStack.Scale(0.8f, 0.5f, 1.0f);
-						this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+						if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 					this->scene->modelStack.PopMatrix();
@@ -1113,13 +1186,13 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(20 + (float)animation_offset[HAIR_TILT], 1.0f, 0.0f, 0.0f); //slant to left side
 			this->scene->modelStack.Scale(0.3825f, 0.5525f, 1.19f);
 			//this->scene->modelStack.Scale(0.45f, 1.4f, 0.65f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 			this->scene->modelStack.PushMatrix();
 			this->scene->modelStack.Translate(0.f, 0.0f, 0.0f);
 			this->scene->modelStack.Rotate(180, 0.0f, 0.0f, 1.0f);
 			this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 
 
@@ -1137,14 +1210,14 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
 			this->scene->modelStack.Rotate(90 + 15, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(1.0f, 1.0f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
 
 			this->scene->modelStack.PushMatrix();
 			this->scene->modelStack.Translate(0.0f, 1.1f, 0.2f); //1.1move front 0.2 movedown
 
 			this->scene->modelStack.Rotate(5, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(0.8f, 0.5f, 0.5f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 			this->scene->modelStack.PopMatrix();
@@ -1159,7 +1232,7 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f); //flip
 			this->scene->modelStack.Rotate(-2, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(0.8f, 0.5f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 			this->scene->modelStack.PopMatrix();
@@ -1178,13 +1251,13 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(20 + (float)animation_offset[HAIR_TILT], 1.0f, 0.0f, 0.0f); //slant to left side
 			this->scene->modelStack.Scale(0.3525f, 0.5025f, 1.1f);
 			//this->scene->modelStack.Scale(0.45f, 1.4f, 0.65f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 			this->scene->modelStack.PushMatrix();
 			this->scene->modelStack.Translate(0.f, 0.0f, 0.0f);
 			this->scene->modelStack.Rotate(180, 0.0f, 0.0f, 1.0f);
 			this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 
 
@@ -1202,14 +1275,14 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
 			this->scene->modelStack.Rotate(90 + 15, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(1.0f, 1.0f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
 
 			this->scene->modelStack.PushMatrix();
 			this->scene->modelStack.Translate(0.0f, 1.1f, 0.2f); //1.1move front 0.2 movedown
 
 			this->scene->modelStack.Rotate(5, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(0.8f, 0.5f, 0.5f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 			this->scene->modelStack.PopMatrix();
@@ -1224,7 +1297,7 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f); //flip
 			this->scene->modelStack.Rotate(-2, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(0.8f, 0.5f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 			this->scene->modelStack.PopMatrix();
@@ -1243,13 +1316,13 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(20, 1.0f, 0.0f, 0.0f); //slant to left side
 			this->scene->modelStack.Scale(0.3525f, 0.5025f, 1.1f);
 			//this->scene->modelStack.Scale(0.45f, 1.4f, 0.65f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 			this->scene->modelStack.PushMatrix();
 			this->scene->modelStack.Translate(0.f, 0.0f, 0.0f);
 			this->scene->modelStack.Rotate(180, 0.0f, 0.0f, 1.0f);
 			this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 
 
@@ -1267,14 +1340,14 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
 			this->scene->modelStack.Rotate(90 + 15, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(1.0f, 1.0f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
 
 			this->scene->modelStack.PushMatrix();
 			this->scene->modelStack.Translate(0.0f, 1.1f, 0.2f); //1.1move front 0.2 movedown
 
 			this->scene->modelStack.Rotate(5, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(0.8f, 0.5f, 0.5f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 			this->scene->modelStack.PopMatrix();
@@ -1289,7 +1362,7 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f); //flip
 			this->scene->modelStack.Rotate(-2, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(0.8f, 0.5f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 			this->scene->modelStack.PopMatrix();
@@ -1309,13 +1382,13 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(20, 1.0f, 0.0f, 0.0f); //slant to left side
 			this->scene->modelStack.Scale(0.3825f, 0.5525f, 1.19f);
 			//this->scene->modelStack.Scale(0.45f, 1.4f, 0.65f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 			this->scene->modelStack.PushMatrix();
 			this->scene->modelStack.Translate(0.f, 0.0f, 0.0f);
 			this->scene->modelStack.Rotate(180, 0.0f, 0.0f, 1.0f);
 			this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 
 
@@ -1333,14 +1406,14 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
 			this->scene->modelStack.Rotate(90 + 15, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(1.0f, 1.0f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
 
 			this->scene->modelStack.PushMatrix();
 			this->scene->modelStack.Translate(0.0f, 1.1f, 0.2f); //1.1move front 0.2 movedown
 
 			this->scene->modelStack.Rotate(5, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(0.8f, 0.5f, 0.5f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 			this->scene->modelStack.PopMatrix();
@@ -1355,7 +1428,7 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f); //flip
 			this->scene->modelStack.Rotate(-2, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(0.8f, 0.5f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 			this->scene->modelStack.PopMatrix();
@@ -1375,13 +1448,13 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(20, 1.0f, 0.0f, 0.0f); //slant to left side
 			this->scene->modelStack.Scale(0.3825f, 0.5525f, 1.19f);
 			//this->scene->modelStack.Scale(0.45f, 1.4f, 0.65f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 			this->scene->modelStack.PushMatrix();
 			this->scene->modelStack.Translate(0.f, 0.0f, 0.0f);
 			this->scene->modelStack.Rotate(180, 0.0f, 0.0f, 1.0f);
 			this->scene->modelStack.Scale(1.0f, 0.3f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHERE), true);
 
 
 
@@ -1399,14 +1472,14 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
 			this->scene->modelStack.Rotate(90 + 15, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(1.0f, 1.0f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHEMISPHEREFRUSTUM), true);
 
 			this->scene->modelStack.PushMatrix();
 			this->scene->modelStack.Translate(0.0f, 1.1f, 0.2f); //1.1move front 0.2 movedown
 
 			this->scene->modelStack.Rotate(5, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(0.8f, 0.5f, 0.5f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 			this->scene->modelStack.PopMatrix();
@@ -1421,7 +1494,7 @@ void Sonic::Render() {
 			this->scene->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f); //flip
 			this->scene->modelStack.Rotate(-2, 1.0f, 0.0f, 0.0f);
 			this->scene->modelStack.Scale(0.8f, 0.5f, 1.0f);
-			this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
+			if(this->isVisible()) this->scene->RenderMesh(MeshHandler::getMesh(GEO_SONIC_HAIRHALFCONE), true);
 
 
 			this->scene->modelStack.PopMatrix();

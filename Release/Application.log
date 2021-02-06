@@ -1,0 +1,223 @@
+﻿  Coin.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(55,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(54,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(53,85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(59,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(58,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(57,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(65,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(67,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(70,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(72,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(75,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(77,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Coin.cpp(24,28): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+  Scene.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene.cpp(123,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene.cpp(123,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene.cpp(124,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene.cpp(124,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Sonic.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(55,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(54,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(53,85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(59,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(58,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(57,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(65,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(67,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(70,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(72,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(75,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(77,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Sonic.cpp(4,50): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Sonic.cpp(424,42): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Sonic.cpp(427,42): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Sonic.cpp(430,42): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Sonic.cpp(451,42): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Sonic.cpp(454,42): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Sonic.cpp(457,42): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+  MeshHandler.cpp
+  Entity.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(55,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(54,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(53,85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(59,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(58,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(57,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(65,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(67,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(70,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(72,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(75,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(77,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  EntityManager.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(55,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(54,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(53,85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(59,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(58,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(57,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(65,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(67,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(70,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(72,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(75,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(77,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  HitBox.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(55,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(54,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(53,85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(59,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(58,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(57,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(65,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(67,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(70,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(72,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(75,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(77,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Position3D.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Position3D.cpp(21,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Position3D.cpp(22,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Position3D.cpp(23,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  FirstPersonCamera.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\FirstPersonCamera.cpp(111,52): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\FirstPersonCamera.cpp(116,52): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\FirstPersonCamera.cpp(126,53): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\FirstPersonCamera.cpp(136,53): warning C4305: 'argument': truncation from 'double' to 'float'
+  LoadOBJ.cpp
+  LoadTGA.cpp
+  SceneAssignment1.cpp
+  Camera.cpp
+  Camera2.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(104,52): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Camera2.cpp(108,52): warning C4305: 'argument': truncation from 'double' to 'float'
+  Mesh.cpp
+  MeshBuilder.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(216,68): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(221,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(231,69): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(235,31): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(240,29): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(241,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(242,40): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(269,71): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(274,70): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(281,71): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(285,31): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(291,70): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(296,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(326,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(331,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(339,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(343,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(348,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(381,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(386,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(396,38): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(401,38): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(412,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\MeshBuilder.cpp(417,30): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Scene5.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(71,23): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(72,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(75,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(81,20): warning C4305: '-=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(176,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(187,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(196,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(206,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene5.cpp(216,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Scene2.cpp
+  Application.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(55,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(54,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(53,85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(59,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(58,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(57,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(65,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(67,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(70,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(72,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(75,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(77,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+  Compiling...
+  Scene1.cpp
+  Scene3.cpp
+  Scene4.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene4.cpp(68,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Scene4.cpp(74,20): warning C4305: '-=': truncation from 'double' to 'float'
+  SceneAssignment2.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(55,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(54,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(53,85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(59,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(58,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(57,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(65,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(67,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(70,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(72,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(75,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(77,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(111,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(238,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(239,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(241,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(244,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(250,20): warning C4305: '-=': truncation from 'double' to 'float'
+  SceneLight1.cpp
+  SceneLight2.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(98,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(145,114): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(152,114): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(168,104): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(204,23): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(205,26): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(208,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(214,20): warning C4305: '-=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneLight2.cpp(436,36): warning C4305: 'argument': truncation from 'double' to 'float'
+  SceneModel.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(104,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(196,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(197,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(200,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneModel.cpp(206,20): warning C4305: '-=': truncation from 'double' to 'float'
+  SceneSkyBox.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneSkyBox.cpp(103,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneSkyBox.cpp(176,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneSkyBox.cpp(177,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneSkyBox.cpp(180,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneSkyBox.cpp(186,20): warning C4305: '-=': truncation from 'double' to 'float'
+  SceneText.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneText.cpp(110,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneText.cpp(211,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneText.cpp(212,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneText.cpp(214,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneText.cpp(217,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneText.cpp(223,20): warning C4305: '-=': truncation from 'double' to 'float'
+  SceneTexture.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneTexture.cpp(103,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneTexture.cpp(164,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneTexture.cpp(165,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneTexture.cpp(168,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneTexture.cpp(174,20): warning C4305: '-=': truncation from 'double' to 'float'
+  SceneUI.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(110,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(217,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(218,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(220,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(237,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(238,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(268,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(274,20): warning C4305: '-=': truncation from 'double' to 'float'
+  shader.cpp
+  Utility.cpp
+  Generating code
+  Previous IPDB was built with incompatible compiler, fall back to full compilation.
+  All 1230 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Application.vcxproj -> C:\Users\tanyo\source\repos\.COMG\Release\Application.exe

@@ -64,6 +64,8 @@ protected:
 	unsigned m_parameters[U_TOTAL];
 	double elapsed;
 
+	bool lightEnable;
+
 public:
 	Scene() { elapsed = 0.0; }
 	~Scene() {}
@@ -73,6 +75,10 @@ public:
 	virtual void Update(double dt) = 0;
 	virtual void Render() = 0;
 	virtual void Exit() = 0;
+
+	bool isLightEnabled();
+	void setLightEnabled(bool);
+	void toggleLights();
 
 	double getElapsedTime();
 //protected: //Change to protected if have time to add functions

@@ -287,6 +287,7 @@ bool LoadOBJMTL(const char* file_path, const char* mtl_path, std::vector<Positio
 		else if (strncmp("usemtl ", buf, 7) == 0) { //process usemtl
 			char mtl_name[256];
 			strcpy_s(mtl_name, buf + 7);
+			std::remove(mtl_name, mtl_name + 256, '\r') - mtl_name;
 			if (materials_map.find(mtl_name) != materials_map.end())
 			{
 				Material* mtl = materials_map.find(mtl_name)->second;

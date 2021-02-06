@@ -4,9 +4,11 @@
 #include "Scene.h"
 
 struct CollidedWith {
-	const Entity* attacker, * victim;
+	Entity* attacker, * victim;
 	const bool justCollided;
-	CollidedWith(Entity* attacker, Entity* victim, bool justCollided) : attacker(attacker), victim(victim), justCollided(justCollided) {};
+	bool cancelled;
+	CollidedWith(Entity* attacker, Entity* victim, bool justCollided) : attacker(attacker), victim(victim), justCollided(justCollided), cancelled(false) {};
+	
 };
 
 class EntityManager
@@ -25,8 +27,8 @@ public:
 	void spawnMovingEntity(Entity*);
 	void spawnWorldEntity(Entity*);
 
-	std::vector<CollidedWith*> preCollisionUpdate(); // serves no purpose atm, but may in the future.
-	void collisionUpdate(double dt); //Updates whether objects are dead here
+	std::vector<CollidedWith*>& preCollisionUpdate(); // serves no purpose atm, but may in the future.
+	void collisionUpdate(double dt); //Updates whether objects are dead here, Entity updates are called here
 	void postCollisionUpdate(); //Clears up dead entities (Remove from list, clear pointers)
 
 	std::vector<Entity*> getEntities();

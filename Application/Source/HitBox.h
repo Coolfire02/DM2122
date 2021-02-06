@@ -18,10 +18,21 @@ struct Box {
 		return false;
 	}
 
+	bool boxLocIsInBox(Position3D loc, Box* box) {
+		if (loc.getX() >= box->botLeftPos->getX() && loc.getX() <= box->topRightPos->getX() &&
+			//loc.getY() >= box->botLeftPos->getY() && loc.getY() <= box->topRightPos->getY() && disregard Y value for now, simplify
+			
+			
+			loc.getZ() <= box->botLeftPos->getZ() && loc.getZ() >= box->topRightPos->getZ()) //Right hand rule
+			return true;
+		return false;
+	}
+
 	bool locIsInBox(Box* box) {
+
 		std::vector<Position3D*> pos;
-		Position3D* botLeftFront = box->botLeftPos; pos.push_back(botLeftFront);
-		Position3D* topRightBack = box->topRightPos; pos.push_back(topRightPos);
+		Position3D* botLeftFront = this->botLeftPos; pos.push_back(botLeftFront);
+		Position3D* topRightBack = this->topRightPos; pos.push_back(topRightBack);
 
 		Position3D botRightFront = Position3D(topRightBack->getX(), botLeftFront->getY(), botLeftFront->getZ()); pos.push_back(&botRightFront);
 		Position3D topLeftBack = Position3D(botLeftFront->getX(), topRightBack->getY(), topRightBack->getZ()); pos.push_back(&topLeftBack);
@@ -32,15 +43,59 @@ struct Box {
 		Position3D topRightFront = Position3D(topRightBack->getX(), topRightBack->getY(), botLeftFront->getZ()); pos.push_back(&topRightFront);
 		Position3D topLeftFront = Position3D(topLeftBack.getX(), topLeftBack.getY(), botLeftFront->getZ()); pos.push_back(&topLeftFront);
 
+		Position3D* thisMP = Position3D::getMidPoint(botLeftPos, topRightPos);
+		Position3D* boxMP = Position3D::getMidPoint(box->botLeftPos, box->topRightPos);
+
+		float bestX, bestY, bestZ;
+		bestX = bestY = bestZ = 0.0f;
+		//P is for boxMP  let's call P the point you wish to find the closest point to on the rectangle.
+
+		Position3D distanceToPositiveBounds = Position3D(thisMP->getX()+thisMP->getX()/2.0-boxMP->getX(),
+														thisMP->getY()+thisMP->getY()/2.0-boxMP->getY(),
+														thisMP->getZ()+thisMP->getZ()/2.0-boxMP->getZ());
+
+		Position3D distanceToNegativeBounds = Position3D(-1.f * thisMP->getX()-thisMP->getX()/2.0-boxMP->getX(),
+														-1.f * thisMP->getY()-thisMP->getY()/2.0-boxMP->getY(),
+														-1.f * thisMP->getZ()-thisMP->getZ()/2.0-boxMP->getZ());
+
+		float smallestX = Math::Min(distanceToPositiveBounds.getX(), distanceToNegativeBounds.getX());
+		float smallestY = Math::Min(distanceToPositiveBounds.getY(), distanceToNegativeBounds.getY());
+		float smallestZ = Math::Min(distanceToPositiveBounds.getZ(), distanceToNegativeBounds.getZ());
+		if (smallestX += thisMP->getX() == distanceToPositiveBounds.getX())
+			bestX = thisMP->getX() + thisMP->getX() / 2.0;
+		else 
+			bestX = thisMP->getX() - thisMP->getX() / 2.0;
+
+		if (smallestY += thisMP->getY() == distanceToPositiveBounds.getY())
+			bestY = thisMP->getY() + thisMP->getY() / 2.0;
+		else
+			bestY = thisMP->getY() - thisMP->getY() / 2.0;
+
+		if (smallestZ += thisMP->getZ() == distanceToPositiveBounds.getZ())
+			bestZ = thisMP->getZ() + thisMP->getZ() / 2.0;
+		else
+			bestZ = thisMP->getZ() - thisMP->getZ() / 2.0;
+		
+		Position3D cloest = Position3D(bestX, bestY, bestZ); pos.push_back(&cloest);
+		pos.push_back(thisMP);
+
+		bool intersect = false;
 		for (auto& entry : pos) {
-			if (!locIsInBox(*entry))
-				return false;
+			if (boxLocIsInBox(*entry, box)) {
+				intersect = true;
+				break;
+			}
 		}
-		return true;
+		delete thisMP;
+		delete boxMP;
+		return intersect;
 	}
+
 	~Box() {
-		delete botLeftPos;
-		delete topRightPos;
+		if(botLeftPos != nullptr)
+			delete botLeftPos;
+		if(topRightPos != nullptr)
+			delete topRightPos;
 	}
 };
 
@@ -80,6 +135,6 @@ public:
 	//Further optimizations can be done with update, making Hitbox not get recalculated every frame if Location & size both are
 	//not updated. But lack of time atm so that'll have to come in the future.
 
-	bool collidedWith(HitBox other);
+	bool collidedWith(HitBox* other);
 };
 
