@@ -1,6 +1,5 @@
 #pragma once
 #include "Position3D.h"
-#include "EntityDataHandler.h"
 #include "Mtx44.h"
 #include <vector>
 
@@ -19,11 +18,19 @@ struct Box {
 	}
 
 	bool boxLocIsInBox(Position3D loc, Box* box) {
-		if (loc.getX() >= box->botLeftPos->getX() && loc.getX() <= box->topRightPos->getX() &&
+		float lowX, highX, lowZ, highZ;
+		lowX = highX = lowZ = highZ = 0.0;
+		lowX = Math::Min(box->botLeftPos->getX(), box->topRightPos->getX());
+		highX = Math::Max(box->botLeftPos->getX(), box->topRightPos->getX());
+
+		lowZ = Math::Min(box->botLeftPos->getZ(), box->topRightPos->getZ());
+		highZ = Math::Max(box->botLeftPos->getZ(), box->topRightPos->getZ());
+
+		if (loc.getX() >= lowX && loc.getX() <= highX &&
 			//loc.getY() >= box->botLeftPos->getY() && loc.getY() <= box->topRightPos->getY() && disregard Y value for now, simplify
 			
 			
-			loc.getZ() <= box->botLeftPos->getZ() && loc.getZ() >= box->topRightPos->getZ()) //Right hand rule
+			loc.getZ() <= highZ && loc.getZ() >= lowZ) //Right hand rule
 			return true;
 		return false;
 	}
@@ -47,10 +54,23 @@ struct Box {
 		Position3D* boxMP = Position3D::getMidPoint(box->botLeftPos, box->topRightPos);
 
 		float bestX, bestY, bestZ;
-		bestX = bestY = bestZ = 0.0f;
-		//P is for boxMP  let's call P the point you wish to find the closest point to on the rectangle.
+		bestX = boxMP->getX();
+		bestY = boxMP->getY();
+		bestZ = boxMP->getZ();
 
-		Position3D distanceToPositiveBounds = Position3D(thisMP->getX()+thisMP->getX()/2.0-boxMP->getX(),
+		//HEHE OMG THIS WORKS
+		if (bestX > topRightBack->getX()) bestX = topRightBack->getX();
+		else if (bestX < botLeftFront->getX()) bestX = botLeftFront->getX();
+
+		if (bestY > topRightBack->getY()) bestY = topRightBack->getY();
+		else if (bestY < botLeftFront->getY()) bestY = botLeftFront->getY();
+
+		if (bestZ < topRightBack->getZ()) bestZ = topRightBack->getZ();
+		else if (bestZ > botLeftFront->getZ()) bestZ = botLeftFront->getZ();
+
+		//P is for boxMP  let's call P the point you wish to find the closest point to on the rectangle.
+		
+		/*Position3D distanceToPositiveBounds = Position3D(thisMP->getX()+thisMP->getX()/2.0-boxMP->getX(),
 														thisMP->getY()+thisMP->getY()/2.0-boxMP->getY(),
 														thisMP->getZ()+thisMP->getZ()/2.0-boxMP->getZ());
 
@@ -58,9 +78,9 @@ struct Box {
 														-1.f * thisMP->getY()-thisMP->getY()/2.0-boxMP->getY(),
 														-1.f * thisMP->getZ()-thisMP->getZ()/2.0-boxMP->getZ());
 
-		float smallestX = Math::Min(distanceToPositiveBounds.getX(), distanceToNegativeBounds.getX());
-		float smallestY = Math::Min(distanceToPositiveBounds.getY(), distanceToNegativeBounds.getY());
-		float smallestZ = Math::Min(distanceToPositiveBounds.getZ(), distanceToNegativeBounds.getZ());
+		float smallestX = Math::Min(Math::FAbs(distanceToPositiveBounds.getX()), Math::FAbs(distanceToNegativeBounds.getX()));
+		float smallestY = Math::Min(Math::FAbs(distanceToPositiveBounds.getY()), Math::FAbs(distanceToNegativeBounds.getY()));
+		float smallestZ = Math::Min(Math::FAbs(distanceToPositiveBounds.getZ()), Math::FAbs(distanceToNegativeBounds.getZ()));
 		if (smallestX += thisMP->getX() == distanceToPositiveBounds.getX())
 			bestX = thisMP->getX() + thisMP->getX() / 2.0;
 		else 
@@ -74,9 +94,10 @@ struct Box {
 		if (smallestZ += thisMP->getZ() == distanceToPositiveBounds.getZ())
 			bestZ = thisMP->getZ() + thisMP->getZ() / 2.0;
 		else
-			bestZ = thisMP->getZ() - thisMP->getZ() / 2.0;
+			bestZ = thisMP->getZ() - thisMP->getZ() / 2.0;*/
 		
 		Position3D cloest = Position3D(bestX, bestY, bestZ); pos.push_back(&cloest);
+
 		pos.push_back(thisMP);
 
 		bool intersect = false;
@@ -131,6 +152,7 @@ public:
 	//This should be the Box that is defined before any scaling (Size after gen'd from MeshBuilder).
 	void setOriginalHitBox(Box* box);
 
+	//void update(EntityData*);
 	void update(Mtx44 matrix); //Updates the entire hitbox's location based of the current obj Location
 	//Further optimizations can be done with update, making Hitbox not get recalculated every frame if Location & size both are
 	//not updated. But lack of time atm so that'll have to come in the future.

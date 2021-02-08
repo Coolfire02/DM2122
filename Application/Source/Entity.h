@@ -10,12 +10,12 @@ enum ENTITYTYPE {
 	SONIC,
 	COIN,
 	FENCE,
-	EGGMAN,
-	CLOUD,
+	LIVE_NPC,
 	SPOTLIGHT,
-	STARTLINE,
-	FINISHLINE,
-	CUSTOM
+	WORLDOBJ,
+	CUSTOM,
+
+	ETYPE_COUNT
 };
 
 class Entity 
@@ -43,6 +43,8 @@ public:
 	bool isDead();
 	void setDead(bool);
 	EntityData* getEntityData();
+	EntityData* getOldEntityData();
+	bool usingNewData();
 	ENTITYTYPE getType();
 	HitBox* getHitBox();
 	const Scene* getAssociatedScene();

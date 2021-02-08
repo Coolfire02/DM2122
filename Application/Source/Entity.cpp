@@ -65,6 +65,14 @@ EntityData* Entity::getEntityData() {
 	return data;
 }
 
+EntityData* Entity::getOldEntityData() {
+	return oldData;
+}
+
+bool Entity::usingNewData() {
+	return useNewData;
+}
+
 HitBox* Entity::getHitBox() {
 	return hitBox;
 }

@@ -40,13 +40,14 @@ std::vector<CollidedWith*>& EntityManager::preCollisionUpdate() {
 	thisTick.clear();
 
 	for (auto& movingE : movingEntities) {
-		for (auto& worldE: worldEntities) {
+		for (auto& worldE : worldEntities) {
 			if (movingE->getHitBox()->collidedWith(worldE->getHitBox())) {
 				//std::cout << "Collision detected!" << std::endl;
 				thisTick.push_back(new CollidedWith(movingE, worldE, true));
 			}
 			else {
-				//std::cout << "No Collision detected!" << std::endl;
+				/*std::cout << "No Collision detected!" << std::endl;
+				std::cout << "" << std::endl;*/
 			}
 		}
 	}
@@ -75,6 +76,9 @@ void EntityManager::collisionUpdate(double dt) {
 	}
 
 	//Code
+}
+
+void EntityManager::postCollisionUpdate() {
 
 	for (auto& entity : worldEntities) {
 		entity->PostUpdate();
@@ -82,9 +86,7 @@ void EntityManager::collisionUpdate(double dt) {
 	for (auto& entity : movingEntities) {
 		entity->PostUpdate();
 	}
-}
 
-void EntityManager::postCollisionUpdate() {
 	std::vector<Entity*>::iterator wIterator;
 	std::vector<Entity*>::iterator mIterator;
 

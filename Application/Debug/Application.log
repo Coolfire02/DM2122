@@ -1,14 +1,19 @@
-﻿  Application.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(55,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(54,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(53,85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(59,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(58,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(57,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(65,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(67,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(70,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(72,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(75,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\HitBox.h(77,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+﻿  Coin.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\Coin.cpp(25,20): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+  SceneAssignment2.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(108,40): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(109,40): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(110,40): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(131,39): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(132,39): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(133,39): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(136,39): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(143,78): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(165,32): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(299,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(300,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(302,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(305,20): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(311,20): warning C4305: '-=': truncation from 'double' to 'float'
+  Generating Code...
   Application.vcxproj -> C:\Users\tanyo\source\repos\.COMG\Debug\Application.exe

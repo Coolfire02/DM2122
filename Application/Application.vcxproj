@@ -145,6 +145,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\CustomEntity.cpp" />
+    <ClCompile Include="Source\NPC.cpp" />
     <ClCompile Include="Source\Coin.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
     <ClCompile Include="Source\Sonic.cpp" />
@@ -178,8 +180,11 @@
     <ClCompile Include="Source\SceneUI.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
+    <ClCompile Include="Source\WorldObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\CustomEntity.h" />
+    <ClInclude Include="Source\NPC.h" />
     <ClInclude Include="Source\Coin.h" />
     <ClInclude Include="Source\Sonic.h" />
     <ClInclude Include="Source\EntityDataHandler.h" />
@@ -216,6 +221,7 @@
     <ClInclude Include="Source\shader.hpp" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
+    <ClInclude Include="Source\WorldObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

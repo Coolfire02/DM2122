@@ -10,6 +10,17 @@ bool MeshHandler::loadMeshes() {
 
 	//Mesh loading
 
+	//OBJS
+
+	//Sonic characters
+	meshList[GEO_SONIC_EGGMAN] = MeshBuilder::GenerateOBJMTL("Eggman", "OBJ//Eggman.obj", "MTL//Eggman.mtl");
+	meshList[GEO_SONIC_TAILS] = MeshBuilder::GenerateOBJMTL("Tails", "OBJ//Tails.obj", "MTL//Tails.mtl");
+
+	//Podium taken from the Space Kit
+	meshList[GEO_PODIUM_1ST] = MeshBuilder::GenerateOBJMTL("Podium1st", "OBJ//hangar_roundB.obj", "MTL//hangar_roundB.mtl");
+
+	//NON-OBJS
+
 	//Coin
 	meshList[GEO_COIN] = MeshBuilder::GenerateTorus("cointorus", Color(0.95f, 0.8431f, 0.f), 0.7f, 2.8f);
 

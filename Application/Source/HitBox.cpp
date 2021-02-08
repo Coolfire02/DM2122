@@ -39,10 +39,28 @@ Box* HitBox::getThisTickBox() {
 //}
 
 void HitBox::update(Mtx44 matrix) {
+	//Asking for MTX 44 Input old function:
+	//Needed to flip axis if any axis > 90. Sticking with only reading T and S, skipping R for now
+
 	Mtx44 bot = Mtx44(originalBox->botLeftPos->getX(), originalBox->botLeftPos->getY(), originalBox->botLeftPos->getZ(), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	Mtx44 top = Mtx44(originalBox->topRightPos->getX(), originalBox->topRightPos->getY(), originalBox->topRightPos->getZ(), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 	if (thisTickBox == nullptr) thisTickBox = new Box(new Position3D(this->originalBox->botLeftPos), new Position3D(this->originalBox->topRightPos));
+
+	//Attempting to fix inverted hitboxes
+	//float lowX, lowY, lowZ,
+	//	highX, highY, highZ;
+	//lowX = lowY = lowZ = highX = highY = highZ = 0.0f;
+
+	//lowX = Math::Min(bot.ValueAtPos(0, 0), top.ValueAtPos(0, 0));
+	//highX = Math::Max(bot.ValueAtPos(0, 0), top.ValueAtPos(0, 0));
+
+	//lowY = Math::Min(bot.ValueAtPos(1, 0), top.ValueAtPos(1, 0));
+	//highY = Math::Max(bot.ValueAtPos(1, 0), top.ValueAtPos(1, 0));
+
+	//lowZ = Math::Min(bot.ValueAtPos(0, 0), top.ValueAtPos(0, 0));
+	//highZ = Math::Max(bot.ValueAtPos(0, 0), top.ValueAtPos(0, 0));
+
 
 	bot = matrix * bot;
 	thisTickBox->botLeftPos->setX(bot.ValueAtPos(0, 0));

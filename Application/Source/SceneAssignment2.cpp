@@ -9,8 +9,9 @@
 #include "Utility.h"
 
 
-SceneAssignment2::SceneAssignment2() : eManager(this)
+SceneAssignment2::SceneAssignment2() : eManager(this), defaultSpeed(15.f)
 {
+	playerSpeed = defaultSpeed;
 	rotateAngle = 0;
 	rotateAngle2 = 0;
 	translateZ = 1;
@@ -89,11 +90,64 @@ void SceneAssignment2::Init() {
 	projection.SetToPerspective(45.0f, 80.0f / 60.0f, 0.1f, 1000.0f);
 	projectionStack.LoadMatrix(projection);
 
+	MeshHandler::loadMeshes();
+
+	player = new Sonic(this, "MainPlayer");
+	player->getEntityData()->transY += 4;
+	eManager.spawnMovingEntity(player);
+
+
+
+	Mesh* coinMesh = MeshHandler::getMesh(GEOMETRY_TYPE::GEO_COIN);
+	Entity* newCoin = new Coin(this, new Box(coinMesh->botLeftPos, coinMesh->topRightPos), "Coin");
+	newCoin->getEntityData()->rotXMag = 90.f;
+	newCoin->getEntityData()->transX = 8.0;
+	eManager.spawnWorldEntity(newCoin);
+
+	Entity* eggman = new NPC(this, NPCTYPE::EGGMAN, "Eggman");
+	eggman->getEntityData()->scaleX = 0.04;
+	eggman->getEntityData()->scaleY = 0.04;
+	eggman->getEntityData()->scaleZ = 0.04;
+	eggman->getEntityData()->transX = 11;
+	eggman->getEntityData()->transY = 0;
+	eggman->getEntityData()->transZ = -22;
+	eggman->getEntityData()->rotYMag = -27.f;
+	eManager.spawnWorldEntity(eggman);
+
+	Entity* eggmanInteractZone = new CustomEntity(this, new Box(new Position3D(-5, 0, 4), new Position3D(5, 1, -4)), "interaction_eggman");
+	eggmanInteractZone->getEntityData()->transX = eggman->getEntityData()->transX;
+	eggmanInteractZone->getEntityData()->transY = eggman->getEntityData()->transY;
+	eggmanInteractZone->getEntityData()->transZ = eggman->getEntityData()->transZ;
+	eManager.spawnWorldEntity(eggmanInteractZone);
+
+	Entity* podium = new WorldObject(this, GEO_PODIUM_1ST, "Podium_1st");
+	podium->getEntityData()->transX = 32.0f;
+	podium->getEntityData()->scaleX = 6;
+	podium->getEntityData()->scaleY = 3;
+	podium->getEntityData()->scaleZ = 6;
+	eManager.spawnWorldEntity(podium);
+
+	Entity* tails = new NPC(this, NPCTYPE::TAILS, "Tails");
+	tails->getEntityData()->scaleX = 0.23;
+	tails->getEntityData()->scaleY = 0.23;
+	tails->getEntityData()->scaleZ = 0.23;
+	tails->getEntityData()->transX = 28;
+	tails->getEntityData()->transY = 1.5;
+	tails->getEntityData()->transZ = 0.89;
+	tails->getEntityData()->rotYMag = -90.f;
+	eManager.spawnWorldEntity(tails);
+
+	Entity* tailsInteractZone = new CustomEntity(this, new Box(new Position3D(-10.5, 0, 10), new Position3D(10.5, 1, -10)), "interaction_tails");
+	tailsInteractZone->getEntityData()->transX = tails->getEntityData()->transX + 2.6f;
+	tailsInteractZone->getEntityData()->transY = tails->getEntityData()->transY;
+	tailsInteractZone->getEntityData()->transZ = tails->getEntityData()->transZ - 0.3;
+	eManager.spawnWorldEntity(tailsInteractZone);
+
 	//Camera init(starting pos, where it looks at, up
-	camera.Init(Vector3(10, 7, 3), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	camera.Init(Vector3(player->getEntityData()->transX, player->getEntityData()->transY-2, player->getEntityData()->transZ), Vector3(0, 0, 1), Vector3(0, 1, 0));
 
 	//Light init
-	light[0].type = Light::LIGHT_POINT;
+	light[0].type = Light::LIGHT_DIRECTIONAL;
 	light[0].position.set(0, 20, 0);
 	light[0].color.set(1, 1, 1); //set to white light
 	light[0].power = 1;
@@ -106,7 +160,7 @@ void SceneAssignment2::Init() {
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
 
 	//2nd line
-	light[1].type = Light::LIGHT_SPOT;
+	light[1].type = Light::LIGHT_DIRECTIONAL;
 	light[1].position.set(0, 1000, 0);
 	light[1].color.set(0.8, 0, 0.7); //set to white light
 	light[1].power = 1;
@@ -156,8 +210,6 @@ void SceneAssignment2::Init() {
 	mat.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	mat.kShininess = 1.0f;
 
-	MeshHandler::loadMeshes();
-
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("lightbulll", Color(1.0f, 1.0f, 1.0f));
 
@@ -180,13 +232,14 @@ void SceneAssignment2::Init() {
 	meshList[GEO_OBJ_FENCE] = MeshBuilder::GenerateOBJMTL("fence", "OBJ//fence2.obj", "MTL//fence.mtl");
 	meshList[GEO_OBJ_FENCE]->textureID = LoadTGA("Image//fence.tga");
 
+	meshList[GEO_OBJ_GRASS] = MeshBuilder::GenerateOBJMTL("grass", "OBJ//blockLarge.obj", "MTL//blockLarge.mtl");
 
+	//UI
+	meshList[GEO_COINS_METER] = MeshBuilder::GenerateQuad("coin", Color(1, 1, 1));
+	meshList[GEO_COINS_METER]->textureID = LoadTGA("Image//coin.tga");
 
-	//Sonic characters
-	meshList[GEO_SONIC_EGGMAN] = MeshBuilder::GenerateOBJMTL("Eggman", "OBJ//Eggman.obj", "MTL//Eggman.mtl");
-	meshList[GEO_SONIC_TAILS] = MeshBuilder::GenerateOBJMTL("Tails", "OBJ//Tails.obj", "MTL//Tails.mtl");
-	
-	//meshList[GEO_ICON]->textureID = LoadTGA("Image//feather.tga");
+	meshList[GEO_TIME_METER] = MeshBuilder::GenerateQuad("timer", Color(1, 1, 1));
+	meshList[GEO_TIME_METER]->textureID = LoadTGA("Image//time.tga");
 
 	//Skybox Meshes
 	meshList[GEO_SKY_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1));
@@ -203,14 +256,6 @@ void SceneAssignment2::Init() {
 	meshList[GEO_SKY_BOTTOM]->textureID = LoadTGA("Image//bluecloud_dn.tga");
 	meshList[GEO_SKY_FRONT]->textureID = LoadTGA("Image//bluecloud_ft.tga");
 	meshList[GEO_SKY_BACK]->textureID = LoadTGA("Image//bluecloud_bk.tga");
-
-	player = new Sonic(this, "MainPlayer");
-	eManager.spawnMovingEntity(player);
-
-	Mesh* coinMesh = MeshHandler::getMesh(GEOMETRY_TYPE::GEO_COIN);
-	Entity* newCoin = new Coin(this, new Box(coinMesh->botLeftPos, coinMesh->topRightPos), "Coin");
-	newCoin->getEntityData()->transX = 8.0;
-	eManager.spawnWorldEntity(newCoin);
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -225,13 +270,27 @@ void SceneAssignment2::Update(double dt)
 
 	std::vector<CollidedWith*> collided = eManager.preCollisionUpdate(); 
 	for (auto& entry : collided) {
-		if (entry->attacker->getType() == ENTITYTYPE::SONIC && entry->victim->getType() == ENTITYTYPE::COIN) {
-			entry->victim->setDead(true);
-			/*entry->cancelled = true;
-			std::cout << "Cancelled collision" << std::endl;*/
+		if (entry->attacker->getType() == ENTITYTYPE::SONIC) {
+
+			if (entry->victim->getType() == ENTITYTYPE::LIVE_NPC || entry->victim->getType() == ENTITYTYPE::WORLDOBJ) {
+				entry->cancelled = true;
+			}
+
+			std::cout << "Collided" << std::endl;
+
+			//entry->victim->setDead(true);
+			//std::cout << "Cancelled collision" << std::endl;
 		}
 	}
 	eManager.collisionUpdate(dt);
+
+	if (player->usingNewData()) { //Aka movement not cancelled
+		camera.Move(player->getEntityData()->transX - player->getOldEntityData()->transX,
+			player->getEntityData()->transY - player->getOldEntityData()->transY,
+			player->getEntityData()->transZ - player->getOldEntityData()->transZ);
+	}
+	
+
 	eManager.postCollisionUpdate();
 
 	//player->getEntityData()->scaleX += 0.1 * dt;
@@ -291,34 +350,67 @@ void SceneAssignment2::Update(double dt)
 	}
 
 	const float LSPEED = 10.f;
-	if (Application::IsKeyPressed('I'))
-		light[0].position.z -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('K'))
-		light[0].position.z += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('J'))
-		light[0].position.x -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('L'))
-		light[0].position.x += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('O'))
-		light[0].position.y -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('P'))
-		light[0].position.y += (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('I'))
+	//	light[0].position.z -= (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('K'))
+	//	light[0].position.z += (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('J'))
+	//	light[0].position.x -= (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('L'))
+	//	light[0].position.x += (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('O'))
+	//	light[0].position.y -= (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('P'))
+	//	light[0].position.y += (float)(LSPEED * dt);
 	Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
 
-	if (Application::IsKeyPressed('T'))
-		player->getEntityData()->transZ -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('F'))
-		player->getEntityData()->transX -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('G'))
-		player->getEntityData()->transZ += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('H'))
-		player->getEntityData()->transX += (float)(LSPEED * dt);
+	Vector3 pLoc = Vector3(player->getEntityData()->transX, player->getEntityData()->transY, player->getEntityData()->transZ);
+	Vector3 oldLoc = Vector3(pLoc);
+
+	if (Application::IsKeyPressed('W')) {
+		Vector3 view = (camera.target - camera.position).Normalized();
+		pLoc += view * (float)dt *  playerSpeed;
+		//player->getEntityData()->transZ -= (float)(LSPEED * dt);
+	}
+	if (Application::IsKeyPressed('A')) {
+		Vector3 view = (camera.target - camera.position).Normalized();
+		Vector3 right = view.Cross(camera.up);
+		right.y = 0;
+		right.Normalize();
+		Vector3 up = right.Cross(view).Normalized();
+		pLoc -= right * (float)dt * playerSpeed;
+	}
+		//player->getEntityData()->transX -= (float)(LSPEED * dt);
+	if (Application::IsKeyPressed('S')) {
+		Vector3 view = (camera.target - camera.position).Normalized();
+		pLoc -= view * (float)dt * playerSpeed;
+		//player->getEntityData()->transZ += (float)(LSPEED * dt);
+	}
+		
+	if (Application::IsKeyPressed('D')) {
+		Vector3 view = (camera.target - camera.position).Normalized();
+		Vector3 right = view.Cross(camera.up);
+		right.y = 0;
+		right.Normalize();
+		Vector3 up = right.Cross(view).Normalized();
+		pLoc += right * (float)dt * playerSpeed;
+	}
+		//player->getEntityData()->transX += (float)(LSPEED * dt);
+
+	// SCENE WORLD BOUNDARIES
+	pLoc.x = Math::Clamp(pLoc.x, -40.f, 40.f);
+	pLoc.z = Math::Clamp(pLoc.z, -40.f, 40.f);
+
+	// START MOVEMENT, TRIGGERED NEXT FRAME IF MOVEMENT NOT CANCELLED
+	player->getEntityData()->transX = pLoc.x;
+	//Skip y since we want level ground
+	player->getEntityData()->transZ = pLoc.z;
+	
 
 	lightPosition_cameraspace = viewStack.Top() * light[1].position;
 	glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
 }
-
 
 void SceneAssignment2::Render()
 {
@@ -401,19 +493,60 @@ void SceneAssignment2::Render()
 
 	this->RenderSkybox();
 
+	//WORLD
 	modelStack.PushMatrix();
-	modelStack.Translate(0.0f, 0.0f, 0.0f);
-	modelStack.Rotate(-90, 1.0f, 0.0f, 0.0f);
-	modelStack.Scale(20.0f, 4.f, 1.0f);
-	this->RenderMesh(meshList[GEO_PLATFORM_FLOOR], lightEnable);
+		modelStack.Translate(0.0f, -50.0f, 0.0f);
+		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
+		modelStack.Scale(50.f, 50.f, 50.f);
+		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);	
+
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+		modelStack.Translate(100.0f, -40.0f, 0.0f);
+		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
+		modelStack.Scale(50.f, 50.f, 50.f);
+		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);	
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+		modelStack.Translate(-100.0f, -40.0f, 0.0f);
+		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
+		modelStack.Scale(50.f, 50.f, 50.f);
+		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+		modelStack.Translate(0.0f, -40.0f, 100.0f);
+		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
+		modelStack.Scale(50.f, 50.f, 50.f);
+		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);	
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+		modelStack.Translate(60.0f, -35.0f, -100.0f);
+		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
+		modelStack.Scale(50.f, 50.f, 50.f);
+		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+		modelStack.Translate(-60.0f, -35.0f, -100.0f);
+		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
+		modelStack.Scale(50.f, 50.f, 50.f);
+		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);
 	modelStack.PopMatrix();
 
 
+
+
+
+
 	modelStack.PushMatrix();
-	modelStack.Translate(0.0f, 0.7f, 0.0f);
-	modelStack.Rotate(90, 0.0f, 1.0f, 0.0f);
+	modelStack.Translate(0.0f, 0.4f, 0.0f);
+	//modelStack.Rotate(90, 0.0f, 1.0f, 0.0f);
 	modelStack.Rotate(2, 1.0f, 0.0f, 0.0f);
-	modelStack.Scale(1.0f, 1.f, 1.0f);
+	modelStack.Scale(0.1f, 0.1f, 0.1f);
 	this->RenderMesh(meshList[GEO_OBJ_FENCE], lightEnable);
 	modelStack.PopMatrix();
 
@@ -435,9 +568,34 @@ void SceneAssignment2::Render()
 		}
 	}
 
+	RenderMeshOnScreen(meshList[GEO_COINS_METER], 9, 55, 15, 13);
 	std::ostringstream ss;
+	ss << "000";
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 5, 7, 52.5);
+
+	RenderMeshOnScreen(meshList[GEO_TIME_METER], 9, 49, 15, 13);
+	RenderTextOnScreen(meshList[GEO_TEXT], "0:00", Color(0, 0, 0), 4, 7, 46.5);
+	RenderTextOnScreen(meshList[GEO_TEXT], "999", Color(0, 0, 0), 2, 12, 49.5);
+
+	ss.str("");
+	ss.clear();
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 5);
+
+	ss.str("");
+	ss.clear();
+	ss << "X: " << player->getEntityData()->transX;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 15);
+
+	ss.str("");
+	ss.clear();
+	ss << "Y: " << player->getEntityData()->transY;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 12);
+
+	ss.str("");
+	ss.clear();
+	ss << "Z: " << player->getEntityData()->transZ;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 8);
 }
 
 void SceneAssignment2::RenderSkybox() {

@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "Vector3.h"
 #include "Mtx44.h"
+#include "Entity.h"
 
 class FirstPersonCamera
 {
@@ -17,7 +18,9 @@ public:
 	void Init(const Vector3& pos, const Vector3& target, const Vector3& up);
 	void Reset();
 	void Update(double dt);
-	void Follow(float x, float y, float z);
+
+	//How much to move in the X,Y,Z coordinates
+	void Move(float x, float y, float z); 
 };
 
 #endif

@@ -1,8 +1,16 @@
 #pragma once
 #include "Mesh.h"
 #include "MeshBuilder.h"
+#include "EntityDataHandler.h"
 
 enum GEOMETRY_TYPE {
+
+	//For OBJs
+	GEO_OBJ_FENCE,
+	GEO_SONIC_EGGMAN,
+	GEO_SONIC_TAILS,
+
+	GEO_PODIUM_1ST,
 
 	//For non-OBJs
 
@@ -48,9 +56,6 @@ enum GEOMETRY_TYPE {
 	GEO_SONIC_BOOTSLACEHALFTORUS,
 	GEO_SONIC_BOOTSFEETTORUS,
 	GEO_SONIC_BOOTSLACEHOOK,
-
-	//For OBJs
-	GEO_OBJ_FENCE,
 
 	//END
 	NUM_GEOMETRY

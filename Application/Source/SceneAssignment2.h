@@ -6,13 +6,16 @@
 #include "MeshBuilder.h"
 #include "MatrixStack.h"
 #include "Light.h"
+
 #include "EntityManager.h"
+#include "MeshHandler.h"
 
 //Entities
 #include "Sonic.h"
 #include "Coin.h"
-
-#include "MeshHandler.h"
+#include "NPC.h"
+#include "CustomEntity.h"
+#include "WorldObject.h"
 
 class SceneAssignment2 : public Scene
 {
@@ -21,11 +24,8 @@ class SceneAssignment2 : public Scene
 		//General
 		GEO_AXES = 0,
 
-		//Sonic Characters
-		GEO_SONIC_EGGMAN,
-		GEO_SONIC_TAILS,
-
 		//Platform
+		GEO_OBJ_ISLAND,
 		GEO_PLATFORM_FLOOR,
 		GEO_OBJ_WINNERPODIUM,
 		GEO_OBJ_FENCE,
@@ -56,6 +56,14 @@ private:
 	EntityManager eManager;
 	Entity* player;
 
+	//Game
+	const float defaultSpeed;
+	float playerSpeed;
+
+	std::vector<std::string> queuedMessages;
+	bool isInteracting;
+	float interactionTime;
+	GEOMETRY_TYPE characterOnUI; //When interacting if there is a person talking to you
 
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[2];

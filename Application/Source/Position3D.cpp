@@ -18,9 +18,9 @@ Position3D::~Position3D() {} //Intentionally left blank
 
 Position3D* Position3D::getMidPoint(Position3D* botLeft, Position3D* topRight) {
 	Position3D* mid = new Position3D;
-	mid->setX((topRight->getX() + botLeft->getX() / 2.0));
-	mid->setY((topRight->getY() + botLeft->getY() / 2.0));
-	mid->setZ((topRight->getZ() + botLeft->getZ() / 2.0));
+	mid->setX((topRight->getX() + botLeft->getX()) / 2.0);
+	mid->setY((topRight->getY() + botLeft->getY()) / 2.0);
+	mid->setZ((topRight->getZ() + botLeft->getZ()) / 2.0);
 	return mid;
 }
 
