@@ -1,7 +1,7 @@
 #include "Coin.h"
 
 //Speed is the amount of rounds to spin per second
-Coin::Coin(Scene* scene, Box* hitBox, std::string name) : Entity(scene, ENTITYTYPE::COIN, name), spin(true), speed(5.f) {
+Coin::Coin(Scene* scene, Box* hitBox, std::string name) : Entity(scene, ENTITYTYPE::COIN, name), spin(true), speed(30.f) {
 	this->hitBox = new HitBox(hitBox);
 	this->rot = 0.0;
 }
@@ -25,6 +25,9 @@ void Coin::Update(double dt) {
 		rot += speed * dt;
 		if (rot > 360) rot -= 360;
 		this->data->rotZMag = rot;
+		int num = rot / 90;
+		if ( num % 2 == 0 ) this->data->transY -= 0.2 * dt;
+		else this->data->transY += 0.2 * dt;
 	}
 }
 

@@ -196,6 +196,7 @@ void SceneUI::Init() {
 	meshList[GEO_SKY_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1));
 	meshList[GEO_ICON] = MeshBuilder::GenerateQuad("icon", Color(1, 1, 1));
 
+
 	meshList[GEO_SKY_LEFT]->textureID = LoadTGA("Image//bluecloud_lf.tga");
 	meshList[GEO_SKY_RIGHT]->textureID = LoadTGA("Image//bluecloud_rt.tga");
 	meshList[GEO_SKY_TOP]->textureID = LoadTGA("Image//bluecloud_up.tga");

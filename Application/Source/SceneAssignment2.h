@@ -1,6 +1,8 @@
 #ifndef SCENE_ASSIGNMENT2_H
 #define SCENE_ASSIGNMENT2_H
 
+#include <map>
+
 #include "Scene.h"
 #include "FirstPersonCamera.h"	
 #include "MeshBuilder.h"
@@ -19,6 +21,13 @@
 
 class SceneAssignment2 : public Scene
 {
+	enum INTERACTION_TYPE {
+		EGGMAN,
+		TAILS,
+		RACE,
+		INTERACTION_COUNT,
+	};
+
 	enum SCENE_GEOMETRY_TYPE
 	{
 		//General
@@ -59,26 +68,36 @@ private:
 	//Game
 	const float defaultSpeed;
 	float playerSpeed;
+	int playerSpeedLevel;
+	const int maxPlayerSpeedLevel;
+	std::vector<float> racingScores; //These are collected through gameplay
+	int coinBalance;
 
-	std::vector<std::string> queuedMessages;
+	//Scene object specific animation variables
+	float shoeShopX, shoeShopY, shoeShopZ;
+	float shoeRotation;
+	float shoeYOffset;
+
+	//Rainbow calculations
+	float rainbow;
+
+	//Interaction
+	bool canInteractWithSomething;
+
+	//Queued Message, commands to execute when message is brought up
+	//Add a "CLOSENOW" message to have "Final Execution commands". (Aka commands to execute on close)
+	std::vector<std::string, std::vector<std::string>> queuedMessages;
+	int currentMessage;
+
 	bool isInteracting;
 	float interactionTime;
 	GEOMETRY_TYPE characterOnUI; //When interacting if there is a person talking to you
 
 	Mesh* meshList[NUM_GEOMETRY];
-	Light light[2];
+	Light light[3];
 
 	bool hitboxEnable;
-	bool rotateAngleFWD;
-	bool translateZFWD;
-	bool scaleALLFWD;
-	float rotateAngle;
-	float rotateAngle2;
-	float translateZ;
-	float scaleAll;
-
 	float fps;
-
 	
 	void RenderSkybox();
 
@@ -86,6 +105,14 @@ private:
 public:
 	SceneAssignment2();
 	~SceneAssignment2();
+
+	int getCoins();
+	void setCoins(int);
+	void addCoins(int);
+
+	bool runCommand(std::string cmd);
+	bool upgradeSpeed();
+	bool loadInteractions(INTERACTION_TYPE type);
 
 	virtual void Init();
 	virtual void Update(double dt);

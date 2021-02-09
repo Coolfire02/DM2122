@@ -11,6 +11,12 @@ enum GEOMETRY_TYPE {
 	GEO_SONIC_TAILS,
 
 	GEO_PODIUM_1ST,
+	GEO_SHOPBASE,
+
+	GEO_SPOTLIGHT,
+
+	//Textured Quads
+	GEO_RUNNINGFLOOR,
 
 	//For non-OBJs
 

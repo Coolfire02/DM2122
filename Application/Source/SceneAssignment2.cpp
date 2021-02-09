@@ -3,30 +3,38 @@
 #include "Mtx44.h"
 #include "LoadTGA.h"
 #include <Windows.h>
+#include <algorithm>
 #include <sstream>
+#include <iomanip>
 
 #include "shader.hpp"
 #include "Utility.h"
 
 
-SceneAssignment2::SceneAssignment2() : eManager(this), defaultSpeed(15.f)
+SceneAssignment2::SceneAssignment2() : 
+	eManager(this), 
+	defaultSpeed(15.f), 
+	maxPlayerSpeedLevel(10)
 {
+	sceneName = "MainScene";
 	playerSpeed = defaultSpeed;
-	rotateAngle = 0;
-	rotateAngle2 = 0;
-	translateZ = 1;
-	scaleAll = 1;
 	fps = 0;
 	lightEnable = false;
 	hitboxEnable = false;
 
-	rotateAngleFWD = true;
-	translateZFWD = true;
-	scaleALLFWD = true;
+	canInteractWithSomething = false;
+	isInteracting = false;
+
+	playerSpeedLevel = 0;
+
+	//Scene object specific animation variables
+	shoeRotation = 0.0f;
+	shoeYOffset = 0.0f;
 }
 
 SceneAssignment2::~SceneAssignment2()
 {
+
 }
 
 void SceneAssignment2::Init() {
@@ -66,6 +74,18 @@ void SceneAssignment2::Init() {
 	m_parameters[U_LIGHT1_COSINNER] = glGetUniformLocation(m_programID, "lights[1].cosInner");
 	m_parameters[U_LIGHT1_EXPONENT] = glGetUniformLocation(m_programID, "lights[1].exponent");
 
+	m_parameters[U_LIGHT2_POSITION] = glGetUniformLocation(m_programID, "lights[2].position_cameraspace");
+	m_parameters[U_LIGHT2_COLOR] = glGetUniformLocation(m_programID, "lights[2].color");
+	m_parameters[U_LIGHT2_POWER] = glGetUniformLocation(m_programID, "lights[2].power");
+	m_parameters[U_LIGHT2_KC] = glGetUniformLocation(m_programID, "lights[2].kC");
+	m_parameters[U_LIGHT2_KL] = glGetUniformLocation(m_programID, "lights[2].kL");
+	m_parameters[U_LIGHT2_KQ] = glGetUniformLocation(m_programID, "lights[2].kQ");
+	m_parameters[U_LIGHT2_TYPE] = glGetUniformLocation(m_programID, "lights[2].type");
+	m_parameters[U_LIGHT2_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[2].spotDirection");
+	m_parameters[U_LIGHT2_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[2].cosCutoff");
+	m_parameters[U_LIGHT2_COSINNER] = glGetUniformLocation(m_programID, "lights[2].cosInner");
+	m_parameters[U_LIGHT2_EXPONENT] = glGetUniformLocation(m_programID, "lights[2].exponent");
+
 	//week 9
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
 	m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
@@ -102,7 +122,24 @@ void SceneAssignment2::Init() {
 	Entity* newCoin = new Coin(this, new Box(coinMesh->botLeftPos, coinMesh->topRightPos), "Coin");
 	newCoin->getEntityData()->rotXMag = 90.f;
 	newCoin->getEntityData()->transX = 8.0;
+	newCoin->getEntityData()->transY = 1.3;
+	newCoin->getEntityData()->scaleX = 0.2;
+	newCoin->getEntityData()->scaleY = 0.2;
+	newCoin->getEntityData()->scaleZ = 0.2;
 	eManager.spawnWorldEntity(newCoin);
+
+	for (int i = 0; i < 10; i++) {
+		coinMesh = MeshHandler::getMesh(GEOMETRY_TYPE::GEO_COIN);
+		newCoin = new Coin(this, new Box(coinMesh->botLeftPos, coinMesh->topRightPos), "Coin");
+		newCoin->getEntityData()->rotXMag = 90.f;
+		newCoin->getEntityData()->transX = 0.0;
+		newCoin->getEntityData()->transY = 1.6;
+		newCoin->getEntityData()->transZ = -55 - i * 5;
+		newCoin->getEntityData()->scaleX = 0.3;
+		newCoin->getEntityData()->scaleY = 0.3;
+		newCoin->getEntityData()->scaleZ = 0.3;
+		eManager.spawnWorldEntity(newCoin);
+	}
 
 	Entity* eggman = new NPC(this, NPCTYPE::EGGMAN, "Eggman");
 	eggman->getEntityData()->scaleX = 0.04;
@@ -114,18 +151,17 @@ void SceneAssignment2::Init() {
 	eggman->getEntityData()->rotYMag = -27.f;
 	eManager.spawnWorldEntity(eggman);
 
+	Entity* raceInteractZone = new CustomEntity(this, new Box(new Position3D(-10, 0, 3), new Position3D(10, 1, -3)), "interaction_race");
+	raceInteractZone->getEntityData()->transX = 0;
+	raceInteractZone->getEntityData()->transY = 0;
+	raceInteractZone->getEntityData()->transZ = -40;
+	eManager.spawnWorldEntity(raceInteractZone);
+
 	Entity* eggmanInteractZone = new CustomEntity(this, new Box(new Position3D(-5, 0, 4), new Position3D(5, 1, -4)), "interaction_eggman");
 	eggmanInteractZone->getEntityData()->transX = eggman->getEntityData()->transX;
 	eggmanInteractZone->getEntityData()->transY = eggman->getEntityData()->transY;
 	eggmanInteractZone->getEntityData()->transZ = eggman->getEntityData()->transZ;
 	eManager.spawnWorldEntity(eggmanInteractZone);
-
-	Entity* podium = new WorldObject(this, GEO_PODIUM_1ST, "Podium_1st");
-	podium->getEntityData()->transX = 32.0f;
-	podium->getEntityData()->scaleX = 6;
-	podium->getEntityData()->scaleY = 3;
-	podium->getEntityData()->scaleZ = 6;
-	eManager.spawnWorldEntity(podium);
 
 	Entity* tails = new NPC(this, NPCTYPE::TAILS, "Tails");
 	tails->getEntityData()->scaleX = 0.23;
@@ -143,12 +179,48 @@ void SceneAssignment2::Init() {
 	tailsInteractZone->getEntityData()->transZ = tails->getEntityData()->transZ - 0.3;
 	eManager.spawnWorldEntity(tailsInteractZone);
 
+	Entity* podium = new WorldObject(this, GEO_PODIUM_1ST, "Podium_1st");
+	podium->getEntityData()->transX = 32.0f;
+	podium->getEntityData()->scaleX = 6;
+	podium->getEntityData()->scaleY = 3;
+	podium->getEntityData()->scaleZ = 6;
+	eManager.spawnWorldEntity(podium);
+
+	Entity* shopBase = new WorldObject(this, GEO_SHOPBASE, "Shop_Base");
+	shopBase->getEntityData()->transX = -30.0f;
+	shopBase->getEntityData()->transZ = 33.0f;
+	shopBase->getEntityData()->scaleX = 6;
+	shopBase->getEntityData()->scaleY = 3;
+	shopBase->getEntityData()->scaleZ = 6;
+	shoeShopX = shopBase->getEntityData()->transX;
+	shoeShopY = shopBase->getEntityData()->transY;
+	shoeShopZ = shopBase->getEntityData()->transZ;
+	eManager.spawnWorldEntity(shopBase);
+
+	Entity* shopSpotLight = new WorldObject(this, GEO_SPOTLIGHT, "Shop_Spotlight");
+	shopSpotLight->getEntityData()->transX = shoeShopX - 3;
+	shopSpotLight->getEntityData()->transY = 0;
+	shopSpotLight->getEntityData()->transZ = shoeShopZ + 3;
+	shopSpotLight->getEntityData()->rotYMag = 135.0;
+	shopSpotLight->getEntityData()->scaleX = 6;
+	shopSpotLight->getEntityData()->scaleY = 6;
+	shopSpotLight->getEntityData()->scaleZ = 6;
+	eManager.spawnWorldEntity(shopSpotLight);
+
+	Entity* shopInteractZone = new CustomEntity(this, new Box(new Position3D(-5, 0, 5), new Position3D(5, 1, -5)), "interaction_shop");
+	shopInteractZone->getEntityData()->transX = shoeShopX;
+	shopInteractZone->getEntityData()->transY = shoeShopY;
+	shopInteractZone->getEntityData()->transZ = shoeShopZ;
+	eManager.spawnWorldEntity(shopInteractZone);
+
+
+
 	//Camera init(starting pos, where it looks at, up
 	camera.Init(Vector3(player->getEntityData()->transX, player->getEntityData()->transY-2, player->getEntityData()->transZ), Vector3(0, 0, 1), Vector3(0, 1, 0));
 
 	//Light init
 	light[0].type = Light::LIGHT_DIRECTIONAL;
-	light[0].position.set(0, 20, 0);
+	light[0].position.set(0, 40, 0);
 	light[0].color.set(1, 1, 1); //set to white light
 	light[0].power = 1;
 	light[0].kC = 1.f;
@@ -159,18 +231,31 @@ void SceneAssignment2::Init() {
 	light[0].exponent = 3.f;
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
 
-	//2nd line
-	light[1].type = Light::LIGHT_DIRECTIONAL;
-	light[1].position.set(0, 1000, 0);
-	light[1].color.set(0.8, 0, 0.7); //set to white light
-	light[1].power = 1;
+	//2nd light
+	light[1].type = Light::LIGHT_SPOT;
+	light[1].position.set(shopSpotLight->getEntityData()->transX, shopSpotLight->getEntityData()->transY, shopSpotLight->getEntityData()->transZ);
+	light[1].color.set(0.4, 0.4, 0.8); //set to white light
+	light[1].power = 3;
 	light[1].kC = 1.f;
-	light[1].kL = 0.01f;
-	light[1].kQ = 0.001f;
+	light[1].kL = 0.1f;
+	light[1].kQ = 0.01f;
 	light[1].cosCutoff = cos(Math::DegreeToRadian(45));
 	light[1].cosInner = cos(Math::DegreeToRadian(30));
 	light[1].exponent = 3.f;
-	light[1].spotDirection.Set(0.f, 1.f, 0.f);
+	light[1].spotDirection.Set(shoeShopX, shoeShopY+3, shoeShopZ);
+
+	//3rd light
+	light[1].type = Light::LIGHT_SPOT;
+	light[1].position.set(shoeShopX, shoeShopY, shoeShopZ);
+	light[1].color.set(1.0, 0.8, 0.0); //set to white light
+	light[1].power = 2;
+	light[1].kC = 1.f;
+	light[1].kL = 0.1f;
+	light[1].kQ = 0.01f;
+	light[1].cosCutoff = cos(Math::DegreeToRadian(45));
+	light[1].cosInner = cos(Math::DegreeToRadian(30));
+	light[1].exponent = 3.f;
+	light[1].spotDirection.Set(shoeShopX, shoeShopY + 3, shoeShopZ);
 
 	// Make sure you pass uniform parameters after glUseProgram()
 	//week7
@@ -196,8 +281,18 @@ void SceneAssignment2::Init() {
 	glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
 	glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
 
+	glUniform1i(m_parameters[U_LIGHT2_TYPE], light[2].type);
+	glUniform3fv(m_parameters[U_LIGHT2_COLOR], 1, &light[2].color.r);
+	glUniform1f(m_parameters[U_LIGHT2_POWER], light[2].power);
+	glUniform1f(m_parameters[U_LIGHT2_KC], light[2].kC);
+	glUniform1f(m_parameters[U_LIGHT2_KL], light[2].kL);
+	glUniform1f(m_parameters[U_LIGHT2_KQ], light[2].kQ);
+	glUniform1f(m_parameters[U_LIGHT2_COSCUTOFF], light[2].cosCutoff);
+	glUniform1f(m_parameters[U_LIGHT2_COSINNER], light[2].cosInner);
+	glUniform1f(m_parameters[U_LIGHT2_EXPONENT], light[2].exponent);
+
 	//Week 7 - Code to change number of lights
-	glUniform1i(m_parameters[U_NUMLIGHTS], 1);
+	glUniform1i(m_parameters[U_NUMLIGHTS], 3);
 
 	//Practical 10a
 	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT], m_parameters[U_MATERIAL_DIFFUSE], m_parameters[U_MATERIAL_SPECULAR], m_parameters[U_MATERIAL_SHININESS]);
@@ -222,9 +317,6 @@ void SceneAssignment2::Init() {
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
-
-	meshList[GEO_PLATFORM_FLOOR] = MeshBuilder::GenerateQuad("floor", Color(1, 1, 1));
-	meshList[GEO_PLATFORM_FLOOR]->textureID = LoadTGA("Image//SonicFloor.tga");
 
 
 
@@ -268,15 +360,36 @@ void SceneAssignment2::Update(double dt)
 {
 	camera.Update(dt);
 
-	std::vector<CollidedWith*> collided = eManager.preCollisionUpdate(); 
+	std::vector<CollidedWith*> collided = eManager.preCollisionUpdate();
+	canInteractWithSomething = false;
 	for (auto& entry : collided) {
 		if (entry->attacker->getType() == ENTITYTYPE::SONIC) {
-
 			if (entry->victim->getType() == ENTITYTYPE::LIVE_NPC || entry->victim->getType() == ENTITYTYPE::WORLDOBJ) {
 				entry->cancelled = true;
 			}
+			if (entry->victim->getType() == ENTITYTYPE::CUSTOM) {
+				if (entry->victim->getName().find("interaction") != std::string::npos) {
+					if(!canInteractWithSomething)
+						canInteractWithSomething = true;
+					else {
+						std::string name = entry->victim->getName();
+						if (name.compare("interaction_race") == 0) {
 
-			std::cout << "Collided" << std::endl;
+						}
+						else if (name.compare("interaction_tails") == 0) {
+
+						}
+						else if (name.compare("interaction_eggman") == 0) {
+
+						}
+						else if (name.compare("interaction_shop") == 0) {
+
+						}
+					}
+				}
+			}
+
+			//std::cout << "Collided" << std::endl;
 
 			//entry->victim->setDead(true);
 			//std::cout << "Cancelled collision" << std::endl;
@@ -289,30 +402,12 @@ void SceneAssignment2::Update(double dt)
 			player->getEntityData()->transY - player->getOldEntityData()->transY,
 			player->getEntityData()->transZ - player->getOldEntityData()->transZ);
 	}
-	
 
 	eManager.postCollisionUpdate();
 
-	//player->getEntityData()->scaleX += 0.1 * dt;
-	//player->getEntityData()->rotYMag += 1 * dt;
-
-	rotateAngle += 10 * dt;
-	rotateAngle2 += 50 * dt;
-
 	fps = 1 / dt;
-
-	if (translateZFWD) {
-		translateZ += 0.2;
-		if (translateZ >= 5) {
-			translateZFWD = false;
-		}
-	}
-	else {
-		translateZ -= 0.2;
-		if (translateZ <= 1) {
-			translateZFWD = true;
-		}
-	}
+	rainbow += dt * 0.2;
+	if (rainbow > 1.0) rainbow -= 1.0;
 
 	if (GetAsyncKeyState('1') & 0x8001) {
 		glEnable(GL_CULL_FACE);
@@ -349,7 +444,17 @@ void SceneAssignment2::Update(double dt)
 		lightEnable = !lightEnable;
 	}
 
-	const float LSPEED = 10.f;
+	const float BOOT_ROTATION = 30.f;
+	const float BOOT_YOFFSET = 0.2f;
+	//Scene object specific animation variables updates
+	shoeRotation += BOOT_ROTATION * dt;
+	if (shoeRotation > 360) shoeRotation -= 360;
+	int num = shoeRotation / 90; //Used later
+	if (num % 2 == 0) shoeYOffset += BOOT_YOFFSET * dt;
+	else shoeYOffset -= BOOT_YOFFSET * dt;
+
+
+	//const float LSPEED = 10.f;
 	//if (Application::IsKeyPressed('I'))
 	//	light[0].position.z -= (float)(LSPEED * dt);
 	//if (Application::IsKeyPressed('K'))
@@ -380,8 +485,9 @@ void SceneAssignment2::Update(double dt)
 		right.Normalize();
 		Vector3 up = right.Cross(view).Normalized();
 		pLoc -= right * (float)dt * playerSpeed;
-	}
 		//player->getEntityData()->transX -= (float)(LSPEED * dt);
+	}
+		
 	if (Application::IsKeyPressed('S')) {
 		Vector3 view = (camera.target - camera.position).Normalized();
 		pLoc -= view * (float)dt * playerSpeed;
@@ -395,8 +501,66 @@ void SceneAssignment2::Update(double dt)
 		right.Normalize();
 		Vector3 up = right.Cross(view).Normalized();
 		pLoc += right * (float)dt * playerSpeed;
-	}
 		//player->getEntityData()->transX += (float)(LSPEED * dt);
+	}
+	static const float CAMERA_SPEED = 45.f;
+	static const float ZOOM_SPEED = 20.f;
+
+	/*Vector3 oldTarget = Vector3(camera.target.x, 0, camera.target.z);*/
+
+	if (Application::IsKeyPressed(VK_UP)) { //KEYUP
+		float pitch = CAMERA_SPEED * static_cast<float>(dt);
+		Vector3 view = (camera.target - camera.position).Normalized();
+		Vector3 right = view.Cross(camera.up);
+		right.y = 0;
+		right.Normalize();
+		camera.up = right.Cross(view).Normalized();
+		Mtx44 rotation;
+		rotation.SetToRotation(pitch, right.x, right.y, right.z);
+
+		view = rotation * view;
+		camera.target = camera.position + view;
+	}
+	if (Application::IsKeyPressed(VK_LEFT)) {
+		float yaw = CAMERA_SPEED * static_cast<float>(dt);
+		Vector3 view = (camera.target - camera.position).Normalized();
+		Mtx44 rotation;
+		rotation.SetToRotation(yaw, 0, 1, 0);
+		view = rotation * view;
+		camera.target = camera.position + view;
+		camera.up = rotation * camera.up;
+	}
+	if (Application::IsKeyPressed(VK_RIGHT)) {
+		float yaw = -CAMERA_SPEED * static_cast<float>(dt);
+		Vector3 view = (camera.target - camera.position).Normalized();
+		Mtx44 rotation;
+		rotation.SetToRotation(yaw, 0, 1, 0);
+		view = rotation * view;
+		camera.target = camera.position + view;
+		camera.up = rotation * camera.up;
+	}
+	if (Application::IsKeyPressed(VK_DOWN)) {
+		float pitch = -CAMERA_SPEED * static_cast<float>(dt);
+		Vector3 view = (camera.target - camera.position).Normalized();
+		Vector3 right = view.Cross(camera.up);
+		right.y = 0;
+		right.Normalize();
+		camera.up = right.Cross(view).Normalized();
+		Mtx44 rotation;
+		rotation.SetToRotation(pitch, right.x, right.y, right.z);
+		view = rotation * view;
+		camera.target = camera.position + view;
+	}
+
+	//Vector3 newTarget = Vector3(camera.target);
+	//newTarget.y = oldTarget.y;
+	//
+	////Some super expen calc :D
+	//float angle = acos(oldTarget.Dot(newTarget) / (oldTarget.Magnitude() * newTarget.Magnitude())) * 180 / Math::PI;
+	//if (angle > 0.0)
+	//	std::cout << angle;
+	//player->getEntityData()->rotYMag += angle;
+		
 
 	// SCENE WORLD BOUNDARIES
 	pLoc.x = Math::Clamp(pLoc.x, -40.f, 40.f);
@@ -537,6 +701,13 @@ void SceneAssignment2::Render()
 		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+		modelStack.Translate(0.0f, 0.f, -125.0f);
+		modelStack.Rotate(-90, 1.0f, 0.0f, 0.0f);
+		modelStack.Scale(20.f, 150.f, 1.f);
+		this->RenderMesh(MeshHandler::getMesh(GEO_RUNNINGFLOOR), lightEnable);
+	modelStack.PopMatrix();
+
 
 
 
@@ -551,10 +722,10 @@ void SceneAssignment2::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(9.0f, 0.7f, 0.0f);
+	//modelStack.Translate(9.0f, 0.7f, 0.0f);
 	modelStack.Rotate(00, 0.0f, 1.0f, 0.0f);
 	modelStack.Scale(0.05f, 0.05f, 0.05f);
-	this->RenderMesh(meshList[GEO_SONIC_TAILS], lightEnable);
+	this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_TAILS), lightEnable);
 	modelStack.PopMatrix();
 
 	for (auto& entity : eManager.getEntities()) {
@@ -568,14 +739,166 @@ void SceneAssignment2::Render()
 		}
 	}
 
-	RenderMeshOnScreen(meshList[GEO_COINS_METER], 9, 55, 15, 13);
+	//Sonic Shop Shoe Display
+
+	this->modelStack.PushMatrix();
+		
+		this->modelStack.Translate(shoeShopX, shoeShopY + 4.0f + shoeYOffset, shoeShopZ);
+		this->modelStack.Rotate(shoeRotation, 0.0f, 1.0f, 0.f);
+		this->modelStack.Scale(0.14f, 0.14f, 0.14f);
+		//Right Shoe
+
+		//Front shoe
+		this->modelStack.PushMatrix();
+			this->modelStack.Translate(8.4f * RIGHT, -8.0f, 0.0f);
+			this->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+			this->modelStack.Scale(5.0f, 8.f, 10.f);
+			this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
+
+			//Lace
+			this->modelStack.PushMatrix();
+				this->modelStack.Rotate(90, 0.0f, 1.0f, 0.0f);
+				this->modelStack.Translate(-0.3f, 0.0f, 0.0f);
+				this->modelStack.Rotate(-83, 0.0f, 0.0f, 1.0f);
+				this->modelStack.Scale(0.75f, 4.f, 0.8f); //x is tallness, y value is width, 
+				this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSLACEHALFTORUS), true);
+
+			this->modelStack.PopMatrix();
+
+			this->modelStack.PushMatrix();
+				this->modelStack.Translate(0.f, -0.12f, 0.25f);
+				this->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+				this->modelStack.Scale(0.8f, 0.8f, 0.6f);
+				this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSFEETTORUS), true);
+			this->modelStack.PopMatrix();
+
+		this->modelStack.PopMatrix();
+
+		//Back shoe
+		this->modelStack.PushMatrix();
+			this->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
+			this->modelStack.Translate(-8.4f * RIGHT, -8.0f, -0.3f);
+			this->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+			this->modelStack.Scale(5.0f, 8.f, 4.f);
+			this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
+
+		this->modelStack.PopMatrix();
+
+		//Left Shoe
+		//Front shoe
+		this->modelStack.PushMatrix();
+			this->modelStack.Translate(8.4f * LEFT, -8.0f, 0.0f);
+			this->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+			this->modelStack.Scale(5.0f, 8.f, 10.f);
+			this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
+
+			//Lace
+			this->modelStack.PushMatrix();
+				this->modelStack.Rotate(90, 0.0f, 1.0f, 0.0f);
+				this->modelStack.Translate(-0.3f, 0.0f, 0.0f);
+				this->modelStack.Rotate(-83, 0.0f, 0.0f, 1.0f);
+				this->modelStack.Scale(0.75f, 4.f, 0.8f); //x is tallness, y value is width, 
+				this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSLACEHALFTORUS), true);
+
+			this->modelStack.PopMatrix();
+
+			this->modelStack.PushMatrix();
+				this->modelStack.Translate(0.f, -0.12f, 0.25f);
+				this->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+				this->modelStack.Scale(0.8f, 0.8f, 0.6f);
+				this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSFEETTORUS), true);
+			this->modelStack.PopMatrix();
+
+		this->modelStack.PopMatrix();
+
+		//Back shoe
+		this->modelStack.PushMatrix();
+			this->modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
+			this->modelStack.Translate(-8.4f * LEFT, -8.0f, -0.3f);
+			this->modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
+			this->modelStack.Scale(5.0f, 8.f, 4.f);
+			this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_BOOTSQUATERSPHERE), true);
+
+		this->modelStack.PopMatrix();
+
+	this->modelStack.PopMatrix();
+
 	std::ostringstream ss;
-	ss << "000";
+
+	//World Text
+	modelStack.PushMatrix();
+		modelStack.Translate(shoeShopX+3, shoeShopY+10, shoeShopZ+3);
+		modelStack.Rotate(135, 0.0f, 1.0f, 0.0f);
+		modelStack.Scale(1.0f, 1.0f, 1.0f);
+		this->RenderText(meshList[GEO_TEXT], "Speed Upgrade Shop", Color(0.9, 0.7, 0.01));
+		
+		modelStack.PushMatrix();
+			modelStack.Translate(0.2, -1, 0.2);
+			modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
+			modelStack.Scale(1.0f, 1.0f, 1.0f);
+			ss << "Level (0/10): " << std::setprecision(2) << playerSpeed/defaultSpeed << "x Speed";
+			this->RenderText(meshList[GEO_TEXT], ss.str(), Color(0.9, 0.7, 0.01));
+
+
+		modelStack.PopMatrix();
+
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+		modelStack.Translate(-3.0, 8, -50.0);
+		modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
+		modelStack.Scale(3.0f, 3.0f, 3.0f);
+		ss.str("");
+		ss.clear();
+		ss << "RUNNER";
+		this->RenderText(meshList[GEO_TEXT], ss.str(), Color(1.0 - rainbow * 0.5, pow(rainbow,0.5), rainbow));
+
+		modelStack.PushMatrix();
+			modelStack.Translate(-1.0, -0.42, 0.0);
+			modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
+			modelStack.Scale(0.5f, 0.5f, 0.5f);
+			ss.str("");
+			ss.clear();
+			ss << "Interact to Start";
+			this->RenderText(meshList[GEO_TEXT], ss.str(), Color(0.9, 0.8, 0.0));
+
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+			modelStack.Translate(-0.1, -1.04, 0.0);
+			modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
+			modelStack.Scale(0.33f, 0.33f, 0.33f);
+			ss.str("");
+			ss.clear();
+			ss << "PBest Time: " << "0:00";
+			this->RenderText(meshList[GEO_TEXT], ss.str(), Color(0.4, 1.0, 1.0));
+		modelStack.PopMatrix();
+
+	modelStack.PopMatrix();
+
+	//UI Text
+
+	RenderMeshOnScreen(meshList[GEO_COINS_METER], 9, 55, 15, 13);
+	
+	ss.str("");
+	ss.clear();
+	std::string bal = coinBalance + "";
+	if (coinBalance < 10) bal = "0" + bal;
+	if (coinBalance < 100) bal = "0" + bal;
+	if (coinBalance > 999) bal = "999";
+	ss << bal;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 5, 7, 52.5);
 
 	RenderMeshOnScreen(meshList[GEO_TIME_METER], 9, 49, 15, 13);
 	RenderTextOnScreen(meshList[GEO_TEXT], "0:00", Color(0, 0, 0), 4, 7, 46.5);
 	RenderTextOnScreen(meshList[GEO_TEXT], "999", Color(0, 0, 0), 2, 12, 49.5);
+
+	if (canInteractWithSomething) {
+		ss.str("");
+		ss.clear();
+		ss << "Press 'E' to Interact";
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 5, 12, 10);
+	}
 
 	ss.str("");
 	ss.clear();
@@ -648,7 +971,56 @@ void SceneAssignment2::RenderSkybox() {
 	modelStack.PopMatrix();
 }
 
+int SceneAssignment2::getCoins() {
+	return coinBalance;
+}
 
+void SceneAssignment2::setCoins(int val) {
+	coinBalance = val;
+}
+
+void SceneAssignment2::addCoins(int val) {
+	coinBalance += val;
+}
+
+bool SceneAssignment2::runCommand(std::string cmd) {
+	std::string delimiter = " ";
+	size_t pos = 0;
+	std::string splitVal;
+	std::vector<std::string> split;
+	while ((pos = cmd.find(delimiter)) != std::string::npos) {
+		splitVal = cmd.substr(0, pos);
+		std::transform(splitVal.begin(), splitVal.end(), splitVal.begin(),
+			[](unsigned char c) { return std::tolower(c); });
+		split.push_back(std::string(splitVal));
+		cmd.erase(0, pos + delimiter.length());
+	}
+
+	if (split.size() == 1) {
+		if (split.at(0).compare("/startrace")) {
+			//Start race code;
+		}
+		else if (split.at(1).compare("/endinteraction")) {
+			queuedMessages.clear();
+		}
+		else if (split.at(1).compare("/buyupgrade")) {
+			//Upgrade
+		}
+	}
+	else if (split.size() >= 2) {
+		if (split.at(0).compare("/givecoin")) {
+			this->addCoins(stoi(split.at(1)));
+		}
+	}
+}
+
+bool SceneAssignment2::upgradeSpeed() {
+
+}
+
+bool SceneAssignment2::loadInteractions(INTERACTION_TYPE type) {
+
+}
 
 void SceneAssignment2::Exit()
 {

@@ -44,6 +44,30 @@ protected:
 		U_LIGHT1_COSINNER,
 		U_LIGHT1_EXPONENT,
 
+		U_LIGHT2_POSITION,
+		U_LIGHT2_COLOR,
+		U_LIGHT2_POWER,
+		U_LIGHT2_KC,
+		U_LIGHT2_KL,
+		U_LIGHT2_KQ,
+		U_LIGHT2_TYPE,
+		U_LIGHT2_SPOTDIRECTION,
+		U_LIGHT2_COSCUTOFF,
+		U_LIGHT2_COSINNER,
+		U_LIGHT2_EXPONENT,
+
+		U_LIGHT3_POSITION,
+		U_LIGHT3_COLOR,
+		U_LIGHT3_POWER,
+		U_LIGHT3_KC,
+		U_LIGHT3_KL,
+		U_LIGHT3_KQ,
+		U_LIGHT3_TYPE,
+		U_LIGHT3_SPOTDIRECTION,
+		U_LIGHT3_COSCUTOFF,
+		U_LIGHT3_COSINNER,
+		U_LIGHT3_EXPONENT,
+
 		U_LIGHTENABLED,
 		U_NUMLIGHTS,
 
@@ -59,6 +83,8 @@ protected:
 	};
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
+
+	std::string sceneName;
 
 	//stores handlers for uniform parametes
 	unsigned m_parameters[U_TOTAL];
@@ -83,7 +109,8 @@ public:
 	double getElapsedTime();
 //protected: //Change to protected if have time to add functions
 	MS modelStack, viewStack, projectionStack;
-
+	
+	void ReceiveMessage(Scene* scene, std::string message);
 	void RenderMesh(Mesh* mesh, bool lightEnabled);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);

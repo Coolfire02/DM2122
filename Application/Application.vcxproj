@@ -149,6 +149,7 @@
     <ClCompile Include="Source\NPC.cpp" />
     <ClCompile Include="Source\Coin.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
+    <ClCompile Include="Source\SceneRaceAssignment2.cpp" />
     <ClCompile Include="Source\Sonic.cpp" />
     <ClCompile Include="Source\MeshHandler.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Source\CustomEntity.h" />
     <ClInclude Include="Source\NPC.h" />
     <ClInclude Include="Source\Coin.h" />
+    <ClInclude Include="Source\SceneRaceAssignment2.h" />
     <ClInclude Include="Source\Sonic.h" />
     <ClInclude Include="Source\EntityDataHandler.h" />
     <ClInclude Include="Source\MeshHandler.h" />
