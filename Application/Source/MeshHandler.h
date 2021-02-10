@@ -17,6 +17,7 @@ enum GEOMETRY_TYPE {
 
 	//Textured Quads
 	GEO_RUNNINGFLOOR,
+	GEO_TEXTBACKDROP,
 
 	//For non-OBJs
 

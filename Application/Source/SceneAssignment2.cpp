@@ -10,12 +10,27 @@
 #include "shader.hpp"
 #include "Utility.h"
 
+void split(std::string txt, char delim, std::vector<std::string>& out);
 
 SceneAssignment2::SceneAssignment2() : 
 	eManager(this), 
 	defaultSpeed(15.f), 
 	maxPlayerSpeedLevel(10)
 {
+	//Scene
+	sceneName = "MainScene";
+
+	//Game
+	raceUnlocked = false;
+	playerSpeed = defaultSpeed;
+	fps = 0;
+	lightEnable = false;
+	hitboxEnable = false;
+	showNotifUntil = 0.0;
+
+	playerSpeedLevel = 0;
+	canPurchaseUpgrade = false;
+	interactionElapsed = 0.0;
 	upgradeCost[0] = 20;
 	upgradeCost[1] = 25;
 	upgradeCost[2] = 30;
@@ -27,18 +42,16 @@ SceneAssignment2::SceneAssignment2() :
 	upgradeCost[8] = 100;
 	upgradeCost[9] = 150;
 
-	sceneName = "MainScene";
-	playerSpeed = defaultSpeed;
-	fps = 0;
-	lightEnable = false;
-	hitboxEnable = false;
-
+	//Interaction
+	for (int i = 0; i < INTERACTION_COUNT; i++) {
+		this->completedInteractionsCount[i] = 0;
+	}
 	canInteractWithSomething = false;
 	isInteracting = false;
 
-	playerSpeedLevel = 0;
-
 	//Scene object specific animation variables
+
+	//Shoe Shop
 	shoeRotation = 0.0f;
 	shoeYOffset = 0.0f;
 }
@@ -125,6 +138,7 @@ void SceneAssignment2::Init() {
 
 	player = new Sonic(this, "MainPlayer");
 	player->getEntityData()->transY += 4;
+	player->setVisibility(false);
 	eManager.spawnMovingEntity(player);
 
 
@@ -371,8 +385,13 @@ void SceneAssignment2::Update(double dt)
 {
 	camera.Update(dt);
 
+	bool foundInteractionZone = false;
+
+	//Keys that are used inside checks (Not reliant detection if checking for pressed inside conditions etc)
+	bool ePressed = Application::IsKeyPressed('E');
+	bool tPressed = Application::IsKeyPressed('T');
+
 	std::vector<CollidedWith*> collided = eManager.preCollisionUpdate();
-	canInteractWithSomething = false;
 	for (auto& entry : collided) {
 		if (entry->attacker->getType() == ENTITYTYPE::SONIC) {
 			if (entry->victim->getType() == ENTITYTYPE::LIVE_NPC || entry->victim->getType() == ENTITYTYPE::WORLDOBJ) {
@@ -380,21 +399,30 @@ void SceneAssignment2::Update(double dt)
 			}
 			if (entry->victim->getType() == ENTITYTYPE::CUSTOM) {
 				if (entry->victim->getName().find("interaction") != std::string::npos) {
+					foundInteractionZone = true;
 					if(!canInteractWithSomething)
 						canInteractWithSomething = true;
-					else {
+					else if (passedInteractCooldown()) {
 						std::string name = entry->victim->getName();
-						if (name.compare("interaction_race") == 0) {
-
-						}
-						else if (name.compare("interaction_tails") == 0) {
-
-						}
-						else if (name.compare("interaction_eggman") == 0) {
-
-						}
-						else if (name.compare("interaction_shop") == 0) {
-
+						if (ePressed) {
+							if (name.compare("interaction_race") == 0) {
+								if (raceUnlocked) {
+									loadInteractions(RACE);
+								}
+								else
+								{
+									sendNotification("Race has not been unlocked!\nTalk to Eggman first.", 3.5);
+								}
+							}
+							else if (name.compare("interaction_tails") == 0) {
+								loadInteractions(TAILS);
+							}
+							else if (name.compare("interaction_eggman") == 0) {
+								loadInteractions(EGGMAN);
+							}
+							else if (name.compare("interaction_shop") == 0) {
+								loadInteractions(SHOP);
+							}
 						}
 					}
 				}
@@ -405,6 +433,9 @@ void SceneAssignment2::Update(double dt)
 			//entry->victim->setDead(true);
 			//std::cout << "Cancelled collision" << std::endl;
 		}
+	}
+	if (foundInteractionZone == false) {
+		canInteractWithSomething = false;
 	}
 	eManager.collisionUpdate(dt);
 
@@ -420,6 +451,18 @@ void SceneAssignment2::Update(double dt)
 	rainbow += dt * 0.2;
 	if (rainbow > 1.0) rainbow -= 1.0;
 
+	if (isInteracting && passedInteractCooldown()) {
+		if (ePressed) {
+			nextInteraction();
+			
+		}
+		else if (canPurchaseUpgrade && tPressed) {
+			buySpeedUpgrade();
+		}
+		latestInteractionSwitch = this->elapsed;
+	}
+
+
 	if (GetAsyncKeyState('1') & 0x8001) {
 		glEnable(GL_CULL_FACE);
 	}
@@ -433,21 +476,21 @@ void SceneAssignment2::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	if (Application::IsKeyPressed('5')) {
-		//to do: switch light type to POINT and pass the information to shader
-		light[0].type = Light::LIGHT_POINT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('6')) {
-		//to do: switch light type to DIRECTIONAL and pass the information to shader
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	else if (Application::IsKeyPressed('7')) {
-		//to do: switch light type to SPOT and pass the information to shader
-		light[0].type = Light::LIGHT_SPOT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
+	//if (Application::IsKeyPressed('5')) {
+	//	//to do: switch light type to POINT and pass the information to shader
+	//	light[0].type = Light::LIGHT_POINT;
+	//	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+	//}
+	//else if (Application::IsKeyPressed('6')) {
+	//	//to do: switch light type to DIRECTIONAL and pass the information to shader
+	//	light[0].type = Light::LIGHT_DIRECTIONAL;
+	//	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+	//}
+	//else if (Application::IsKeyPressed('7')) {
+	//	//to do: switch light type to SPOT and pass the information to shader
+	//	light[0].type = Light::LIGHT_SPOT;
+	//	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+	//}
 	if (Application::IsKeyPressed('9')) {
 		hitboxEnable = !hitboxEnable;
 	}
@@ -720,10 +763,6 @@ void SceneAssignment2::Render()
 	modelStack.PopMatrix();
 
 
-
-
-
-
 	modelStack.PushMatrix();
 	modelStack.Translate(0.0f, 0.4f, 0.0f);
 	//modelStack.Rotate(90, 0.0f, 1.0f, 0.0f);
@@ -889,33 +928,88 @@ void SceneAssignment2::Render()
 
 	//UI Text
 
+	//Interaction UI
+	if (isInteracting) {
+		Interaction* inter = queuedMessages.at(currentMessage);
+		std::vector<std::string> splitVar;
+		split(inter->interactionText, '\n', splitVar);
+		const double offset = 2.5;
+		int i = 0;
+		int additionalYSize = splitVar.size() - 3;
+		if (additionalYSize > 0) {
+			additionalYSize = 10 * additionalYSize;
+		}
+		else {
+			additionalYSize = 0;
+		}
+		//Calculate text offset
+		const double textYStart = 10.5+(additionalYSize/10+1)*offset;
+		//Renders backdrop
+		RenderMeshOnScreen(MeshHandler::getMesh(GEO_TEXTBACKDROP), 40, 10, 73, 40+additionalYSize);
+		//Renders text;
+		for (auto& entry : splitVar) {
+			ss.str("");
+			ss.clear();
+			ss << entry;
+			RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.8, 0.6, 1.0), 3.5, 7, textYStart-offset*i);
+			i++;
+		}
+		//Renders Press E to close
+		ss.str("");
+		ss.clear();
+		ss << "Press E to " << (currentMessage+1 == queuedMessages.size() ? "Close" : "Continue");
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.8, 0.6, 1.0), 3.5, 40, textYStart - offset * (++i < 4? 4: i));
+	}
+
+	//Notification UI
+	if (showNotifUntil > elapsed) {
+
+		std::vector<std::string> splitVar;
+		split(notificationMessage, '\n', splitVar);
+		const double offset = 3.0;
+		int i = 0;
+		for (auto& entry : splitVar) {
+			ss.str("");
+			ss.clear();
+			ss << entry;
+			RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.1, 0.4, 0.1), 4, 10, 20-offset*i);
+			i++;
+		}
+
+	}
+
+	//Coins UI
 	RenderMeshOnScreen(meshList[GEO_COINS_METER], 9, 55, 15, 13);
 	
 	ss.str("");
 	ss.clear();
-	std::string bal = coinBalance + "";
+	std::string bal = std::to_string(coinBalance);
 	if (coinBalance < 10) bal = "0" + bal;
 	if (coinBalance < 100) bal = "0" + bal;
 	if (coinBalance > 999) bal = "999";
 	ss << bal;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 5, 7, 52.5);
 
+	//Time UI
 	RenderMeshOnScreen(meshList[GEO_TIME_METER], 9, 49, 15, 13);
 	RenderTextOnScreen(meshList[GEO_TEXT], "0:00", Color(0, 0, 0), 4, 7, 46.5);
 	RenderTextOnScreen(meshList[GEO_TEXT], "999", Color(0, 0, 0), 2, 12, 49.5);
 
-	if (canInteractWithSomething) {
+	//Interaction MSG UI
+	if (canInteractWithSomething && !isInteracting) {
 		ss.str("");
 		ss.clear();
 		ss << "Press 'E' to Interact";
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 5, 12, 10);
+		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 4, 20, 10);
 	}
-
+	
+	//FPS UI
 	ss.str("");
 	ss.clear();
-	ss << "FPS: " << fps;
+	ss << "FPS: " << this->elapsed;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 5);
 
+	//XYZ UI
 	ss.str("");
 	ss.clear();
 	ss << "X: " << player->getEntityData()->transX;
@@ -982,6 +1076,14 @@ void SceneAssignment2::RenderSkybox() {
 	modelStack.PopMatrix();
 }
 
+bool SceneAssignment2::passedInteractCooldown() {
+	const float INTERACTION_COOLDOWN = 0.5f;
+	if (latestInteractionSwitch + INTERACTION_COOLDOWN < this->elapsed) {
+		return true;
+	}
+	return false;
+}
+
 int SceneAssignment2::getCoins() {
 	return coinBalance;
 }
@@ -994,81 +1096,261 @@ void SceneAssignment2::addCoins(int val) {
 	coinBalance += val;
 }
 
-bool SceneAssignment2::runCommand(std::string cmd) {
-	std::string delimiter = " ";
-	size_t pos = 0;
-	std::string splitVal;
-	std::vector<std::string> split;
-	while ((pos = cmd.find(delimiter)) != std::string::npos) {
-		splitVal = cmd.substr(0, pos);
-		std::transform(splitVal.begin(), splitVal.end(), splitVal.begin(),
-			[](unsigned char c) { return std::tolower(c); });
-		split.push_back(std::string(splitVal));
-		cmd.erase(0, pos + delimiter.length());
-	}
+void SceneAssignment2::sendNotification(std::string msg, double duration) {
+	showNotifUntil = elapsed + duration;
+	notificationMessage = msg;
+}
 
-	if (split.size() == 1) {
-		if (split.at(0).compare("/startrace")) {
-			//Start race code;
-		}
-		else if (split.at(1).compare("/endinteraction")) {
-			queuedMessages.clear();
-		}
-		else if (split.at(1).compare("/buyupgrade")) {
-			//Upgrade
-		}
-	}
-	else if (split.size() >= 2) {
-		if (split.at(0).compare("/givecoin")) {
-			this->addCoins(stoi(split.at(1)));
-		}
+void split(std::string txt, char delim, std::vector<std::string>& out) {
+	std::istringstream iss(txt);
+	std::string item;
+	while (std::getline(iss, item, delim)) {
+		out.push_back(item);
 	}
 }
 
-bool SceneAssignment2::upgradeSpeed() {
+bool SceneAssignment2::runCommand(std::string cmd) {
+	std::vector<std::string> splitVar;
+	split(cmd, ' ', splitVar);
+
+	if (splitVar.size() == 1) {
+		if (splitVar.at(0) ==  "/startrace") {
+			//Start race code todo
+			return true;
+		}
+		else if (splitVar.at(0) == "/endinteraction") {
+			queuedMessages.clear();
+			//End Interaction todo
+			return true;
+		}
+		else if (splitVar.at(0) == "/unlockrace") {
+			raceUnlocked = true;
+			sendNotification("Race has been UNLOCKED", 5.0);
+			//End Interaction todo
+			return true;
+		}
+		else if (splitVar.at(0) == "/buyupgrade") {
+			//Upgrade todo
+			return true;
+		}
+		else if (splitVar.at(0) == "/enablebootupgrades") {
+			canPurchaseUpgrade = true;
+			return true;
+		}
+		else if (splitVar.at(0) == "/disablebootupgrades") {
+			canPurchaseUpgrade = false;
+			return true;
+		}
+	}
+	else if (splitVar.size() >= 2) {
+		if (splitVar.at(0) == "/givecoin") {
+			this->addCoins(stoi(splitVar.at(1)));
+			return true;
+		}
+	}
+
+	return true;
+}
+
+bool SceneAssignment2::buySpeedUpgrade() {
 	if (playerSpeedLevel < maxPlayerSpeedLevel) {
 		if (coinBalance > upgradeCost[this->playerSpeedLevel]) {
 			coinBalance -= upgradeCost[this->playerSpeedLevel];
 			playerSpeedLevel++;
 			playerSpeed = defaultSpeed * (1 + 0.05 * playerSpeedLevel);
+			sendNotification("Purchase successful", 4.5);
 		}
+		else {
+			sendNotification("You need " +std::to_string(upgradeCost[this->playerSpeedLevel])+" Coins to Upgrade!", 3.0);
+		}
+	}
+	else {
+		sendNotification("Already Maxed!", 3.0);
 	}
 	return false;
 }
 
 bool SceneAssignment2::loadInteractions(INTERACTION_TYPE type) {
 	if (!isInteracting) {
-		
-		bool interactionsLoaded = false;
 
 		switch (type) {
 		case TAILS:
+		{
+			Interaction* inter;
+			if (completedInteractionsCount[TAILS] == 0) {
+				inter = new Interaction();
+				inter->interactionText = "Hey There!";
+				queuedMessages.push_back(inter);
+				
+				inter = new Interaction();
+				inter->interactionText = "It's been a while since\nI've found a new potential\ncompetitor...";
+				queuedMessages.push_back(inter);
+				if (completedInteractionsCount[EGGMAN] > 0) {
+					inter = new Interaction();
+					inter->interactionText = "Don't worry about Eggman\nHe's such a sob. Could\nnever beat me";
+					queuedMessages.push_back(inter);
+
+					inter = new Interaction();
+					inter->interactionText = "Explains why he's mad\nas he sees potential in you.";
+					queuedMessages.push_back(inter);
+				}
+			}
+			else {
+				inter = new Interaction();
+				inter->interactionText = "Hey there again!";
+				queuedMessages.push_back(inter);
+			}
+			inter = new Interaction();
+			inter->interactionText = "Oh, you wanna know my\nTiming for the race?";
+			queuedMessages.push_back(inter);
+
+			inter = new Interaction();
+			inter->interactionText = "I ran and completed it in...\n";
+			queuedMessages.push_back(inter);
+
+			inter = new Interaction();
+			inter->interactionText = "0 minutes and 27 seconds!";
+			queuedMessages.push_back(inter);
+
+
+
 			break;
+		}
 		case EGGMAN:
+		{
+			Interaction* inter;
+			if (completedInteractionsCount[EGGMAN] == 0) {
+
+				inter = new Interaction();
+				inter->interactionText = "So... You're new around here?";
+				queuedMessages.push_back(inter);
+
+				inter = new Interaction();
+				inter->interactionText = "HAHAHA, You'll Never Beat\nanyone here, look at your speed";
+				queuedMessages.push_back(inter);
+
+				inter = new Interaction();
+				inter->interactionText = "Well anyways, I hope you f..\nI mean succeed!";
+				inter->preInteractionCMD.push_back("/unlockrace");
+				queuedMessages.push_back(inter);
+			}
+			else {
+				switch (playerSpeedLevel) {
+				case 1:
+					inter = new Interaction();
+					inter->interactionText = "So your back again!";
+					queuedMessages.push_back(inter);
+
+					inter = new Interaction();
+					inter->interactionText = "Couldn't beat Tails huh,\nof course you couldnt!";
+					queuedMessages.push_back(inter);
+
+					if (completedInteractionsCount[EGGMAN] == 1) {
+						inter = new Interaction();
+						inter->interactionText = "Go back to the dumpster!\nHere's 10 pitty coins";
+						inter->postInteractionCMD.push_back("/givecoin 10");
+						queuedMessages.push_back(inter);
+					}
+					break;
+
+				case 3:
+					inter = new Interaction();
+					inter->interactionText = "Dangg, you're catching up...";
+					queuedMessages.push_back(inter);
+
+					inter = new Interaction();
+					inter->interactionText = "Maybe if I waited long enough...\nan 'I CARE' could fall\nfrom the Sky!";
+					queuedMessages.push_back(inter);
+					break;
+
+				default:
+					inter = new Interaction();
+					inter->interactionText = "Loser!!!";
+					queuedMessages.push_back(inter);
+				}
+			}
+
+			break;
+		}
+
 			break;
 		case SHOP:
+		{
+			Interaction* inter;
+			if (completedInteractionsCount[SHOP] == 0) {
 
+				inter = new Interaction();
+				inter->interactionText = "Welcome to the Shop!\nHere you can purchase Speed Upgrades\nto get you going faster in races!";
+				queuedMessages.push_back(inter);
 
+				inter = new Interaction();
+				inter->preInteractionCMD.push_back("/givecoin 1");
+				inter->interactionText = "Here's a free first coin.";
+				queuedMessages.push_back(inter);
+			}
 
+			inter = new Interaction();
+			inter->preInteractionCMD.push_back("/enablebootupgrades");
+			inter->interactionText = "Purchase Upgrades here.\nPress 'T' to Purchase an Upgrade.";
+			inter->postInteractionCMD.push_back("/disablebootupgrades");
+			queuedMessages.push_back(inter);
 			break;
+		}
 		case RACE:
 			break;
+		default:
+			return false;
 		}
 
-		if (interactionsLoaded) {
-			interactionTime = 0;
-			isInteracting = true;
-			currentMessage = 0;
-		}
+		currentInteractionType = type;
+		interactionElapsed = 0;
+		latestInteractionSwitch = this->elapsed;
+		isInteracting = true;
+		currentMessage = -1; //Used to call first Interaction's precmds too. by Using nextInteraction();
+		nextInteraction();
 
-		return interactionsLoaded;
+		return true;
 	}
 	return false;
+}
+
+void SceneAssignment2::nextInteraction() {
+	if (currentMessage > 0) { //Post Interaction CMDs to execute (Interaction prior to the one being moved to now)
+		for (auto& entry : queuedMessages.at(currentMessage)->postInteractionCMD) {
+			this->runCommand(entry);
+		}
+	}
+	currentMessage += 1;
+	if (queuedMessages.size() < currentMessage + 1) {
+		EndInteraction();
+	}
+	else {
+		for (auto& entry : queuedMessages.at(currentMessage)->preInteractionCMD) { //Pre Interaction CMDs to execute
+			this->runCommand(entry);
+		}
+	}
+}
+
+void SceneAssignment2::EndInteraction() {
+	if (isInteracting) {
+
+		completedInteractionsCount[currentInteractionType]++;
+
+		isInteracting = false;
+		currentMessage = 0;
+		for (auto& entry : queuedMessages) { //clears all pointers
+			delete entry;
+		}
+		queuedMessages.clear();
+		interactionElapsed = 0;
+		currentInteractionType = INTERACTION_COUNT;
+	}
 }
 
 void SceneAssignment2::Exit()
 {
 	// Cleanup VBO here
+	this->EndInteraction(); //To clear up queuedMessages pointers
 
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);

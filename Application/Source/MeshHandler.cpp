@@ -33,6 +33,8 @@ bool MeshHandler::loadMeshes() {
 	meshList[GEO_RUNNINGFLOOR] = MeshBuilder::GenerateQuad("floor", Color(1, 1, 1));
 	meshList[GEO_RUNNINGFLOOR]->textureID = LoadTGA("Image//SonicFloor.tga");
 
+	meshList[GEO_TEXTBACKDROP] = MeshBuilder::GenerateQuad("textBackdrop", Color(1, 1, 1));
+	meshList[GEO_TEXTBACKDROP]->textureID = LoadTGA("Image//textBackdrop.tga");
 
 	//NON-OBJS
 

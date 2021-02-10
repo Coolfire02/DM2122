@@ -105,6 +105,7 @@ public:
 	bool isLightEnabled();
 	void setLightEnabled(bool);
 	void toggleLights();
+	std::string getName();
 
 	double getElapsedTime();
 //protected: //Change to protected if have time to add functions

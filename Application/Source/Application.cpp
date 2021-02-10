@@ -24,6 +24,7 @@
 #include "SceneModel.h"
 #include "SceneAssignment1.h"
 #include "SceneAssignment2.h"
+#include "SceneRaceAssignment2.h"
 #include "SceneText.h"
 #include "SceneUI.h"
 
@@ -32,6 +33,10 @@ unsigned Application::m_width;
 unsigned Application::m_height;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
+
+//Scenes
+Scene* Application::scenes[2] = { new SceneAssignment2, new SceneRaceAssignment2 };
+int Application::mainScene = 0;
 
 //Define an error callback
 static void error_callback(int error, const char* description)
@@ -86,7 +91,6 @@ int Application::GetWindowHeight()
 void Application::Init()
 {
 	//MeshHandler::loadMeshes();
-	mainScene = 1; 
 	//Set the error callback
 	glfwSetErrorCallback(error_callback);
 
@@ -139,7 +143,6 @@ void Application::Init()
 
 void Application::Run()
 {
-	Scene* scenes[2] = { new SceneUI, new SceneAssignment2 };
 	for (int i = 0; i < (sizeof(scenes) / sizeof(scenes[0])); i++) {
 		scenes[i]->Init();
 	}
@@ -167,6 +170,26 @@ void Application::Run()
 	for (int i = 0; i < (sizeof(scenes) / sizeof(scenes[0])); i++) {
 		scenes[i]->Exit();
 		delete scenes[i];
+	}
+}
+
+bool Application::changeToScene(std::string sceneName) {
+	for (int i = 0; i < (sizeof(scenes) / sizeof(scenes[0])); i++) {
+		if (scenes[i]->getName().compare(sceneName) == 0) {
+			if (mainScene != i) {
+				mainScene = i;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+Scene* Application::getSceneByName(std::string sceneName) {
+	for (int i = 0; i < (sizeof(scenes) / sizeof(scenes[0])); i++) {
+		if (scenes[i]->getName().compare(sceneName) == 0) {
+			return scenes[i];
+		}
 	}
 }
 
