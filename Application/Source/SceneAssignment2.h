@@ -24,6 +24,7 @@ class SceneAssignment2 : public Scene
 	enum INTERACTION_TYPE {
 		EGGMAN,
 		TAILS,
+		SHOP,
 		RACE,
 		INTERACTION_COUNT,
 	};
@@ -66,6 +67,7 @@ private:
 	Entity* player;
 
 	//Game
+	int upgradeCost[10];
 	const float defaultSpeed;
 	float playerSpeed;
 	int playerSpeedLevel;

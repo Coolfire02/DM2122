@@ -16,6 +16,17 @@ SceneAssignment2::SceneAssignment2() :
 	defaultSpeed(15.f), 
 	maxPlayerSpeedLevel(10)
 {
+	upgradeCost[0] = 20;
+	upgradeCost[1] = 25;
+	upgradeCost[2] = 30;
+	upgradeCost[3] = 40;
+	upgradeCost[4] = 50;
+	upgradeCost[5] = 65;
+	upgradeCost[6] = 75;
+	upgradeCost[7] = 85;
+	upgradeCost[8] = 100;
+	upgradeCost[9] = 150;
+
 	sceneName = "MainScene";
 	playerSpeed = defaultSpeed;
 	fps = 0;
@@ -836,7 +847,7 @@ void SceneAssignment2::Render()
 			modelStack.Translate(0.2, -1, 0.2);
 			modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
 			modelStack.Scale(1.0f, 1.0f, 1.0f);
-			ss << "Level (0/10): " << std::setprecision(2) << playerSpeed/defaultSpeed << "x Speed";
+			ss << "Level ("<< playerSpeedLevel <<"/"<<maxPlayerSpeedLevel<<"): " << std::setprecision(2) << playerSpeed/defaultSpeed << "x Speed";
 			this->RenderText(meshList[GEO_TEXT], ss.str(), Color(0.9, 0.7, 0.01));
 
 
@@ -1015,11 +1026,44 @@ bool SceneAssignment2::runCommand(std::string cmd) {
 }
 
 bool SceneAssignment2::upgradeSpeed() {
-
+	if (playerSpeedLevel < maxPlayerSpeedLevel) {
+		if (coinBalance > upgradeCost[this->playerSpeedLevel]) {
+			coinBalance -= upgradeCost[this->playerSpeedLevel];
+			playerSpeedLevel++;
+			playerSpeed = defaultSpeed * (1 + 0.05 * playerSpeedLevel);
+		}
+	}
+	return false;
 }
 
 bool SceneAssignment2::loadInteractions(INTERACTION_TYPE type) {
+	if (!isInteracting) {
+		
+		bool interactionsLoaded = false;
 
+		switch (type) {
+		case TAILS:
+			break;
+		case EGGMAN:
+			break;
+		case SHOP:
+
+
+
+			break;
+		case RACE:
+			break;
+		}
+
+		if (interactionsLoaded) {
+			interactionTime = 0;
+			isInteracting = true;
+			currentMessage = 0;
+		}
+
+		return interactionsLoaded;
+	}
+	return false;
 }
 
 void SceneAssignment2::Exit()
