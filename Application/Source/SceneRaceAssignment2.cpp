@@ -828,24 +828,8 @@ void SceneRaceAssignment2::Render()
 	//FPS UI
 	ss.str("");
 	ss.clear();
-	ss << "FPS: " << this->elapsed;
+	ss << "FPS: " << fps;
 	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0, 1, 0), 4, 0, 5);
-
-	//XYZ UI
-	ss.str("");
-	ss.clear();
-	ss << "X: " << player->getEntityData()->transX;
-	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0, 1, 0), 4, 0, 15);
-
-	ss.str("");
-	ss.clear();
-	ss << "Y: " << player->getEntityData()->transY;
-	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0, 1, 0), 4, 0, 12);
-
-	ss.str("");
-	ss.clear();
-	ss << "Z: " << player->getEntityData()->transZ;
-	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0, 1, 0), 4, 0, 8);
 }
 
 void SceneRaceAssignment2::StartRacingSession() {
