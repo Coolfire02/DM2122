@@ -302,54 +302,6 @@ void SceneRaceAssignment2::Init() {
 
 	//Practical 10a
 	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT], m_parameters[U_MATERIAL_DIFFUSE], m_parameters[U_MATERIAL_SPECULAR], m_parameters[U_MATERIAL_SHININESS]);
-
-
-	//Universal material template used for testing
-	Material mat;
-	mat.kAmbient.Set(0.1f, 0.1f, 0.1f);
-	mat.kDiffuse.Set(0.5f, 0.5f, 0.5f);
-	mat.kSpecular.Set(0.3f, 0.3f, 0.3f);
-	mat.kShininess = 1.0f;
-
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("lightbulll", Color(1.0f, 1.0f, 1.0f));
-
-	///*meshList[GEO_OBJ_ISLAND] = MeshBuilder::GenerateOBJ("island", "OBJ//island.obj");
-	//meshList[GEO_OBJ_ISLAND]->textureID = LoadTGA("Image//island.tga");*/
-
-	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
-
-
-
-	//Platform
-	meshList[GEO_OBJ_FENCE] = MeshBuilder::GenerateOBJMTL("fence", "OBJ//fence2.obj", "MTL//fence.mtl");
-	meshList[GEO_OBJ_FENCE]->textureID = LoadTGA("Image//fence.tga");
-
-	meshList[GEO_OBJ_GRASS] = MeshBuilder::GenerateOBJMTL("grass", "OBJ//blockLarge.obj", "MTL//blockLarge.mtl");
-
-	//UI
-	meshList[GEO_COINS_METER] = MeshBuilder::GenerateQuad("coin", Color(1, 1, 1));
-	meshList[GEO_COINS_METER]->textureID = LoadTGA("Image//coin.tga");
-
-	meshList[GEO_TIME_METER] = MeshBuilder::GenerateQuad("timer", Color(1, 1, 1));
-	meshList[GEO_TIME_METER]->textureID = LoadTGA("Image//time.tga");
-
-	//Skybox Meshes
-	meshList[GEO_SKY_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1));
-	meshList[GEO_SKY_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1));
-	meshList[GEO_SKY_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1));
-	meshList[GEO_SKY_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1));
-	meshList[GEO_SKY_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1));
-	meshList[GEO_SKY_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1));
-	meshList[GEO_ICON] = MeshBuilder::GenerateQuad("icon", Color(1, 1, 1));
-
-	meshList[GEO_SKY_LEFT]->textureID = LoadTGA("Image//bluecloud_lf.tga");
-	meshList[GEO_SKY_RIGHT]->textureID = LoadTGA("Image//bluecloud_rt.tga");
-	meshList[GEO_SKY_TOP]->textureID = LoadTGA("Image//bluecloud_up.tga");
-	meshList[GEO_SKY_BOTTOM]->textureID = LoadTGA("Image//bluecloud_dn.tga");
-	meshList[GEO_SKY_FRONT]->textureID = LoadTGA("Image//bluecloud_ft.tga");
-	meshList[GEO_SKY_BACK]->textureID = LoadTGA("Image//bluecloud_bk.tga");
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -527,7 +479,7 @@ void SceneRaceAssignment2::Render()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
-	RenderMesh(meshList[GEO_LIGHTBALL], false);
+	RenderMesh(MeshHandler::getMesh(GEO_LIGHTBALL), false);
 	modelStack.PopMatrix();
 
 	if (light[0].type == Light::LIGHT_DIRECTIONAL) {
@@ -573,7 +525,7 @@ void SceneRaceAssignment2::Render()
 		modelStack.Translate(0.0f, -50.0f, 0.0f);
 		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(50.f, 50.f, 50.f);
-		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);	
+		this->RenderMesh(MeshHandler::getMesh(GEO_OBJ_GRASS), lightEnable);
 
 	modelStack.PopMatrix();
 
@@ -581,21 +533,21 @@ void SceneRaceAssignment2::Render()
 		modelStack.Translate(100.0f, -40.0f, 0.0f);
 		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(50.f, 50.f, 50.f);
-		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);	
+		this->RenderMesh(MeshHandler::getMesh(GEO_OBJ_GRASS), lightEnable);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 		modelStack.Translate(-100.0f, -40.0f, 0.0f);
 		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(50.f, 50.f, 50.f);
-		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);
+		this->RenderMesh(MeshHandler::getMesh(GEO_OBJ_GRASS), lightEnable);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 		modelStack.Translate(0.0f, -40.0f, 100.0f);
 		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(50.f, 50.f, 50.f);
-		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);	
+		this->RenderMesh(MeshHandler::getMesh(GEO_OBJ_GRASS), lightEnable);
 	modelStack.PopMatrix();
 
 	for (int i = 1; i <= 3; i++) {
@@ -603,7 +555,7 @@ void SceneRaceAssignment2::Render()
 		modelStack.Translate(60.0f, -35.0f, -100.0f * i);
 		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(50.f, 50.f, 50.f);
-		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);
+		this->RenderMesh(MeshHandler::getMesh(GEO_OBJ_GRASS), lightEnable);
 		modelStack.PopMatrix();
 	}
 
@@ -612,7 +564,7 @@ void SceneRaceAssignment2::Render()
 			modelStack.Translate(-60.0f, -35.0f, -100.0f*i);
 			modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
 			modelStack.Scale(50.f, 50.f, 50.f);
-			this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);
+			this->RenderMesh(MeshHandler::getMesh(GEO_OBJ_GRASS), lightEnable);
 		modelStack.PopMatrix();
 	}
 
@@ -621,7 +573,7 @@ void SceneRaceAssignment2::Render()
 		modelStack.Translate(0.0f, -35.0f, -320.0f);
 		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(50.f, 50.f, 50.f);
-		this->RenderMesh(meshList[GEO_OBJ_GRASS], lightEnable);
+		this->RenderMesh(MeshHandler::getMesh(GEO_OBJ_GRASS), lightEnable);
 	modelStack.PopMatrix();
 
 
@@ -750,14 +702,14 @@ void SceneRaceAssignment2::Render()
 		modelStack.Translate(shoeShopX+3, shoeShopY+10, shoeShopZ+3);
 		modelStack.Rotate(135, 0.0f, 1.0f, 0.0f);
 		modelStack.Scale(1.0f, 1.0f, 1.0f);
-		this->RenderText(meshList[GEO_TEXT], "Speed Upgrade Shop", Color(0.9, 0.7, 0.01));
+		this->RenderText(MeshHandler::getMesh(GEO_TEXT), "Speed Upgrade Shop", Color(0.9, 0.7, 0.01));
 		
 		modelStack.PushMatrix();
 			modelStack.Translate(0.2, -1, 0.2);
 			modelStack.Rotate(0, 0.0f, 1.0f, 0.0f);
 			modelStack.Scale(1.0f, 1.0f, 1.0f);
 			ss << "Level ("<< playerSpeedLevel <<"/"<<maxPlayerSpeedLevel<<"): " << std::setprecision(2) << playerSpeed/defaultSpeed << "x Speed";
-			this->RenderText(meshList[GEO_TEXT], ss.str(), Color(0.9, 0.7, 0.01));
+			this->RenderText(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0.9, 0.7, 0.01));
 
 
 		modelStack.PopMatrix();
@@ -771,7 +723,7 @@ void SceneRaceAssignment2::Render()
 		ss.str("");
 		ss.clear();
 		ss << "RUNNER";
-		this->RenderText(meshList[GEO_TEXT], ss.str(), Color(1.0 - rainbow * 0.5, pow(rainbow,0.5), rainbow));
+		this->RenderText(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(1.0 - rainbow * 0.5, pow(rainbow,0.5), rainbow));
 
 		modelStack.PushMatrix();
 			modelStack.Translate(-1.0, -0.42, 0.0);
@@ -780,7 +732,7 @@ void SceneRaceAssignment2::Render()
 			ss.str("");
 			ss.clear();
 			ss << "Interact to Start";
-			this->RenderText(meshList[GEO_TEXT], ss.str(), Color(0.9, 0.8, 0.0));
+			this->RenderText(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0.9, 0.8, 0.0));
 
 		modelStack.PopMatrix();
 
@@ -791,7 +743,7 @@ void SceneRaceAssignment2::Render()
 			ss.str("");
 			ss.clear();
 			ss << "PBest Time: " << getRacingTime();
-			this->RenderText(meshList[GEO_TEXT], ss.str(), Color(0.4, 1.0, 1.0));
+			this->RenderText(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0.4, 1.0, 1.0));
 		modelStack.PopMatrix();
 
 	modelStack.PopMatrix();
@@ -821,14 +773,14 @@ void SceneRaceAssignment2::Render()
 			ss.str("");
 			ss.clear();
 			ss << entry;
-			RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.8, 0.6, 1.0), 3.5, 7, textYStart-offset*i);
+			RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0.8, 0.6, 1.0), 3.5, 7, textYStart-offset*i);
 			i++;
 		}
 		//Renders Press E to close
 		ss.str("");
 		ss.clear();
 		ss << "Press E to " << (currentMessage+1 == queuedMessages.size() ? "Close" : "Continue");
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.8, 0.6, 1.0), 3.5, 40, textYStart - offset * (++i < 4? 4: i));
+		RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0.8, 0.6, 1.0), 3.5, 40, textYStart - offset * (++i < 4? 4: i));
 	}
 
 	//Notification UI
@@ -842,14 +794,14 @@ void SceneRaceAssignment2::Render()
 			ss.str("");
 			ss.clear();
 			ss << entry;
-			RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.1, 0.4, 0.1), 4, 10, 20-offset*i);
+			RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0.1, 0.4, 0.1), 4, 10, 20-offset*i);
 			i++;
 		}
 
 	}
 
 	//Coins UI
-	RenderMeshOnScreen(meshList[GEO_COINS_METER], 9, 55, 15, 13);
+	RenderMeshOnScreen(MeshHandler::getMesh(GEO_COINS_METER), 9, 55, 15, 13);
 	
 	ss.str("");
 	ss.clear();
@@ -858,42 +810,42 @@ void SceneRaceAssignment2::Render()
 	if (coinBalance < 100) bal = "0" + bal;
 	if (coinBalance > 999) bal = "999";
 	ss << bal;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0), 5, 7, 52.5);
+	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0, 0, 0), 5, 7, 52.5);
 
 	//Time UI
-	RenderMeshOnScreen(meshList[GEO_TIME_METER], 9, 49, 15, 13);
-	RenderTextOnScreen(meshList[GEO_TEXT], getRacingTime(), Color(0, 0, 0), 4, 7, 46.5);
-	RenderTextOnScreen(meshList[GEO_TEXT], getRacingTimeMilliCounter(), Color(0, 0, 0), 2, 12, 49.5);
+	RenderMeshOnScreen(MeshHandler::getMesh(GEO_TIME_METER), 9, 49, 15, 13);
+	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), getRacingTime(), Color(0, 0, 0), 4, 7, 46.5);
+	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), getRacingTimeMilliCounter(), Color(0, 0, 0), 2, 12, 49.5);
 
 	//Interaction MSG UI
 	if (canInteractWithSomething && !isInteracting) {
 		ss.str("");
 		ss.clear();
 		ss << "Press 'E' to Interact";
-		RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 4, 20, 10);
+		RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(1, 1, 1), 4, 20, 10);
 	}
 	
 	//FPS UI
 	ss.str("");
 	ss.clear();
 	ss << "FPS: " << this->elapsed;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 5);
+	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0, 1, 0), 4, 0, 5);
 
 	//XYZ UI
 	ss.str("");
 	ss.clear();
 	ss << "X: " << player->getEntityData()->transX;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 15);
+	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0, 1, 0), 4, 0, 15);
 
 	ss.str("");
 	ss.clear();
 	ss << "Y: " << player->getEntityData()->transY;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 12);
+	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0, 1, 0), 4, 0, 12);
 
 	ss.str("");
 	ss.clear();
 	ss << "Z: " << player->getEntityData()->transZ;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 8);
+	RenderTextOnScreen(MeshHandler::getMesh(GEO_TEXT), ss.str(), Color(0, 1, 0), 4, 0, 8);
 }
 
 void SceneRaceAssignment2::StartRacingSession() {
@@ -965,14 +917,14 @@ void SceneRaceAssignment2::RenderSkybox() {
 		modelStack.Translate(-250.0f, 0.0f, 0.0f);
 		modelStack.Rotate(90, 0.0f, 1.0f, 0.0f);
 		modelStack.Scale(500.0f, 500.0f, 500.0f);
-		this->RenderMesh(meshList[GEO_SKY_LEFT], false);
+		this->RenderMesh(MeshHandler::getMesh(GEO_SKY_LEFT), false);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
 		modelStack.Translate(250.0f, 0.0f, 0.0f);
 		modelStack.Rotate(-90, 0.0f, 1.0f, 0.0f);
 		modelStack.Scale(500.0f, 500.0f, 500.0f);
-		this->RenderMesh(meshList[GEO_SKY_RIGHT], false);
+		this->RenderMesh(MeshHandler::getMesh(GEO_SKY_RIGHT), false);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -980,7 +932,7 @@ void SceneRaceAssignment2::RenderSkybox() {
 		modelStack.Rotate(-90, 0.0f, 1.0f, 0.0f);
 		modelStack.Rotate(90, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(500.0f, 500.0f, 500.0f);
-		this->RenderMesh(meshList[GEO_SKY_TOP], false);
+		this->RenderMesh(MeshHandler::getMesh(GEO_SKY_TOP), false);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
@@ -988,21 +940,21 @@ void SceneRaceAssignment2::RenderSkybox() {
 		modelStack.Rotate(-90, 0.0f, 1.0f, 0.0f);
 		modelStack.Rotate(90, -1.0f, 0.0f, 0.0f);
 		modelStack.Scale(500.0f, 500.0f, 500.0f);
-		this->RenderMesh(meshList[GEO_SKY_BOTTOM], false);
+		this->RenderMesh(MeshHandler::getMesh(GEO_SKY_BOTTOM), false);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
 		modelStack.Translate(0.0f, 0.0f, -250.0f);
 		modelStack.Rotate(0, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(500.0f, 500.0f, 500.0f);
-		this->RenderMesh(meshList[GEO_SKY_BACK], false);
+		this->RenderMesh(MeshHandler::getMesh(GEO_SKY_BACK), false);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
 		modelStack.Translate(0.0f, 0.0f, 250.0f);
 		modelStack.Rotate(180, 0.0f, 1.0f, 0.0f);
 		modelStack.Scale(500.0f, 500.0f, 500.0f);
-		this->RenderMesh(meshList[GEO_SKY_FRONT], false);
+		this->RenderMesh(MeshHandler::getMesh(GEO_SKY_FRONT), false);
 		modelStack.PopMatrix();
 
 	modelStack.PopMatrix();

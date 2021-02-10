@@ -1,63 +1,47 @@
-﻿  SceneRaceAssignment2.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(25,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(153,40): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(154,40): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(155,40): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(175,39): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(176,39): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(177,39): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(180,39): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(187,78): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(243,34): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(256,34): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(365,19): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(434,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(435,21): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(472,36): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(474,10): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(475,52): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(476,39): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(788,82): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(791,37): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(795,71): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(809,80): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(809,60): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(812,41): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(818,70): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(823,41): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(829,70): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(859,72): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(859,93): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(866,71): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(866,94): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(880,72): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(880,84): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(936,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(937,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(938,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(939,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(939,21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(939,14): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(956,55): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(957,41): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(958,42): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(959,41): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(960,41): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(961,41): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(981,10): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(982,10): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(988,13): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(1067,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(1127,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneRaceAssignment2.cpp(1291,28): warning C4018: '<': signed/unsigned mismatch
-  SceneUI.cpp
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(110,32): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(218,24): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(219,25): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(221,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(238,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(239,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(269,20): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneUI.cpp(275,20): warning C4305: '-=': truncation from 'double' to 'float'
-  Generating Code...
+﻿  SceneAssignment2.cpp
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(153,41): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(154,42): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(155,41): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(156,41): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(157,41): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(164,40): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(165,40): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(166,40): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(186,39): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(187,39): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(188,39): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(191,39): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(198,78): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(286,34): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(299,34): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(417,10): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(418,21): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(456,36): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(458,10): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(459,52): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(460,39): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(722,94): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(725,37): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(729,83): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(743,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(743,72): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(746,41): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(752,82): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(757,41): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(764,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(771,82): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(801,84): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(801,105): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(808,83): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(808,106): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(822,84): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(822,96): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(947,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(952,28): warning C4018: '<': signed/unsigned mismatch
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(956,10): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(957,10): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(963,28): warning C4018: '<': signed/unsigned mismatch
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(967,13): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(1029,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\tanyo\source\repos\.COMG\Application\Source\SceneAssignment2.cpp(1204,28): warning C4018: '<': signed/unsigned mismatch
   Application.vcxproj -> C:\Users\tanyo\source\repos\.COMG\Debug\Application.exe
