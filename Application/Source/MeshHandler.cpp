@@ -36,6 +36,10 @@ bool MeshHandler::loadMeshes() {
 	meshList[GEO_TEXTBACKDROP] = MeshBuilder::GenerateQuad("textBackdrop", Color(1, 1, 1));
 	meshList[GEO_TEXTBACKDROP]->textureID = LoadTGA("Image//textBackdrop.tga");
 
+	meshList[GEO_ENDRACE] = MeshBuilder::GenerateQuad("EndRace", Color(1, 1, 1));
+	meshList[GEO_ENDRACE]->textureID = LoadTGA("Image//EndRace.tga");
+
+
 	//NON-OBJS
 
 	//Coin
@@ -118,6 +122,7 @@ bool MeshHandler::loadMeshes() {
 	meshList[GEO_COIN]->material = coinMat;
 
 	meshList[GEO_RUNNINGFLOOR]->material = floorMat;
+	meshList[GEO_ENDRACE]->material = floorMat;
 
 	meshList[GEO_SONIC_HEAD]->material = mat;
 	meshList[GEO_SONIC_EYEBALL]->material = eyeMat;

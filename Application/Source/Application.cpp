@@ -173,10 +173,15 @@ void Application::Run()
 	}
 }
 
-bool Application::changeToScene(std::string sceneName) {
+bool Application::changeToScene(std::string sceneName, std::string msg) {
 	for (int i = 0; i < (sizeof(scenes) / sizeof(scenes[0])); i++) {
-		if (scenes[i]->getName().compare(sceneName) == 0) {
+		if (scenes[i]->getName() == sceneName) {
 			if (mainScene != i) {
+				if (sceneName == "RunningScene") {
+					static_cast<SceneRaceAssignment2*>(scenes[i])->StartRacingSession();
+					static_cast<SceneRaceAssignment2*>(scenes[i])->setPlayerSpeed(std::stof(msg));
+				}
+					
 				mainScene = i;
 				return true;
 			}

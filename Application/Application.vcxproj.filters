@@ -254,5 +254,8 @@
     <ClInclude Include="Source\SceneRaceAssignment2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Interactions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

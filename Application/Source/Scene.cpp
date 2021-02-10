@@ -155,6 +155,10 @@ void Scene::RenderText(Mesh* mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 }
 
+std::string Scene::getName() {
+	return sceneName;
+}
+
 double Scene::getElapsedTime() {
 	return elapsed;
 }

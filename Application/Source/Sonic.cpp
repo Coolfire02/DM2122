@@ -77,11 +77,11 @@ void Sonic::animationUpdater(double dt) {
 		SONIC_ANIMATION_OFFSET type;
 		SONIC_POSITION_OFFSET posType;
 
-		animationStart = 0.4;
-		animationLength = 2.3;
-		degreeTilt = 0.3f;
-		posType = SONIC_POSITION_OFFSET::OBJECTZ;
-		processDeprecatedMovement(aniTime, animationStart, animationLength, degreeTilt, posType);
+		//animationStart = 0.4;
+		//animationLength = 2.3;
+		//degreeTilt = 0.3f;
+		//posType = SONIC_POSITION_OFFSET::OBJECTZ;
+		//processDeprecatedMovement(aniTime, animationStart, animationLength, degreeTilt, posType);
 
 		animationStart = 0.0;
 		animationLength = 0.45;
@@ -214,11 +214,11 @@ void Sonic::animationUpdater(double dt) {
 		SONIC_ANIMATION_OFFSET type;
 		SONIC_POSITION_OFFSET posType;
 
-		animationStart = 0.7;
-		animationLength = 4;
-		degreeTilt = 0.5;
-		posType = SONIC_POSITION_OFFSET::OBJECTZ;
-		processMovement(aniTime, animationStart, animationLength, degreeTilt, posType);
+		//animationStart = 0.7;
+		//animationLength = 4;
+		//degreeTilt = 0.5;
+		//posType = SONIC_POSITION_OFFSET::OBJECTZ;
+		//processMovement(aniTime, animationStart, animationLength, degreeTilt, posType);
 
 		animationStart = 0.0;
 		animationLength = 0.7;

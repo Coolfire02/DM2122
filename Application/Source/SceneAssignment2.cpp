@@ -10,7 +10,7 @@
 #include "shader.hpp"
 #include "Utility.h"
 
-void split(std::string txt, char delim, std::vector<std::string>& out);
+
 
 SceneAssignment2::SceneAssignment2() : 
 	eManager(this), 
@@ -24,7 +24,7 @@ SceneAssignment2::SceneAssignment2() :
 	raceUnlocked = false;
 	playerSpeed = defaultSpeed;
 	fps = 0;
-	lightEnable = false;
+	lightEnable = true;
 	hitboxEnable = false;
 	showNotifUntil = 0.0;
 
@@ -241,7 +241,7 @@ void SceneAssignment2::Init() {
 
 
 	//Camera init(starting pos, where it looks at, up
-	camera.Init(Vector3(player->getEntityData()->transX, player->getEntityData()->transY-2, player->getEntityData()->transZ), Vector3(0, 0, 1), Vector3(0, 1, 0));
+	camera.Init(Vector3(player->getEntityData()->transX, player->getEntityData()->transY+2, player->getEntityData()->transZ), Vector3(0, 0, 1), Vector3(0, 1, 0));
 
 	//Light init
 	light[0].type = Light::LIGHT_DIRECTIONAL;
@@ -333,9 +333,6 @@ void SceneAssignment2::Init() {
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("lightbulll", Color(1.0f, 1.0f, 1.0f));
 
-	meshList[GEO_OBJ_WINNERPODIUM] = MeshBuilder::GenerateOBJ("podium", "OBJ//winner_podium.obj");
-	meshList[GEO_OBJ_WINNERPODIUM]->textureID = LoadTGA("Image//winner_podium.tga");
-	meshList[GEO_OBJ_WINNERPODIUM]->material = mat;
 
 	///*meshList[GEO_OBJ_ISLAND] = MeshBuilder::GenerateOBJ("island", "OBJ//island.obj");
 	//meshList[GEO_OBJ_ISLAND]->textureID = LoadTGA("Image//island.tga");*/
@@ -427,11 +424,6 @@ void SceneAssignment2::Update(double dt)
 					}
 				}
 			}
-
-			//std::cout << "Collided" << std::endl;
-
-			//entry->victim->setDead(true);
-			//std::cout << "Cancelled collision" << std::endl;
 		}
 	}
 	if (foundInteractionZone == false) {
@@ -557,64 +549,7 @@ void SceneAssignment2::Update(double dt)
 		pLoc += right * (float)dt * playerSpeed;
 		//player->getEntityData()->transX += (float)(LSPEED * dt);
 	}
-	static const float CAMERA_SPEED = 45.f;
-	static const float ZOOM_SPEED = 20.f;
-
-	/*Vector3 oldTarget = Vector3(camera.target.x, 0, camera.target.z);*/
-
-	if (Application::IsKeyPressed(VK_UP)) { //KEYUP
-		float pitch = CAMERA_SPEED * static_cast<float>(dt);
-		Vector3 view = (camera.target - camera.position).Normalized();
-		Vector3 right = view.Cross(camera.up);
-		right.y = 0;
-		right.Normalize();
-		camera.up = right.Cross(view).Normalized();
-		Mtx44 rotation;
-		rotation.SetToRotation(pitch, right.x, right.y, right.z);
-
-		view = rotation * view;
-		camera.target = camera.position + view;
-	}
-	if (Application::IsKeyPressed(VK_LEFT)) {
-		float yaw = CAMERA_SPEED * static_cast<float>(dt);
-		Vector3 view = (camera.target - camera.position).Normalized();
-		Mtx44 rotation;
-		rotation.SetToRotation(yaw, 0, 1, 0);
-		view = rotation * view;
-		camera.target = camera.position + view;
-		camera.up = rotation * camera.up;
-	}
-	if (Application::IsKeyPressed(VK_RIGHT)) {
-		float yaw = -CAMERA_SPEED * static_cast<float>(dt);
-		Vector3 view = (camera.target - camera.position).Normalized();
-		Mtx44 rotation;
-		rotation.SetToRotation(yaw, 0, 1, 0);
-		view = rotation * view;
-		camera.target = camera.position + view;
-		camera.up = rotation * camera.up;
-	}
-	if (Application::IsKeyPressed(VK_DOWN)) {
-		float pitch = -CAMERA_SPEED * static_cast<float>(dt);
-		Vector3 view = (camera.target - camera.position).Normalized();
-		Vector3 right = view.Cross(camera.up);
-		right.y = 0;
-		right.Normalize();
-		camera.up = right.Cross(view).Normalized();
-		Mtx44 rotation;
-		rotation.SetToRotation(pitch, right.x, right.y, right.z);
-		view = rotation * view;
-		camera.target = camera.position + view;
-	}
-
-	//Vector3 newTarget = Vector3(camera.target);
-	//newTarget.y = oldTarget.y;
-	//
-	////Some super expen calc :D
-	//float angle = acos(oldTarget.Dot(newTarget) / (oldTarget.Magnitude() * newTarget.Magnitude())) * 180 / Math::PI;
-	//if (angle > 0.0)
-	//	std::cout << angle;
-	//player->getEntityData()->rotYMag += angle;
-		
+	
 
 	// SCENE WORLD BOUNDARIES
 	pLoc.x = Math::Clamp(pLoc.x, -40.f, 40.f);
@@ -920,7 +855,15 @@ void SceneAssignment2::Render()
 			modelStack.Scale(0.33f, 0.33f, 0.33f);
 			ss.str("");
 			ss.clear();
-			ss << "PBest Time: " << "0:00";
+			float PB = 99999;
+			int loc = -1;
+			for (int i = 0; i < racingScores.size(); i++) {
+				if (racingScores.at(i) < PB) {
+					PB = racingScores.at(i);
+					loc = i;
+				}
+			}
+			ss << "PBest Time: " << getRacingTime(loc);
 			this->RenderText(meshList[GEO_TEXT], ss.str(), Color(0.4, 1.0, 1.0));
 		modelStack.PopMatrix();
 
@@ -992,10 +935,10 @@ void SceneAssignment2::Render()
 
 	//Time UI
 	RenderMeshOnScreen(meshList[GEO_TIME_METER], 9, 49, 15, 13);
-	RenderTextOnScreen(meshList[GEO_TEXT], "0:00", Color(0, 0, 0), 4, 7, 46.5);
-	RenderTextOnScreen(meshList[GEO_TEXT], "999", Color(0, 0, 0), 2, 12, 49.5);
+	RenderTextOnScreen(meshList[GEO_TEXT], getRacingTime(racingScores.size()-1), Color(0, 0, 0), 4, 7, 46.5);
+	RenderTextOnScreen(meshList[GEO_TEXT], getRacingTimeMilliCounter(racingScores.size() - 1), Color(0, 0, 0), 2, 12, 49.5);
 
-	//Interaction MSG UI
+	////Interaction MSG UI
 	if (canInteractWithSomething && !isInteracting) {
 		ss.str("");
 		ss.clear();
@@ -1101,7 +1044,31 @@ void SceneAssignment2::sendNotification(std::string msg, double duration) {
 	notificationMessage = msg;
 }
 
-void split(std::string txt, char delim, std::vector<std::string>& out) {
+std::string SceneAssignment2::getRacingTime(int index) {
+	if (!(index >= 0 && index < racingScores.size())) {
+		return "0:00";
+	}
+	float racingScore = racingScores.at(index);
+	int min = racingScore / 60;
+	int sec = racingScore - min * 60;
+	std::string str = std::to_string(min) + ":" + (sec < 10 ? "0" : "") + std::to_string(sec);
+	return str;
+}
+
+std::string SceneAssignment2::getRacingTimeMilliCounter(int index) {
+	if (!(index >= 0 && index < racingScores.size())) {
+		return "000";
+	}
+	float racingScore = racingScores.at(index);
+	int millis = (racingScore - (int)racingScore) * 1000.0;
+	if (millis > 999) millis = 999;
+	std::string str = std::to_string(millis);
+	if (millis < 10) str = "0" + str;
+	if (millis < 100) str = "0" + str;
+	return str;
+}
+
+void SceneAssignment2::split(std::string txt, char delim, std::vector<std::string>& out) {
 	std::istringstream iss(txt);
 	std::string item;
 	while (std::getline(iss, item, delim)) {
@@ -1114,23 +1081,21 @@ bool SceneAssignment2::runCommand(std::string cmd) {
 	split(cmd, ' ', splitVar);
 
 	if (splitVar.size() == 1) {
-		if (splitVar.at(0) ==  "/startrace") {
-			//Start race code todo
+		if (splitVar.at(0) == "/startrace") {
+			Application::changeToScene("RunningScene", std::to_string(playerSpeed));
 			return true;
 		}
 		else if (splitVar.at(0) == "/endinteraction") {
-			queuedMessages.clear();
-			//End Interaction todo
+			EndInteraction();
 			return true;
 		}
 		else if (splitVar.at(0) == "/unlockrace") {
 			raceUnlocked = true;
 			sendNotification("Race has been UNLOCKED", 5.0);
-			//End Interaction todo
 			return true;
 		}
 		else if (splitVar.at(0) == "/buyupgrade") {
-			//Upgrade todo
+			buySpeedUpgrade();
 			return true;
 		}
 		else if (splitVar.at(0) == "/enablebootupgrades") {
@@ -1157,7 +1122,7 @@ bool SceneAssignment2::buySpeedUpgrade() {
 		if (coinBalance > upgradeCost[this->playerSpeedLevel]) {
 			coinBalance -= upgradeCost[this->playerSpeedLevel];
 			playerSpeedLevel++;
-			playerSpeed = defaultSpeed * (1 + 0.05 * playerSpeedLevel);
+			playerSpeed = defaultSpeed * (1 + 0.1 * playerSpeedLevel);
 			sendNotification("Purchase successful", 4.5);
 		}
 		else {
@@ -1168,6 +1133,10 @@ bool SceneAssignment2::buySpeedUpgrade() {
 		sendNotification("Already Maxed!", 3.0);
 	}
 	return false;
+}
+
+void SceneAssignment2::addNewTimingScore(float score) {
+	this->racingScores.push_back(score);
 }
 
 bool SceneAssignment2::loadInteractions(INTERACTION_TYPE type) {
@@ -1297,6 +1266,13 @@ bool SceneAssignment2::loadInteractions(INTERACTION_TYPE type) {
 			break;
 		}
 		case RACE:
+
+			Interaction* inter;
+			inter = new Interaction();
+			inter->interactionText = "Good Luck!\nRacing begins as you close this\n";
+			inter->postInteractionCMD.push_back("/startrace");
+			queuedMessages.push_back(inter);
+
 			break;
 		default:
 			return false;
@@ -1322,6 +1298,9 @@ void SceneAssignment2::nextInteraction() {
 	}
 	currentMessage += 1;
 	if (queuedMessages.size() < currentMessage + 1) {
+		for (auto& entry : queuedMessages.at(currentMessage-1)->postInteractionCMD) {
+			this->runCommand(entry);
+		}
 		EndInteraction();
 	}
 	else {

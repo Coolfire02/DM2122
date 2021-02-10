@@ -184,6 +184,7 @@
     <ClCompile Include="Source\WorldObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Interactions.h" />
     <ClInclude Include="Source\CustomEntity.h" />
     <ClInclude Include="Source\NPC.h" />
     <ClInclude Include="Source\Coin.h" />

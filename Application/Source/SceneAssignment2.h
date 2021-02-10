@@ -8,6 +8,7 @@
 #include "MeshBuilder.h"
 #include "MatrixStack.h"
 #include "Light.h"
+#include "Interactions.h"
 
 #include "EntityManager.h"
 #include "MeshHandler.h"
@@ -18,17 +19,6 @@
 #include "NPC.h"
 #include "CustomEntity.h"
 #include "WorldObject.h"
-
-//Interactions are stored in a vector in this Scene, when an "Interaction" is loaded,
-//a bunch of Interaction struct Objects are created to handle interaction.
-//you can add pre, post commands to execute, as well as the text to display in this Interaction
-struct Interaction {
-	//Read up runCommand function for Command Params.
-	//e.g. cmd: /givecoin 1 (Gives player 1 coin)
-	std::vector<std::string> preInteractionCMD;
-	std::string interactionText;
-	std::vector<std::string> postInteractionCMD;
-};
 
 class SceneAssignment2 : public Scene
 {
@@ -79,15 +69,22 @@ private:
 
 	//Game
 	bool raceUnlocked;
+
+	//Shop
 	int upgradeCost[10];
 	const float defaultSpeed;
 	float playerSpeed;
 	int playerSpeedLevel;
 	const int maxPlayerSpeedLevel;
 	bool canPurchaseUpgrade;
-	std::vector<float> racingScores; //These are collected through gameplay
 	int coinBalance;
 
+	//Racing
+	std::string getRacingTime(int index); //Index represents location in RacingScores vector
+	std::string getRacingTimeMilliCounter(int index);
+	std::vector<float> racingScores; //These are collected through gameplay
+
+	//Notification Channel
 	std::string notificationMessage; //Appears on the top of the screen
 	float showNotifUntil; //Shows notification until time;
 
@@ -100,6 +97,8 @@ private:
 	float rainbow;
 
 	//Interaction
+	bool isInteracting;
+	float interactionElapsed; //Total time spent in Interaction instance
 	bool canInteractWithSomething;
 	int completedInteractionsCount[INTERACTION_COUNT]; //Everytime you finish one interaction of any type, it'll add 1 to here.
 
@@ -107,19 +106,14 @@ private:
 	std::vector<Interaction*> queuedMessages;
 	int currentMessage;
 
-	bool isInteracting;
-
-	//Total time spent in Interaction
-	float interactionElapsed;
-
 	INTERACTION_TYPE currentInteractionType;
 	GEOMETRY_TYPE characterOnUI; //When interacting if there is a person talking to you
 
 	double latestInteractionSwitch; //Use counter to only allow interaction switching every 0.5s
 	bool passedInteractCooldown(); //Checks if cooldown is reached;
 	void nextInteraction(); //Handles the next interaction (May end interaction if there is no more to go through0
-
-
+	
+	//@Deprecated, Moved over to MeshHandler
 	Mesh* meshList[NUM_GEOMETRY];
 	Light light[3];
 
@@ -127,6 +121,7 @@ private:
 	float fps;
 	
 	void RenderSkybox();
+	void split(std::string txt, char delim, std::vector<std::string>& out);
 
 public:
 	SceneAssignment2();

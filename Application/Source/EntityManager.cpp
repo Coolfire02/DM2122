@@ -14,11 +14,13 @@ EntityManager::~EntityManager() {
 }
 
 void EntityManager::spawnMovingEntity(Entity* e) {
+	e->PostUpdate(); //Sets old data to new data so that E's OldData is at origin of entity, not 0,0,0
 	if(e->getAssociatedScene() == this->scene)
 		movingEntities.push_back(e);
 }
 
 void EntityManager::spawnWorldEntity(Entity* e) {
+	e->PostUpdate(); //Sets old data to new data so that E's OldData is at origin of entity, not 0,0,0
 	if (e->getAssociatedScene() == this->scene)
 		worldEntities.push_back(e);
 }

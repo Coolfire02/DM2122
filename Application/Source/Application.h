@@ -19,7 +19,7 @@ public:
 	void Exit();
 
 	static Scene* scenes[2];
-	static bool changeToScene(std::string);
+	static bool changeToScene(std::string, std::string);
 	static Scene* getSceneByName(std::string);
 	static bool IsMousePressed(unsigned short key);
 	static void GetCursorPos(double* xpos, double* ypos);

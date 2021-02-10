@@ -1,87 +1,61 @@
 #ifndef SCENE_ASSIGNMENT2_RACE_H
 #define SCENE_ASSIGNMENT2_RACE_H
 
+#include <map>
+
 #include "Scene.h"
 #include "FirstPersonCamera.h"	
 #include "MeshBuilder.h"
 #include "MatrixStack.h"
 #include "Light.h"
+#include "Interactions.h"
+
+#include "EntityManager.h"
+#include "MeshHandler.h"
+
+//Entities
+#include "Sonic.h"
+#include "Coin.h"
+#include "NPC.h"
+#include "CustomEntity.h"
+#include "WorldObject.h"
 
 class SceneRaceAssignment2 : public Scene
 {
-
-	enum UNIFORM_TYPE
-	{
-		U_MVP = 0,
-		U_MODELVIEW,
-		U_MODELVIEW_INVERSE_TRANSPOSE,
-		U_MATERIAL_AMBIENT,
-		U_MATERIAL_DIFFUSE,
-		U_MATERIAL_SPECULAR,
-		U_MATERIAL_SHININESS,
-
-		U_LIGHT0_POSITION,
-		U_LIGHT0_COLOR,
-		U_LIGHT0_POWER,
-		U_LIGHT0_KC,
-		U_LIGHT0_KL,
-		U_LIGHT0_KQ,
-
-		//week 7
-		U_LIGHT0_TYPE,
-		U_LIGHT0_SPOTDIRECTION,
-		U_LIGHT0_COSCUTOFF,
-		U_LIGHT0_COSINNER,
-		U_LIGHT0_EXPONENT,
-
-		U_LIGHT1_POSITION,
-		U_LIGHT1_COLOR,
-		U_LIGHT1_POWER,
-		U_LIGHT1_KC,
-		U_LIGHT1_KL,
-		U_LIGHT1_KQ,
-		U_LIGHT1_TYPE,
-		U_LIGHT1_SPOTDIRECTION,
-		U_LIGHT1_COSCUTOFF,
-		U_LIGHT1_COSINNER,
-		U_LIGHT1_EXPONENT,
-
-		U_LIGHTENABLED,
-		U_NUMLIGHTS,
-
-		//week 9
-		U_COLOR_TEXTURE_ENABLED,
-		U_COLOR_TEXTURE,
-
-		//Week 14
-		U_TEXT_ENABLED,
-		U_TEXT_COLOR,
-
-		U_TOTAL,
+	enum INTERACTION_TYPE {
+		EGGMAN,
+		TAILS,
+		SHOP,
+		RACE,
+		INTERACTION_COUNT,
 	};
 
-	enum GEOMETRY_TYPE
+	enum SCENE_GEOMETRY_TYPE
 	{
+		//General
 		GEO_AXES = 0,
 
-		//Week 14
+		//Platform
+		GEO_OBJ_ISLAND,
+		GEO_PLATFORM_FLOOR,
+		GEO_OBJ_WINNERPODIUM,
+		GEO_OBJ_FENCE,
+		GEO_OBJ_GRASS,
+		GEO_OBJ_DIRT,
+
+		//UI
+		GEO_ICON,
 		GEO_TEXT,
+		GEO_COINS_METER,
+		GEO_TIME_METER,
 
-		GEO_MODEL1,
-		GEO_MODEL2,
-		GEO_MODEL3,
-		GEO_MODEL4,
-		GEO_MODEL5,
-		GEO_MODEL6,
-
+		//Skybox
 		GEO_SKY_LEFT,
 		GEO_SKY_RIGHT,
 		GEO_SKY_TOP,
 		GEO_SKY_BOTTOM,
 		GEO_SKY_FRONT,
 		GEO_SKY_BACK,
-
-		GEO_ICON,
 
 		GEO_LIGHTBALL,
 		NUM_GEOMETRY,
@@ -90,36 +64,96 @@ class SceneRaceAssignment2 : public Scene
 private:
 
 	FirstPersonCamera camera;
+	EntityManager eManager;
+	Sonic* player;
+	EntityData pOrigin;
 
-	unsigned m_vertexArrayID;
-	unsigned m_programID;
+	//Game
+	bool raceUnlocked;
+	
+	//Shop
+	int upgradeCost[10];
+	const float defaultSpeed;
+	float playerSpeed;
+	int playerSpeedLevel;
+	const int maxPlayerSpeedLevel;
+	bool canPurchaseUpgrade;
 
-	//stores handlers for uniform parametes
-	unsigned m_parameters[U_TOTAL];
+	//Racing
+	float endOfRaceZValue; //Value of Z cords that determines end of Race
+	std::string getRacingTime();
+	std::string getRacingTimeMilliCounter();
+	float racingScore; //These are collected through this gameplay session
+
+	//Coin
+	int coinBalance;
+
+	std::string notificationMessage; //Appears on the top of the screen
+	float showNotifUntil; //Shows notification until time;
+
+	//Scene object specific animation variables
+	float shoeShopX, shoeShopY, shoeShopZ;
+	float shoeRotation;
+	float shoeYOffset;
+
+	//Rainbow calculations
+	float rainbow;
+
+	//Interaction
+	bool canInteractWithSomething;
+	int completedInteractionsCount[INTERACTION_COUNT]; //Everytime you finish one interaction of any type, it'll add 1 to here.
+
+	//Queued Message, commands to execute when message is brought up
+	std::vector<Interaction*> queuedMessages;
+	int currentMessage;
+
+	bool isInteracting;
+
+	//Total time spent in Interaction
+	float interactionElapsed;
+
+	INTERACTION_TYPE currentInteractionType;
+	GEOMETRY_TYPE characterOnUI; //When interacting if there is a person talking to you
+
+	double latestInteractionSwitch; //Use counter to only allow interaction switching every 0.5s
+	bool passedInteractCooldown(); //Checks if cooldown is reached;
+	void nextInteraction(); //Handles the next interaction (May end interaction if there is no more to go through0
+	void split(std::string txt, char delim, std::vector<std::string>& out);
 
 	Mesh* meshList[NUM_GEOMETRY];
-	Light light[2];
-	MS modelStack, viewStack, projectionStack;
-	bool lightEnable;
-	bool rotateAngleFWD;
-	bool translateZFWD;
-	bool scaleALLFWD;
-	float rotateAngle;
-	float rotateAngle2;
-	float translateZ;
-	float scaleAll;
+	Light light[3];
 
+	bool hitboxEnable;
 	float fps;
-
-	void RenderMesh(Mesh* mesh, bool lightEnabled);
+	
 	void RenderSkybox();
-	void RenderText(Mesh* mesh, std::string text, Color color);
-	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-
 
 public:
 	SceneRaceAssignment2();
 	~SceneRaceAssignment2();
+
+	int getCoins();
+	void setCoins(int);
+	void addCoins(int);
+
+	void setPlayerSpeed(float speed);
+
+	void StartRacingSession();
+	//Used to reset SceneData like Player Pos, Coins earned, and other data
+	//and communicae with main scene
+	void EndRacingSession();
+
+	//Gen coins in world called when StartRacingSession();
+	void genCoins();
+
+	//Notifications
+	void sendNotification(std::string msg, double duration);
+
+	bool runCommand(std::string cmd);
+	bool buySpeedUpgrade();
+	bool loadInteractions(INTERACTION_TYPE type);
+	void EndInteraction();
+
 
 	virtual void Init();
 	virtual void Update(double dt);
