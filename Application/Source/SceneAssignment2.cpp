@@ -333,10 +333,6 @@ void SceneAssignment2::Init() {
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("axes", 1, 1, 1);
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("lightbulll", Color(1.0f, 1.0f, 1.0f));
 
-
-	///*meshList[GEO_OBJ_ISLAND] = MeshBuilder::GenerateOBJ("island", "OBJ//island.obj");
-	//meshList[GEO_OBJ_ISLAND]->textureID = LoadTGA("Image//island.tga");*/
-
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 
@@ -468,21 +464,6 @@ void SceneAssignment2::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	//if (Application::IsKeyPressed('5')) {
-	//	//to do: switch light type to POINT and pass the information to shader
-	//	light[0].type = Light::LIGHT_POINT;
-	//	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	//}
-	//else if (Application::IsKeyPressed('6')) {
-	//	//to do: switch light type to DIRECTIONAL and pass the information to shader
-	//	light[0].type = Light::LIGHT_DIRECTIONAL;
-	//	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	//}
-	//else if (Application::IsKeyPressed('7')) {
-	//	//to do: switch light type to SPOT and pass the information to shader
-	//	light[0].type = Light::LIGHT_SPOT;
-	//	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	//}
 	if (Application::IsKeyPressed('9')) {
 		hitboxEnable = !hitboxEnable;
 	}
@@ -499,20 +480,6 @@ void SceneAssignment2::Update(double dt)
 	if (num % 2 == 0) shoeYOffset += BOOT_YOFFSET * dt;
 	else shoeYOffset -= BOOT_YOFFSET * dt;
 
-
-	//const float LSPEED = 10.f;
-	//if (Application::IsKeyPressed('I'))
-	//	light[0].position.z -= (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('K'))
-	//	light[0].position.z += (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('J'))
-	//	light[0].position.x -= (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('L'))
-	//	light[0].position.x += (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('O'))
-	//	light[0].position.y -= (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('P'))
-	//	light[0].position.y += (float)(LSPEED * dt);
 	Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 	glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
 
@@ -522,7 +489,6 @@ void SceneAssignment2::Update(double dt)
 	if (Application::IsKeyPressed('W')) {
 		Vector3 view = (camera.target - camera.position).Normalized();
 		pLoc += view * (float)dt *  playerSpeed;
-		//player->getEntityData()->transZ -= (float)(LSPEED * dt);
 	}
 	if (Application::IsKeyPressed('A')) {
 		Vector3 view = (camera.target - camera.position).Normalized();
@@ -531,13 +497,11 @@ void SceneAssignment2::Update(double dt)
 		right.Normalize();
 		Vector3 up = right.Cross(view).Normalized();
 		pLoc -= right * (float)dt * playerSpeed;
-		//player->getEntityData()->transX -= (float)(LSPEED * dt);
 	}
 		
 	if (Application::IsKeyPressed('S')) {
 		Vector3 view = (camera.target - camera.position).Normalized();
 		pLoc -= view * (float)dt * playerSpeed;
-		//player->getEntityData()->transZ += (float)(LSPEED * dt);
 	}
 		
 	if (Application::IsKeyPressed('D')) {
@@ -547,7 +511,6 @@ void SceneAssignment2::Update(double dt)
 		right.Normalize();
 		Vector3 up = right.Cross(view).Normalized();
 		pLoc += right * (float)dt * playerSpeed;
-		//player->getEntityData()->transX += (float)(LSPEED * dt);
 	}
 	
 
@@ -574,13 +537,6 @@ void SceneAssignment2::Render()
 	// Render VBO here
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	/* First Triangle
-	*/
-
-	//Safe to initialize values as identity matrix (not a zero matrix!)
-	//view.SetToIdentity(); //no need camera matrix, set to origin
-	//projection.SetToOrtho(-80.0, 80.0, -60.0, 60.0, -10.0, 10.0);
-
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
 		camera.target.x, camera.target.y, camera.target.z,
@@ -588,25 +544,10 @@ void SceneAssignment2::Render()
 
 	modelStack.LoadIdentity();
 
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 0);
-	modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-	modelStack.Scale(1, 1, 1);
-	this->RenderMesh(meshList[GEO_AXES], false);
-	modelStack.PopMatrix();
-
 	modelStack.PushMatrix();
 	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
 	RenderMesh(meshList[GEO_LIGHTBALL], false);
 	modelStack.PopMatrix();
-
-	//modelStack.PushMatrix(); //pushing identity
-	//	modelStack.Translate(0.0f, 0.0f, 0.0f);
-	//	modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-	//	modelStack.Scale(3.0f, 1.8f, 1.0f);
-	//	this->RenderMesh(meshList[GEO_CUBE], true);
-	//modelStack.PopMatrix();
 
 	if (light[0].type == Light::LIGHT_DIRECTIONAL) {
 		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
@@ -695,22 +636,6 @@ void SceneAssignment2::Render()
 		modelStack.Rotate(-90, 1.0f, 0.0f, 0.0f);
 		modelStack.Scale(20.f, 150.f, 1.f);
 		this->RenderMesh(MeshHandler::getMesh(GEO_RUNNINGFLOOR), lightEnable);
-	modelStack.PopMatrix();
-
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0.0f, 0.4f, 0.0f);
-	//modelStack.Rotate(90, 0.0f, 1.0f, 0.0f);
-	modelStack.Rotate(2, 1.0f, 0.0f, 0.0f);
-	modelStack.Scale(0.1f, 0.1f, 0.1f);
-	this->RenderMesh(meshList[GEO_OBJ_FENCE], lightEnable);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	//modelStack.Translate(9.0f, 0.7f, 0.0f);
-	modelStack.Rotate(00, 0.0f, 1.0f, 0.0f);
-	modelStack.Scale(0.05f, 0.05f, 0.05f);
-	this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_TAILS), lightEnable);
 	modelStack.PopMatrix();
 
 	for (auto& entity : eManager.getEntities()) {

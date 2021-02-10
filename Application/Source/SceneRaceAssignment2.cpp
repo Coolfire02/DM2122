@@ -525,25 +525,10 @@ void SceneRaceAssignment2::Render()
 
 	modelStack.LoadIdentity();
 
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 0);
-	modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-	modelStack.Scale(1, 1, 1);
-	this->RenderMesh(meshList[GEO_AXES], false);
-	modelStack.PopMatrix();
-
 	modelStack.PushMatrix();
 	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
 	RenderMesh(meshList[GEO_LIGHTBALL], false);
 	modelStack.PopMatrix();
-
-	//modelStack.PushMatrix(); //pushing identity
-	//	modelStack.Translate(0.0f, 0.0f, 0.0f);
-	//	modelStack.Rotate(0, 0.0f, 0.0f, 1.0f);
-	//	modelStack.Scale(3.0f, 1.8f, 1.0f);
-	//	this->RenderMesh(meshList[GEO_CUBE], true);
-	//modelStack.PopMatrix();
 
 	if (light[0].type == Light::LIGHT_DIRECTIONAL) {
 		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
@@ -662,21 +647,6 @@ void SceneRaceAssignment2::Render()
 		modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0.0f, 0.4f, 0.0f);
-	////modelStack.Rotate(90, 0.0f, 1.0f, 0.0f);
-	//modelStack.Rotate(2, 1.0f, 0.0f, 0.0f);
-	//modelStack.Scale(0.1f, 0.1f, 0.1f);
-	//this->RenderMesh(meshList[GEO_OBJ_FENCE], lightEnable);
-	//modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	//modelStack.Translate(9.0f, 0.7f, 0.0f);
-	modelStack.Rotate(00, 0.0f, 1.0f, 0.0f);
-	modelStack.Scale(0.05f, 0.05f, 0.05f);
-	this->RenderMesh(MeshHandler::getMesh(GEO_SONIC_TAILS), lightEnable);
-	modelStack.PopMatrix();
 
 	for (auto& entity : eManager.getEntities()) {
 		entity->Render();
